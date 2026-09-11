@@ -57,9 +57,9 @@ export const TOPICS: Topic[] = [
       { title: "把問題交給「更小的自己」", desc: "資料夾裡有資料夾、運算式裡有運算式。遞迴讓你只描述一層的規則，其餘交給同一個函式處理，樹、DFS、分治、DP 都建立在這上面。", sub: "recursion" },
     ],
     subs: [
-      { id: "big-o", name: "Big-O Notation", zh: "時間與空間複雜度", desc: "用輸入大小 n 描述成本的成長速度", apply: "估算程式能不能撐住資料量、面試必問", time: "—", space: "—", lvl: 1, state: "draft" },
-      { id: "recursion", name: "Recursion", zh: "遞迴", desc: "函式呼叫自己，用呼叫堆疊記住回來的路", apply: "樹的走訪、DFS、分治、DP 的起點", time: "視遞迴樹", space: "O(深度)", lvl: 1, state: "draft" },
-      { id: "amortized", name: "Amortized Analysis", zh: "攤銷分析", desc: "一連串操作的平均成本，而不是最壞單次", apply: "解釋動態陣列、雜湊表擴容、併查集為何夠快", time: "—", space: "—", lvl: 2, state: "draft" },
+      { id: "big-o", name: "Big-O Notation", zh: "時間與空間複雜度", desc: "用輸入大小 n 描述成本的成長速度", apply: "估算程式能不能撐住資料量、面試必問", time: "—", space: "—", lvl: 1, state: "ready" },
+      { id: "recursion", name: "Recursion", zh: "遞迴", desc: "函式呼叫自己，用呼叫堆疊記住回來的路", apply: "樹的走訪、DFS、分治、DP 的起點", time: "視遞迴樹", space: "O(深度)", lvl: 1, state: "ready" },
+      { id: "amortized", name: "Amortized Analysis", zh: "攤銷分析", desc: "一連串操作的平均成本，而不是最壞單次", apply: "解釋動態陣列、雜湊表擴容、併查集為何夠快", time: "—", space: "—", lvl: 2, state: "ready" },
     ],
   },
   {
