@@ -26,6 +26,13 @@
   --code-fn: #9ed9b4;
   --node-fill: #ffffff;
   --shadow: 0 1px 2px rgba(23, 28, 35, 0.06), 0 8px 24px -12px rgba(23, 28, 35, 0.18);
+  /* 圖表類別色，順序固定，已用 CVD 驗證 */
+  --chart-1: #2c8a5b;
+  --chart-2: #2a4bd7;
+  --chart-3: #b8860b;
+  --chart-4: #8e44ad;
+  --chart-5: #c0392b;
+  --chart-6: #1098ad;
 }
 
 /* ---------- Dark: system preference (unless user forced light) ---------- */
@@ -51,6 +58,12 @@
     --code-cm: #6f7784;
     --node-fill: #161b23;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+    --chart-1: #42aa70;
+    --chart-2: #6580f0;
+    --chart-3: #b88e2a;
+    --chart-4: #a874d8;
+    --chart-5: #e0665a;
+    --chart-6: #2fa3bf;
   }
 }
 
@@ -76,6 +89,12 @@
   --code-cm: #6f7784;
   --node-fill: #161b23;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --chart-1: #42aa70;
+  --chart-2: #6580f0;
+  --chart-3: #b88e2a;
+  --chart-4: #a874d8;
+  --chart-5: #e0665a;
+  --chart-6: #2fa3bf;
 }
 
 /* ---------- Expose tokens to Tailwind utilities ---------- */

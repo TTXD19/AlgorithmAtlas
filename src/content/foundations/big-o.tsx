@@ -1,6 +1,7 @@
 import { CodeTabs } from "@/components/lesson/CodeTabs";
 import { Section, Steps, Problems, Code, Applications } from "@/components/lesson/parts";
 import { GrowthDemo } from "@/components/lesson/demos/GrowthDemo";
+import { GrowthChart } from "@/components/lesson/demos/GrowthChart";
 import type { Lesson } from "@/lib/lessons";
 
 const python = `# O(1)：不管 n 多大，做的事一樣多
@@ -118,6 +119,7 @@ function Body() {
         <p>
           Big-O 回答一個問題：<strong>輸入大小 n 變大時，程式要做的事以多快的速度增加？</strong>它不是精確的秒數，而是成長的「形狀」。O(n) 表示成長是一條直線，O(n²) 是拋物線，O(log n) 幾乎是平的。
         </p>
+        <GrowthChart />
         <p>
           因為只在意形狀，Big-O 有兩條簡化規則：<strong>丟掉常數</strong>（3n 和 n 都是 O(n)），<strong>只留最大的項</strong>（n² + n 是 O(n²)）。這兩條規則讓不同機器、不同語言寫出的同一個演算法，能用同一個記號比較。
         </p>
