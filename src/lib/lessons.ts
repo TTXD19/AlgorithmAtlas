@@ -9,6 +9,11 @@ import { prefixSumLesson } from "@/content/arrays/prefix-sum";
 import { hashTableLesson } from "@/content/arrays/hash-table";
 import { hashMapAppsLesson } from "@/content/arrays/hash-map-apps";
 import { matrixLesson } from "@/content/arrays/matrix";
+import { singlyLesson } from "@/content/linked-list/singly";
+import { doublyLesson } from "@/content/linked-list/doubly";
+import { reverseLesson } from "@/content/linked-list/reverse";
+import { fastSlowLesson } from "@/content/linked-list/fast-slow";
+import { mergeListsLesson } from "@/content/linked-list/merge-lists";
 
 export interface Lesson {
   /** 顯示在課程頁「前置知識」欄 */
@@ -27,6 +32,11 @@ export const LESSONS: Record<string, Lesson> = {
   "arrays/hash-table": hashTableLesson,
   "arrays/hash-map-apps": hashMapAppsLesson,
   "arrays/matrix": matrixLesson,
+  "linked-list/singly": singlyLesson,
+  "linked-list/doubly": doublyLesson,
+  "linked-list/reverse": reverseLesson,
+  "linked-list/fast-slow": fastSlowLesson,
+  "linked-list/merge-lists": mergeListsLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
 };

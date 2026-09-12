@@ -98,11 +98,11 @@ export const TOPICS: Topic[] = [
       { title: "判斷有沒有環", desc: "一快一慢兩個指標在跑道上跑，有環就一定會相遇。這個技巧不用額外記憶體，也能找出串列中點。", sub: "fast-slow" },
     ],
     subs: [
-      { id: "singly", name: "Singly Linked List", zh: "單向鏈結串列", desc: "節點、指標、頭節點與哨兵節點", apply: "理解指標、實作佇列與堆疊", time: "插入 O(1)、查 O(n)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "doubly", name: "Doubly Linked List", zh: "雙向鏈結串列", desc: "可以雙向走，O(1) 刪除任意已知節點", apply: "LRU 快取、瀏覽紀錄、undo/redo", time: "O(1) 刪除", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "reverse", name: "Reverse Linked List", zh: "反轉串列", desc: "迭代三指標與遞迴兩種寫法", apply: "指標操作的基本功、面試高頻", time: "O(n)", space: "O(1)", lvl: 1, state: "draft" },
-      { id: "fast-slow", name: "Fast & Slow Pointers", zh: "快慢指標", desc: "找中點、環偵測（Floyd）、環的起點", apply: "偵測循環參照、找中點切半", time: "O(n)", space: "O(1)", lvl: 2, state: "draft" },
-      { id: "merge-lists", name: "Merge Lists", zh: "合併串列", desc: "合併兩條有序串列，K 條時用堆積", apply: "合併排序的核心、合併多個有序資料流", time: "O(n+m)", space: "O(1)", lvl: 2, state: "draft" },
+      { id: "singly", name: "Singly Linked List", zh: "單向鏈結串列", desc: "節點、指標、頭節點與哨兵節點", apply: "理解指標、實作佇列與堆疊", time: "插入 O(1)、查 O(n)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "doubly", name: "Doubly Linked List", zh: "雙向鏈結串列", desc: "可以雙向走，O(1) 刪除任意已知節點", apply: "LRU 快取、瀏覽紀錄、undo/redo", time: "O(1) 刪除", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "reverse", name: "Reverse Linked List", zh: "反轉串列", desc: "迭代三指標與遞迴兩種寫法", apply: "指標操作的基本功、面試高頻", time: "O(n)", space: "O(1)", lvl: 1, state: "ready" },
+      { id: "fast-slow", name: "Fast & Slow Pointers", zh: "快慢指標", desc: "找中點、環偵測（Floyd）、環的起點", apply: "偵測循環參照、找中點切半", time: "O(n)", space: "O(1)", lvl: 2, state: "ready" },
+      { id: "merge-lists", name: "Merge Lists", zh: "合併串列", desc: "合併兩條有序串列，K 條時用堆積", apply: "合併排序的核心、合併多個有序資料流", time: "O(n+m)", space: "O(1)", lvl: 2, state: "ready" },
     ],
   },
   {
