@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 export type Lang = "python" | "cpp";
 
 const KEYWORDS: Record<Lang, Set<string>> = {
-  python: new Set(["from", "import", "def", "return", "while", "for", "in", "if", "else", "elif", "not", "and", "or", "continue", "break", "set", "None", "True", "False", "reversed", "len"]),
-  cpp: new Set(["#include", "int", "bool", "void", "const", "auto", "return", "while", "for", "if", "else", "true", "false", "std", "vector", "queue", "class", "struct"]),
+  python: new Set(["from", "import", "def", "return", "while", "for", "in", "if", "else", "elif", "not", "and", "or", "continue", "break", "set", "None", "True", "False", "reversed", "len", "class", "pass", "yield", "range", "enumerate", "dict", "list", "tuple", "sorted", "any", "max", "min", "sum"]),
+  cpp: new Set(["#include", "int", "bool", "void", "const", "auto", "return", "while", "for", "if", "else", "true", "false", "std", "vector", "queue", "class", "struct", "template", "typename", "public", "static", "constexpr", "double", "char", "long", "size_t", "string", "unordered_map", "unordered_set", "list", "pair", "using", "nullptr", "continue", "break"]),
 };
 
 const RULES: Record<Lang, RegExp> = {

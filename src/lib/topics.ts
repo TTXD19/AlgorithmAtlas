@@ -77,11 +77,11 @@ export const TOPICS: Topic[] = [
       { title: "影像與棋盤", desc: "圖片是二維陣列，旋轉 90 度、螺旋走訪、在棋盤上找連通格子，都是二維陣列操作。", sub: "matrix" },
     ],
     subs: [
-      { id: "array", name: "Array & Dynamic Array", zh: "陣列與動態陣列", desc: "連續記憶體，存取 O(1)，中間插入要搬移", apply: "所有語言的 list / vector", time: "存取 O(1)、插入 O(n)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "prefix-sum", name: "Prefix Sum", zh: "前綴和", desc: "預先累加，區間和變成一次減法", apply: "報表區間加總、子陣列和問題", time: "建 O(n)、查 O(1)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "hash-table", name: "Hash Table", zh: "雜湊表", desc: "雜湊函數、碰撞處理、負載因子", apply: "快取、Session、資料庫索引、去重", time: "平均 O(1)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "hash-map-apps", name: "Hash Set / Map Patterns", zh: "計數與去重", desc: "Two Sum、Group Anagrams 這類「用空間換時間」的模式", apply: "頻率統計、配對查找", time: "O(n)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "matrix", name: "Matrix", zh: "二維陣列", desc: "旋轉、轉置、螺旋走訪、四方向移動", apply: "影像處理、棋盤遊戲、網格地圖", time: "O(mn)", space: "O(mn)", lvl: 1, state: "draft" },
+      { id: "array", name: "Array & Dynamic Array", zh: "陣列與動態陣列", desc: "連續記憶體，存取 O(1)，中間插入要搬移", apply: "所有語言的 list / vector", time: "存取 O(1)、插入 O(n)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "prefix-sum", name: "Prefix Sum", zh: "前綴和", desc: "預先累加，區間和變成一次減法", apply: "報表區間加總、子陣列和問題", time: "建 O(n)、查 O(1)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "hash-table", name: "Hash Table", zh: "雜湊表", desc: "雜湊函數、碰撞處理、負載因子", apply: "快取、Session、資料庫索引、去重", time: "平均 O(1)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "hash-map-apps", name: "Hash Set / Map Patterns", zh: "計數與去重", desc: "Two Sum、Group Anagrams 這類「用空間換時間」的模式", apply: "頻率統計、配對查找", time: "O(n)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "matrix", name: "Matrix", zh: "二維陣列", desc: "旋轉、轉置、螺旋走訪、四方向移動", apply: "影像處理、棋盤遊戲、網格地圖", time: "O(mn)", space: "O(mn)", lvl: 1, state: "ready" },
     ],
   },
   {
