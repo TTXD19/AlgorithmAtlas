@@ -14,6 +14,10 @@ import { doublyLesson } from "@/content/linked-list/doubly";
 import { reverseLesson } from "@/content/linked-list/reverse";
 import { fastSlowLesson } from "@/content/linked-list/fast-slow";
 import { mergeListsLesson } from "@/content/linked-list/merge-lists";
+import { stackLesson } from "@/content/stack-queue/stack";
+import { queueLesson } from "@/content/stack-queue/queue";
+import { monotonicStackLesson } from "@/content/stack-queue/monotonic-stack";
+import { monotonicQueueLesson } from "@/content/stack-queue/monotonic-queue";
 
 export interface Lesson {
   /** 顯示在課程頁「前置知識」欄 */
@@ -37,6 +41,10 @@ export const LESSONS: Record<string, Lesson> = {
   "linked-list/reverse": reverseLesson,
   "linked-list/fast-slow": fastSlowLesson,
   "linked-list/merge-lists": mergeListsLesson,
+  "stack-queue/stack": stackLesson,
+  "stack-queue/queue": queueLesson,
+  "stack-queue/monotonic-stack": monotonicStackLesson,
+  "stack-queue/monotonic-queue": monotonicQueueLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
 };

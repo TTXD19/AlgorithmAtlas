@@ -120,10 +120,10 @@ export const TOPICS: Topic[] = [
       { title: "監控儀表板的視窗最大值", desc: "每秒問「過去 60 秒的最大延遲」。單調佇列讓視窗滑動時，取最大值仍是 O(1)。", sub: "monotonic-queue" },
     ],
     subs: [
-      { id: "stack", name: "Stack", zh: "堆疊", desc: "push / pop / peek，呼叫堆疊與括號配對", apply: "undo、括號檢查、運算式求值、DFS", time: "O(1)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "queue", name: "Queue & Deque", zh: "佇列與雙端佇列", desc: "環狀陣列實作、雙端佇列", apply: "工作排程、訊息佇列、BFS", time: "O(1)", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "monotonic-stack", name: "Monotonic Stack", zh: "單調堆疊", desc: "維持遞增或遞減，找下一個更大／更小元素", apply: "股價分析、直方圖最大矩形、每日溫度", time: "O(n)", space: "O(n)", lvl: 2, state: "draft" },
-      { id: "monotonic-queue", name: "Monotonic Queue", zh: "單調佇列", desc: "滑動視窗中 O(1) 取最大值", apply: "即時監控的視窗極值、DP 優化", time: "O(n)", space: "O(k)", lvl: 3, state: "draft" },
+      { id: "stack", name: "Stack", zh: "堆疊", desc: "push / pop / peek，呼叫堆疊與括號配對", apply: "undo、括號檢查、運算式求值、DFS", time: "O(1)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "queue", name: "Queue & Deque", zh: "佇列與雙端佇列", desc: "環狀陣列實作、雙端佇列", apply: "工作排程、訊息佇列、BFS", time: "O(1)", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "monotonic-stack", name: "Monotonic Stack", zh: "單調堆疊", desc: "維持遞增或遞減，找下一個更大／更小元素", apply: "股價分析、直方圖最大矩形、每日溫度", time: "O(n)", space: "O(n)", lvl: 2, state: "ready" },
+      { id: "monotonic-queue", name: "Monotonic Queue", zh: "單調佇列", desc: "滑動視窗中 O(1) 取最大值", apply: "即時監控的視窗極值、DP 優化", time: "O(n)", space: "O(k)", lvl: 3, state: "ready" },
     ],
   },
   {
