@@ -206,9 +206,9 @@ export const TOPICS: Topic[] = [
     subs: [
       { id: "bubble", name: "Bubble Sort", zh: "氣泡排序", desc: "相鄰交換，最直覺但最慢", apply: "教學用，理解「相鄰交換」與穩定性", time: "O(n²)", space: "O(1)", lvl: 1, state: "ready" },
       { id: "selection", name: "Selection Sort", zh: "選擇排序", desc: "每輪選最小的放到前面", apply: "交換次數最少，寫入昂貴的場合", time: "O(n²)", space: "O(1)", lvl: 1, state: "ready" },
-      { id: "insertion", name: "Insertion Sort", zh: "插入排序", desc: "像整理撲克牌，近乎有序時 O(n)", apply: "小陣列或幾乎有序的資料，內建排序在小段落會切換用它", time: "O(n²)", space: "O(1)", lvl: 1, state: "draft" },
+      { id: "insertion", name: "Insertion Sort", zh: "插入排序", desc: "像整理撲克牌，近乎有序時 O(n)", apply: "小陣列或幾乎有序的資料，內建排序在小段落會切換用它", time: "O(n²)", space: "O(1)", lvl: 1, state: "ready" },
       { id: "merge", name: "Merge Sort", zh: "合併排序", desc: "切半、各自排、合併，穩定", apply: "外部排序大檔案、鏈結串列排序、逆序對", time: "O(n log n)", space: "O(n)", lvl: 2, state: "ready" },
-      { id: "quick", name: "Quick Sort", zh: "快速排序", desc: "選 pivot 分兩邊，平均最快", apply: "大多數語言內建排序的基礎，Quick Select 找第 k 大", time: "平均 O(n log n)", space: "O(log n)", lvl: 2, state: "draft" },
+      { id: "quick", name: "Quick Sort", zh: "快速排序", desc: "選 pivot 分兩邊，平均最快", apply: "大多數語言內建排序的基礎，Quick Select 找第 k 大", time: "平均 O(n log n)", space: "O(log n)", lvl: 2, state: "ready" },
       { id: "heap-sort", name: "Heap Sort", zh: "堆積排序", desc: "先 heapify 再逐個取出，原地", apply: "記憶體受限又要保證 n log n 的場合", time: "O(n log n)", space: "O(1)", lvl: 2, state: "ready" },
       { id: "counting", name: "Counting Sort", zh: "計數排序", desc: "數每個值出現幾次，不比較", apply: "範圍小的整數，例如成績、年齡分布", time: "O(n+k)", space: "O(k)", lvl: 2, state: "draft" },
       { id: "radix", name: "Radix / Bucket Sort", zh: "基數與桶排序", desc: "按位數或按區間分桶", apply: "固定長度的整數或字串，例如電話號碼", time: "O(d·n)", space: "O(n+k)", lvl: 2, state: "draft" },

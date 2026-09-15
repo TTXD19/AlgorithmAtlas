@@ -30,6 +30,8 @@ import { segmentLesson } from "@/content/tree/segment";
 import { fenwickLesson } from "@/content/tree/fenwick";
 import { adjacencyLesson } from "@/content/graph-ds/adjacency";
 import { unionFindLesson } from "@/content/graph-ds/union-find";
+import { insertionLesson } from "@/content/sorting/insertion";
+import { quickSortLesson } from "@/content/sorting/quick";
 import { bubbleLesson } from "@/content/sorting/bubble";
 import { selectionLesson } from "@/content/sorting/selection";
 import { mergeSortLesson } from "@/content/sorting/merge";
@@ -97,6 +99,8 @@ export const LESSONS: Record<string, Lesson> = {
   "searching/two-pointers": twoPointersLesson,
   "searching/sliding": slidingLesson,
   "backtracking/subsets": subsetsLesson,
+  "sorting/insertion": insertionLesson,
+  "sorting/quick": quickSortLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
   "graph/grid": gridLesson,
