@@ -30,6 +30,24 @@ import { segmentLesson } from "@/content/tree/segment";
 import { fenwickLesson } from "@/content/tree/fenwick";
 import { adjacencyLesson } from "@/content/graph-ds/adjacency";
 import { unionFindLesson } from "@/content/graph-ds/union-find";
+import { bubbleLesson } from "@/content/sorting/bubble";
+import { selectionLesson } from "@/content/sorting/selection";
+import { mergeSortLesson } from "@/content/sorting/merge";
+import { heapSortLesson } from "@/content/sorting/heap-sort";
+import { linearLesson } from "@/content/searching/linear";
+import { binaryLesson } from "@/content/searching/binary";
+import { binaryAnswerLesson } from "@/content/searching/binary-answer";
+import { twoPointersLesson } from "@/content/searching/two-pointers";
+import { slidingLesson } from "@/content/searching/sliding";
+import { subsetsLesson } from "@/content/backtracking/subsets";
+import { gridLesson } from "@/content/graph/grid";
+import { cycleLesson } from "@/content/graph/cycle";
+import { dp1dLesson } from "@/content/dp/dp-1d";
+import { knapsackLesson } from "@/content/dp/knapsack";
+import { unboundedLesson } from "@/content/dp/unbounded";
+import { lisLesson } from "@/content/dp/lis";
+import { countingBitsLesson } from "@/content/bits/counting-bits";
+import { gcdLesson } from "@/content/math/gcd";
 
 export interface Lesson {
   /** 顯示在課程頁「前置知識」欄 */
@@ -69,6 +87,24 @@ export const LESSONS: Record<string, Lesson> = {
   "tree/fenwick": fenwickLesson,
   "graph-ds/adjacency": adjacencyLesson,
   "graph-ds/union-find": unionFindLesson,
+  "sorting/bubble": bubbleLesson,
+  "sorting/selection": selectionLesson,
+  "sorting/merge": mergeSortLesson,
+  "sorting/heap-sort": heapSortLesson,
+  "searching/linear": linearLesson,
+  "searching/binary": binaryLesson,
+  "searching/binary-answer": binaryAnswerLesson,
+  "searching/two-pointers": twoPointersLesson,
+  "searching/sliding": slidingLesson,
+  "backtracking/subsets": subsetsLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
+  "graph/grid": gridLesson,
+  "graph/cycle": cycleLesson,
+  "dp/dp-1d": dp1dLesson,
+  "dp/knapsack": knapsackLesson,
+  "dp/unbounded": unboundedLesson,
+  "dp/lis": lisLesson,
+  "bits/counting-bits": countingBitsLesson,
+  "math/gcd": gcdLesson,
 };
