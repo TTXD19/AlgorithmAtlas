@@ -324,9 +324,9 @@ export const TOPICS: Topic[] = [
       { id: "bipartite", name: "Bipartite Check", zh: "二分圖判定", desc: "兩色染色，相鄰不同色", apply: "配對問題、衝突分組", time: "O(V+E)", space: "O(V)", lvl: 2, state: "ready" },
       { id: "dijkstra", name: "Dijkstra", zh: "單源最短路徑", desc: "非負權重圖上，用優先佇列逐步確定最短距離", apply: "導航最快路線、網路路由", time: "O((V+E) log V)", space: "O(V)", lvl: 2, state: "ready" },
       { id: "bellman-ford", name: "Bellman-Ford", zh: "含負權最短路徑", desc: "鬆弛 V−1 輪，第 V 輪還能鬆弛就有負環", apply: "匯率套利偵測、負權邊的路徑", time: "O(VE)", space: "O(V)", lvl: 3, state: "ready" },
-      { id: "floyd", name: "Floyd-Warshall", zh: "全點對最短路徑", desc: "三層迴圈的 DP，適合稠密小圖", apply: "小型網路的路由表、任兩點距離查詢", time: "O(V³)", space: "O(V²)", lvl: 3, state: "draft" },
-      { id: "dag-shortest", name: "Shortest Path in DAG", zh: "DAG 最短路徑", desc: "先拓撲排序再依序鬆弛，負權也可以", apply: "專案排程的關鍵路徑", time: "O(V+E)", space: "O(V)", lvl: 2, state: "draft" },
-      { id: "mst", name: "MST: Kruskal & Prim", zh: "最小生成樹", desc: "Kruskal 按邊排序加併查集，Prim 用堆積", apply: "鋪設電纜或光纖、叢集分析", time: "O(E log E)", space: "O(V)", lvl: 3, state: "draft" },
+      { id: "floyd", name: "Floyd-Warshall", zh: "全點對最短路徑", desc: "三層迴圈的 DP，適合稠密小圖", apply: "小型網路的路由表、任兩點距離查詢", time: "O(V³)", space: "O(V²)", lvl: 3, state: "ready" },
+      { id: "dag-shortest", name: "Shortest Path in DAG", zh: "DAG 最短路徑", desc: "先拓撲排序再依序鬆弛，負權也可以", apply: "專案排程的關鍵路徑", time: "O(V+E)", space: "O(V)", lvl: 2, state: "ready" },
+      { id: "mst", name: "MST: Kruskal & Prim", zh: "最小生成樹", desc: "Kruskal 按邊排序加併查集，Prim 用堆積", apply: "鋪設電纜或光纖、叢集分析", time: "O(E log E)", space: "O(V)", lvl: 3, state: "ready" },
     ],
   },
   {
@@ -377,7 +377,7 @@ export const TOPICS: Topic[] = [
       { id: "kmp", name: "KMP", zh: "前綴函數比對", desc: "失敗函數讓比對指標不回頭", apply: "文字搜尋、入侵偵測系統的特徵比對", time: "O(n+m)", space: "O(m)", lvl: 3, state: "ready" },
       { id: "z-algo", name: "Z-Algorithm", zh: "Z 函數", desc: "每個位置與整串的最長共同前綴", apply: "字串比對、週期偵測", time: "O(n+m)", space: "O(n)", lvl: 3, state: "ready" },
       { id: "manacher", name: "Manacher", zh: "最長回文", desc: "利用已知回文的對稱性省掉重複展開", apply: "DNA 回文片段、文字分析", time: "O(n)", space: "O(n)", lvl: 3, state: "ready" },
-      { id: "trie-apps", name: "Trie Applications", zh: "字典樹應用", desc: "自動補全、Word Search II、多模式比對", apply: "搜尋建議、敏感詞過濾", time: "O(L)", space: "O(ΣL)", lvl: 2, state: "draft" },
+      { id: "trie-apps", name: "Trie Applications", zh: "字典樹應用", desc: "自動補全、Word Search II、多模式比對", apply: "搜尋建議、敏感詞過濾", time: "O(L)", space: "O(ΣL)", lvl: 2, state: "ready" },
     ],
   },
   {
@@ -415,9 +415,9 @@ export const TOPICS: Topic[] = [
     ],
     subs: [
       { id: "gcd", name: "GCD & LCM", zh: "最大公因數", desc: "歐幾里得輾轉相除與擴展歐幾里得", apply: "分數化簡、比例、週期同步", time: "O(log n)", space: "O(1)", lvl: 1, state: "ready" },
-      { id: "sieve", name: "Sieve of Eratosthenes", zh: "質數篩", desc: "從小到大劃掉倍數", apply: "產生質數表、因數分解", time: "O(n log log n)", space: "O(n)", lvl: 2, state: "draft" },
-      { id: "modular", name: "Modular Arithmetic", zh: "模運算", desc: "模加乘、快速冪、費馬小定理求反元素", apply: "RSA、雜湊、答案取模 10⁹+7", time: "O(log n)", space: "O(1)", lvl: 2, state: "draft" },
-      { id: "combinatorics", name: "Combinatorics", zh: "組合計數", desc: "Pascal 三角、C(n,k)、預算階乘取模", apply: "路徑計數、機率、抽樣", time: "O(n)", space: "O(n)", lvl: 2, state: "draft" },
+      { id: "sieve", name: "Sieve of Eratosthenes", zh: "質數篩", desc: "從小到大劃掉倍數", apply: "產生質數表、因數分解", time: "O(n log log n)", space: "O(n)", lvl: 2, state: "ready" },
+      { id: "modular", name: "Modular Arithmetic", zh: "模運算", desc: "模加乘、快速冪、費馬小定理求反元素", apply: "RSA、雜湊、答案取模 10⁹+7", time: "O(log n)", space: "O(1)", lvl: 2, state: "ready" },
+      { id: "combinatorics", name: "Combinatorics", zh: "組合計數", desc: "Pascal 三角、C(n,k)、預算階乘取模", apply: "路徑計數、機率、抽樣", time: "O(n)", space: "O(n)", lvl: 2, state: "ready" },
     ],
   },
 ];

@@ -30,6 +30,13 @@ import { segmentLesson } from "@/content/tree/segment";
 import { fenwickLesson } from "@/content/tree/fenwick";
 import { adjacencyLesson } from "@/content/graph-ds/adjacency";
 import { unionFindLesson } from "@/content/graph-ds/union-find";
+import { trieAppsLesson } from "@/content/string/trie-apps";
+import { mstLesson } from "@/content/graph/mst";
+import { dagShortestLesson } from "@/content/graph/dag-shortest";
+import { floydLesson } from "@/content/graph/floyd";
+import { combinatoricsLesson } from "@/content/math/combinatorics";
+import { modularLesson } from "@/content/math/modular";
+import { sieveLesson } from "@/content/math/sieve";
 import { manacherLesson } from "@/content/string/manacher";
 import { zAlgoLesson } from "@/content/string/z-algo";
 import { kmpLesson } from "@/content/string/kmp";
@@ -154,6 +161,13 @@ export const LESSONS: Record<string, Lesson> = {
   "divide-conquer/inversions": inversionsLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
+  "string/trie-apps": trieAppsLesson,
+  "graph/mst": mstLesson,
+  "graph/dag-shortest": dagShortestLesson,
+  "graph/floyd": floydLesson,
+  "math/combinatorics": combinatoricsLesson,
+  "math/modular": modularLesson,
+  "math/sieve": sieveLesson,
   "string/manacher": manacherLesson,
   "string/z-algo": zAlgoLesson,
   "string/kmp": kmpLesson,
