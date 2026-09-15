@@ -160,13 +160,13 @@ export const TOPICS: Topic[] = [
       { title: "即時排行與區間統計", desc: "十萬筆資料不斷更新，還要隨時問「第 1000 到 2000 筆的總和」。線段樹與樹狀陣列讓查詢與更新都是對數時間。", sub: "segment" },
     ],
     subs: [
-      { id: "binary-tree", name: "Binary Tree Basics", zh: "二元樹基礎", desc: "高度、深度、完全二元樹、陣列表示", apply: "堆積、表達式樹、決策樹的共同基礎", time: "—", space: "O(n)", lvl: 1, state: "draft" },
-      { id: "traversal", name: "Traversal", zh: "前中後序與層序走訪", desc: "遞迴與迭代兩種寫法，層序用佇列", apply: "算資料夾大小、序列化樹、運算式求值", time: "O(n)", space: "O(h)", lvl: 1, state: "draft" },
-      { id: "bst", name: "BST", zh: "二元搜尋樹", desc: "插入、刪除、驗證、中序即有序", apply: "有序集合、範圍查詢、資料庫索引的原型", time: "O(h)", space: "O(h)", lvl: 2, state: "draft" },
-      { id: "balanced", name: "Balanced BST", zh: "平衡樹概念", desc: "AVL 與紅黑樹為什麼能保證 O(log n)，講概念不實作", apply: "TreeMap、std::map、資料庫索引", time: "O(log n)", space: "O(n)", lvl: 3, state: "draft" },
-      { id: "trie", name: "Trie", zh: "字典樹", desc: "每層一個字元，共用前綴", apply: "自動補全、拼字檢查、IP 路由表", time: "O(L)", space: "O(ΣL)", lvl: 2, state: "draft" },
-      { id: "segment", name: "Segment Tree", zh: "線段樹", desc: "區間查詢與單點更新，懶標記做區間更新", apply: "區間和／區間最大值的動態查詢", time: "O(log n)", space: "O(n)", lvl: 3, state: "draft" },
-      { id: "fenwick", name: "Fenwick Tree (BIT)", zh: "樹狀陣列", desc: "用位元技巧做前綴和的動態版本", apply: "線段樹的輕量替代、逆序對計數", time: "O(log n)", space: "O(n)", lvl: 3, state: "draft" },
+      { id: "binary-tree", name: "Binary Tree Basics", zh: "二元樹基礎", desc: "高度、深度、完全二元樹、陣列表示", apply: "堆積、表達式樹、決策樹的共同基礎", time: "—", space: "O(n)", lvl: 1, state: "ready" },
+      { id: "traversal", name: "Traversal", zh: "前中後序與層序走訪", desc: "遞迴與迭代兩種寫法，層序用佇列", apply: "算資料夾大小、序列化樹、運算式求值", time: "O(n)", space: "O(h)", lvl: 1, state: "ready" },
+      { id: "bst", name: "BST", zh: "二元搜尋樹", desc: "插入、刪除、驗證、中序即有序", apply: "有序集合、範圍查詢、資料庫索引的原型", time: "O(h)", space: "O(h)", lvl: 2, state: "ready" },
+      { id: "balanced", name: "Balanced BST", zh: "平衡樹概念", desc: "AVL 與紅黑樹為什麼能保證 O(log n)，講概念不實作", apply: "TreeMap、std::map、資料庫索引", time: "O(log n)", space: "O(n)", lvl: 3, state: "ready" },
+      { id: "trie", name: "Trie", zh: "字典樹", desc: "每層一個字元，共用前綴", apply: "自動補全、拼字檢查、IP 路由表", time: "O(L)", space: "O(ΣL)", lvl: 2, state: "ready" },
+      { id: "segment", name: "Segment Tree", zh: "線段樹", desc: "區間查詢與單點更新，懶標記做區間更新", apply: "區間和／區間最大值的動態查詢", time: "O(log n)", space: "O(n)", lvl: 3, state: "ready" },
+      { id: "fenwick", name: "Fenwick Tree (BIT)", zh: "樹狀陣列", desc: "用位元技巧做前綴和的動態版本", apply: "線段樹的輕量替代、逆序對計數", time: "O(log n)", space: "O(n)", lvl: 3, state: "ready" },
     ],
   },
   {
@@ -183,8 +183,8 @@ export const TOPICS: Topic[] = [
       { title: "相片裡的人臉分群", desc: "兩張臉相似就連一條邊，最後每個連通分量就是同一個人。併查集是最簡單的分群工具。", sub: "union-find" },
     ],
     subs: [
-      { id: "adjacency", name: "Adjacency List / Matrix", zh: "鄰接串列與矩陣", desc: "有向、無向、帶權，稀疏與稠密的取捨", apply: "所有圖論演算法的輸入格式", time: "O(V+E) / O(V²)", space: "O(V+E) / O(V²)", lvl: 1, state: "draft" },
-      { id: "union-find", name: "Union-Find", zh: "併查集", desc: "路徑壓縮、按秩合併", apply: "連通判斷、分群、Kruskal 的核心", time: "O(α(n))", space: "O(n)", lvl: 2, state: "draft" },
+      { id: "adjacency", name: "Adjacency List / Matrix", zh: "鄰接串列與矩陣", desc: "有向、無向、帶權，稀疏與稠密的取捨", apply: "所有圖論演算法的輸入格式", time: "O(V+E) / O(V²)", space: "O(V+E) / O(V²)", lvl: 1, state: "ready" },
+      { id: "union-find", name: "Union-Find", zh: "併查集", desc: "路徑壓縮、按秩合併", apply: "連通判斷、分群、Kruskal 的核心", time: "O(α(n))", space: "O(n)", lvl: 2, state: "ready" },
     ],
   },
 

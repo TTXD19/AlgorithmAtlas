@@ -21,6 +21,15 @@ import { monotonicQueueLesson } from "@/content/stack-queue/monotonic-queue";
 import { binaryHeapLesson } from "@/content/heap/binary-heap";
 import { topKLesson } from "@/content/heap/top-k";
 import { twoHeapsLesson } from "@/content/heap/two-heaps";
+import { binaryTreeLesson } from "@/content/tree/binary-tree";
+import { traversalLesson } from "@/content/tree/traversal";
+import { bstLesson } from "@/content/tree/bst";
+import { balancedLesson } from "@/content/tree/balanced";
+import { trieLesson } from "@/content/tree/trie";
+import { segmentLesson } from "@/content/tree/segment";
+import { fenwickLesson } from "@/content/tree/fenwick";
+import { adjacencyLesson } from "@/content/graph-ds/adjacency";
+import { unionFindLesson } from "@/content/graph-ds/union-find";
 
 export interface Lesson {
   /** 顯示在課程頁「前置知識」欄 */
@@ -51,6 +60,15 @@ export const LESSONS: Record<string, Lesson> = {
   "heap/binary-heap": binaryHeapLesson,
   "heap/top-k": topKLesson,
   "heap/two-heaps": twoHeapsLesson,
+  "tree/binary-tree": binaryTreeLesson,
+  "tree/traversal": traversalLesson,
+  "tree/bst": bstLesson,
+  "tree/balanced": balancedLesson,
+  "tree/trie": trieLesson,
+  "tree/segment": segmentLesson,
+  "tree/fenwick": fenwickLesson,
+  "graph-ds/adjacency": adjacencyLesson,
+  "graph-ds/union-find": unionFindLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
 };
