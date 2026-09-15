@@ -30,6 +30,10 @@ import { segmentLesson } from "@/content/tree/segment";
 import { fenwickLesson } from "@/content/tree/fenwick";
 import { adjacencyLesson } from "@/content/graph-ds/adjacency";
 import { unionFindLesson } from "@/content/graph-ds/union-find";
+import { memoLesson } from "@/content/dp/memo";
+import { topoLesson } from "@/content/graph/topo";
+import { bipartiteLesson } from "@/content/graph/bipartite";
+import { dijkstraLesson } from "@/content/graph/dijkstra";
 import { insertionLesson } from "@/content/sorting/insertion";
 import { quickSortLesson } from "@/content/sorting/quick";
 import { bubbleLesson } from "@/content/sorting/bubble";
@@ -103,6 +107,10 @@ export const LESSONS: Record<string, Lesson> = {
   "sorting/quick": quickSortLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
+  "dp/memo": memoLesson,
+  "graph/topo": topoLesson,
+  "graph/bipartite": bipartiteLesson,
+  "graph/dijkstra": dijkstraLesson,
   "graph/grid": gridLesson,
   "graph/cycle": cycleLesson,
   "dp/dp-1d": dp1dLesson,
