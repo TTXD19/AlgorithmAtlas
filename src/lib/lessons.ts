@@ -30,6 +30,20 @@ import { segmentLesson } from "@/content/tree/segment";
 import { fenwickLesson } from "@/content/tree/fenwick";
 import { adjacencyLesson } from "@/content/graph-ds/adjacency";
 import { unionFindLesson } from "@/content/graph-ds/union-find";
+import { maxSubarrayLesson } from "@/content/divide-conquer/max-subarray";
+import { intervalLesson } from "@/content/greedy/interval";
+import { jumpLesson } from "@/content/greedy/jump";
+import { huffmanLesson } from "@/content/greedy/huffman";
+import { subsetEnumLesson } from "@/content/bits/subset-enum";
+import { permutationsLesson } from "@/content/backtracking/permutations";
+import { combinationsLesson } from "@/content/backtracking/combinations";
+import { nQueensLesson } from "@/content/backtracking/n-queens";
+import { wordSearchLesson } from "@/content/backtracking/word-search";
+import { masterLesson } from "@/content/divide-conquer/master";
+import { principlesLesson } from "@/content/greedy/principles";
+import { coinLesson } from "@/content/greedy/coin";
+import { bitsBasicsLesson } from "@/content/bits/basics";
+import { xorLesson } from "@/content/bits/xor";
 import { memoLesson } from "@/content/dp/memo";
 import { topoLesson } from "@/content/graph/topo";
 import { bipartiteLesson } from "@/content/graph/bipartite";
@@ -105,8 +119,22 @@ export const LESSONS: Record<string, Lesson> = {
   "backtracking/subsets": subsetsLesson,
   "sorting/insertion": insertionLesson,
   "sorting/quick": quickSortLesson,
+  "backtracking/permutations": permutationsLesson,
+  "backtracking/combinations": combinationsLesson,
+  "backtracking/n-queens": nQueensLesson,
+  "backtracking/word-search": wordSearchLesson,
+  "divide-conquer/master": masterLesson,
+  "greedy/principles": principlesLesson,
+  "greedy/coin": coinLesson,
+  "divide-conquer/max-subarray": maxSubarrayLesson,
+  "greedy/interval": intervalLesson,
+  "greedy/jump": jumpLesson,
+  "greedy/huffman": huffmanLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
+  "bits/subset-enum": subsetEnumLesson,
+  "bits/basics": bitsBasicsLesson,
+  "bits/xor": xorLesson,
   "dp/memo": memoLesson,
   "graph/topo": topoLesson,
   "graph/bipartite": bipartiteLesson,

@@ -252,10 +252,10 @@ export const TOPICS: Topic[] = [
     ],
     subs: [
       { id: "subsets", name: "Subsets", zh: "子集", desc: "每個元素選或不選，2ⁿ 種", apply: "功能開關組合測試、冪集列舉", time: "O(2ⁿ·n)", space: "O(n)", lvl: 2, state: "ready" },
-      { id: "permutations", name: "Permutations", zh: "排列", desc: "用 used 陣列或交換法", apply: "排程順序、路徑列舉", time: "O(n!·n)", space: "O(n)", lvl: 2, state: "draft" },
-      { id: "combinations", name: "Combinations & Combination Sum", zh: "組合與剪枝", desc: "從 start 開始避免重複，排序後提前剪枝", apply: "湊金額、選隊員", time: "指數", space: "O(n)", lvl: 2, state: "draft" },
-      { id: "n-queens", name: "N-Queens", zh: "N 皇后", desc: "逐列放置，用集合記錄被攻擊的欄與對角線", apply: "約束滿足問題的原型：排課、排班", time: "指數", space: "O(n)", lvl: 3, state: "draft" },
-      { id: "word-search", name: "Word Search", zh: "網格回溯", desc: "在網格上 DFS 並回復標記", apply: "文字遊戲、迷宮路徑列舉", time: "O(m·n·4ᴸ)", space: "O(L)", lvl: 2, state: "draft" },
+      { id: "permutations", name: "Permutations", zh: "排列", desc: "用 used 陣列或交換法", apply: "排程順序、路徑列舉", time: "O(n!·n)", space: "O(n)", lvl: 2, state: "ready" },
+      { id: "combinations", name: "Combinations & Combination Sum", zh: "組合與剪枝", desc: "從 start 開始避免重複，排序後提前剪枝", apply: "湊金額、選隊員", time: "指數", space: "O(n)", lvl: 2, state: "ready" },
+      { id: "n-queens", name: "N-Queens", zh: "N 皇后", desc: "逐列放置，用集合記錄被攻擊的欄與對角線", apply: "約束滿足問題的原型：排課、排班", time: "指數", space: "O(n)", lvl: 3, state: "ready" },
+      { id: "word-search", name: "Word Search", zh: "網格回溯", desc: "在網格上 DFS 並回復標記", apply: "文字遊戲、迷宮路徑列舉", time: "O(m·n·4ᴸ)", space: "O(L)", lvl: 2, state: "ready" },
     ],
   },
   {
@@ -272,8 +272,8 @@ export const TOPICS: Topic[] = [
       { title: "統計「有多少對是反的」", desc: "評分系統要算兩份排名差多遠，本質是逆序對數量。在合併排序的合併步驟順便數，n log n 就好。", sub: "inversions" },
     ],
     subs: [
-      { id: "master", name: "Master Theorem", zh: "遞迴式求解", desc: "T(n) = aT(n/b) + f(n) 的三種情況", apply: "快速判斷分治演算法的複雜度", time: "—", space: "—", lvl: 2, state: "draft" },
-      { id: "max-subarray", name: "Maximum Subarray", zh: "最大子陣列", desc: "分治版與 Kadane 線性版的對照", apply: "股票最佳買賣區間、訊號分析", time: "O(n log n) / O(n)", space: "O(log n)", lvl: 2, state: "draft" },
+      { id: "master", name: "Master Theorem", zh: "遞迴式求解", desc: "T(n) = aT(n/b) + f(n) 的三種情況", apply: "快速判斷分治演算法的複雜度", time: "—", space: "—", lvl: 2, state: "ready" },
+      { id: "max-subarray", name: "Maximum Subarray", zh: "最大子陣列", desc: "分治版與 Kadane 線性版的對照", apply: "股票最佳買賣區間、訊號分析", time: "O(n log n) / O(n)", space: "O(log n)", lvl: 2, state: "ready" },
       { id: "fast-pow", name: "Fast Exponentiation", zh: "快速冪", desc: "指數切半，遞迴或位元迭代", apply: "RSA、模運算、矩陣快速冪算費氏", time: "O(log n)", space: "O(1)", lvl: 2, state: "draft" },
       { id: "inversions", name: "Count Inversions", zh: "逆序對", desc: "在合併排序的合併步驟計數", apply: "排名相似度、資料「有多亂」的度量", time: "O(n log n)", space: "O(n)", lvl: 3, state: "draft" },
     ],
@@ -293,11 +293,11 @@ export const TOPICS: Topic[] = [
       { title: "能不能跳到終點", desc: "每格寫著最多能往前跳幾步。只要一直維持「目前最遠能到哪」，掃一遍就知道答案，不必試每條路。", sub: "jump" },
     ],
     subs: [
-      { id: "principles", name: "Greedy Principles", zh: "貪婪正確性", desc: "貪婪選擇性質、交換論證", apply: "判斷一題能不能貪，不能就轉 DP", time: "—", space: "—", lvl: 2, state: "draft" },
-      { id: "coin", name: "Coin Change (Greedy)", zh: "找零問題", desc: "標準幣值可以貪，任意幣值會錯", apply: "收銀找零、理解貪婪何時會失敗", time: "O(n)", space: "O(1)", lvl: 1, state: "draft" },
-      { id: "interval", name: "Interval Scheduling", zh: "區間排程", desc: "按結束時間排序，Merge Intervals、Meeting Rooms", apply: "會議室安排、CPU 工作排程、廣告時段", time: "O(n log n)", space: "O(1)", lvl: 2, state: "draft" },
-      { id: "jump", name: "Jump Game", zh: "跳躍遊戲", desc: "維護最遠可達位置", apply: "資源夠不夠到達目標的快速判斷", time: "O(n)", space: "O(1)", lvl: 2, state: "draft" },
-      { id: "huffman", name: "Huffman Coding", zh: "霍夫曼編碼", desc: "用堆積每次合併最小的兩個頻率", apply: "zip、JPEG、MP3 的熵編碼階段", time: "O(n log n)", space: "O(n)", lvl: 3, state: "draft" },
+      { id: "principles", name: "Greedy Principles", zh: "貪婪正確性", desc: "貪婪選擇性質、交換論證", apply: "判斷一題能不能貪，不能就轉 DP", time: "—", space: "—", lvl: 2, state: "ready" },
+      { id: "coin", name: "Coin Change (Greedy)", zh: "找零問題", desc: "標準幣值可以貪，任意幣值會錯", apply: "收銀找零、理解貪婪何時會失敗", time: "O(n)", space: "O(1)", lvl: 1, state: "ready" },
+      { id: "interval", name: "Interval Scheduling", zh: "區間排程", desc: "按結束時間排序，Merge Intervals、Meeting Rooms", apply: "會議室安排、CPU 工作排程、廣告時段", time: "O(n log n)", space: "O(1)", lvl: 2, state: "ready" },
+      { id: "jump", name: "Jump Game", zh: "跳躍遊戲", desc: "維護最遠可達位置", apply: "資源夠不夠到達目標的快速判斷", time: "O(n)", space: "O(1)", lvl: 2, state: "ready" },
+      { id: "huffman", name: "Huffman Coding", zh: "霍夫曼編碼", desc: "用堆積每次合併最小的兩個頻率", apply: "zip、JPEG、MP3 的熵編碼階段", time: "O(n log n)", space: "O(n)", lvl: 3, state: "ready" },
     ],
   },
   {
@@ -394,10 +394,10 @@ export const TOPICS: Topic[] = [
       { title: "網路遮罩與雜湊", desc: "IP 的子網路遮罩、雜湊表的取模用 AND 代替、布隆過濾器，底層都是位元運算。", sub: "counting-bits" },
     ],
     subs: [
-      { id: "basics", name: "Bitwise Basics", zh: "基本運算", desc: "AND / OR / XOR / NOT / 移位，取位、設位、清位", apply: "權限旗標、硬體暫存器、壓縮儲存", time: "O(1)", space: "O(1)", lvl: 1, state: "draft" },
-      { id: "xor", name: "XOR Tricks", zh: "XOR 技巧", desc: "a ^ a = 0、a ^ 0 = a，交換與抵消", apply: "Single Number、缺少的數字、不用暫存變數的交換", time: "O(n)", space: "O(1)", lvl: 2, state: "draft" },
+      { id: "basics", name: "Bitwise Basics", zh: "基本運算", desc: "AND / OR / XOR / NOT / 移位，取位、設位、清位", apply: "權限旗標、硬體暫存器、壓縮儲存", time: "O(1)", space: "O(1)", lvl: 1, state: "ready" },
+      { id: "xor", name: "XOR Tricks", zh: "XOR 技巧", desc: "a ^ a = 0、a ^ 0 = a，交換與抵消", apply: "Single Number、缺少的數字、不用暫存變數的交換", time: "O(n)", space: "O(1)", lvl: 2, state: "ready" },
       { id: "counting-bits", name: "Counting Bits", zh: "位元計數", desc: "Brian Kernighan 的 n & (n−1)", apply: "漢明距離、population count", time: "O(n)", space: "O(1)", lvl: 2, state: "ready" },
-      { id: "subset-enum", name: "Subset Enumeration", zh: "位元列舉子集", desc: "0 到 2ⁿ−1 每個整數就是一個子集", apply: "小規模組合問題、Bitmask DP 的前置", time: "O(2ⁿ)", space: "O(1)", lvl: 2, state: "draft" },
+      { id: "subset-enum", name: "Subset Enumeration", zh: "位元列舉子集", desc: "0 到 2ⁿ−1 每個整數就是一個子集", apply: "小規模組合問題、Bitmask DP 的前置", time: "O(2ⁿ)", space: "O(1)", lvl: 2, state: "ready" },
     ],
   },
   {
