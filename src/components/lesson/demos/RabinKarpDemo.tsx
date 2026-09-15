@@ -1,0 +1,123 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { StepHeader, StepFooter, Cells, CELL } from "./StepBar";
+
+const T = "abracadabra";
+const P = "abra";
+const B = 31;
+const M = 101;
+const val = (c: string) => c.charCodeAt(0) - 96;
+const hashOf = (s: string) => { let x = 0; for (const c of s) x = (x * B + val(c)) % M; return x; };
+const HP = hashOf(P);
+
+interface Step {
+  desc: string;
+  op: string;
+  i: number;                 // 視窗起點，-1 表示還沒開始
+  hw: number | null;         // 視窗雜湊
+  out?: number;              // 離開的索引
+  inn?: number;              // 進來的索引
+  verify?: number;           // 正在逐字元確認到第幾個字元（含）
+  result?: "hit" | "false" | "skip";
+  formula?: string;
+  hits: number[];
+}
+
+function buildSteps(): Step[] {
+  const steps: Step[] = [];
+  const n = T.length, m = P.length;
+  const hits: number[] = [];
+  const snap = (desc: string, op: string, i: number, hw: number | null, extra: Partial<Step> = {}) => steps.push({ desc, op, i, hw, hits: [...hits], ...extra });
+
+  const hp = HP;
+  let top = 1;
+  for (let j = 0; j < m - 1; j++) top = (top * B) % M;
+  snap(`先算模式「${P}」的雜湊：逐字元累加得 hash(P) = ${hp}。另外準備 B^(m−1) mod M = ${B}^${m - 1} mod ${M} = ${top}，這是「最高位」的權重，等一下要用它把離開視窗的字元減掉。`, "hash(P)", -1, null, { formula: `hash(P) = ${hp}，B^(m−1) = ${top}` });
+
+  let hw = hashOf(T.slice(0, m));
+  snap(`第一個視窗 T[0, ${m}) = 「${T.slice(0, m)}」從頭算一次，O(m)：hash = ${hw}。`, "視窗 0", 0, hw, { formula: `hash(T[0,${m})) = ${hw}` });
+
+  const check = (i: number) => {
+    const hwNow = hw;
+    if (hwNow !== hp) {
+      steps[steps.length - 1].result = "skip";
+      steps[steps.length - 1].desc += ` ${hwNow} ≠ ${hp}，雜湊不同就一定不是，直接滑到下一格。`;
+      return;
+    }
+    let j = 0;
+    while (j < m && T[i + j] === P[j]) j++;
+    if (j === m) {
+      hits.push(i);
+      snap(`${hwNow} = ${hp}，雜湊相同，但雜湊相同不代表字串相同，要逐字元確認。T[${i}, ${i + m}) = 「${T.slice(i, i + m)}」和「${P}」逐字比對，${m} 個字元全部一樣，位置 ${i} 是真的命中。`, `視窗 ${i}`, i, hwNow, { verify: m - 1, result: "hit" });
+    } else {
+      snap(`${hwNow} = ${hp}，雜湊相同，逐字元確認：T[${i}, ${i + m}) = 「${T.slice(i, i + m)}」，第 ${j + 1} 個字元 '${T[i + j]}' ≠ '${P[j]}'。這是假陽性（碰撞）：兩個不同的字串 mod ${M} 後剛好一樣。mod 越大碰撞越少，這裡故意用小的 ${M} 讓你看到它。`, `視窗 ${i}`, i, hwNow, { verify: j, result: "false" });
+    }
+  };
+  check(0);
+
+  for (let i = 1; i + m <= n; i++) {
+    const prev = hw;
+    const outC = T[i - 1], inC = T[i + m - 1];
+    hw = ((((prev - val(outC) * top) % M) + M) % M * B + val(inC)) % M;
+    snap(
+      `滑到視窗 ${i}：減掉離開的 '${outC}'（值 ${val(outC)} × ${top}），整體乘 ${B} 往左推一位，加上進來的 '${inC}'（值 ${val(inC)}）。hash = ((${prev} − ${val(outC)} × ${top}) × ${B} + ${val(inC)}) mod ${M} = ${hw}。這一步是 O(1)，不用重掃 ${m} 個字元。`,
+      `視窗 ${i}`,
+      i,
+      hw,
+      { out: i - 1, inn: i + m - 1, formula: `hash = ((${prev} − ${val(outC)} × ${top}) × ${B} + ${val(inC)}) mod ${M} = ${hw}` },
+    );
+    check(i);
+  }
+  snap(`掃完 ${n - m + 1} 個視窗。真正命中的位置：${hits.join("、")}。每個視窗 O(1) 更新，只有雜湊相同時才花 O(m) 確認，平均 O(n + m)。`, "結束", n, null);
+  return steps;
+}
+
+export function RabinKarpDemo() {
+  const steps = useMemo(() => buildSteps(), []);
+  const [k, setK] = useState(0);
+  const s = steps[k];
+  const m = P.length;
+  const inWin = (j: number) => s.i >= 0 && s.i < T.length && j >= s.i && j < s.i + m;
+
+  const textTone = (j: number) => {
+    if (s.i >= T.length) return s.hits.some((h) => j >= h && j < h + m) ? CELL.green : CELL.dim;
+    if (j === s.out) return CELL.dim;
+    if (inWin(j)) {
+      if (s.result === "hit") return CELL.green;
+      if (s.result === "false") return j - s.i < (s.verify ?? -1) ? CELL.green : j - s.i === s.verify ? CELL.accent : CELL.amber;
+      if (j === s.inn) return CELL.accent;
+      return CELL.amber;
+    }
+    return "";
+  };
+  const patTone = (j: number) => (s.result === "hit" ? CELL.green : s.result === "false" ? (j < (s.verify ?? -1) ? CELL.green : j === s.verify ? CELL.accent : "") : "");
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-line bg-surface">
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`T = "${T}" · P = "${P}" · B = ${B} · M = ${M}`} />
+      <div className="grid grid-cols-1 gap-3.5 p-3.5">
+        <div>
+          <div className="eyebrow mb-1.5">文字 T（黃色是目前視窗，灰色是剛離開的字元，藍色是剛進來的）</div>
+          <Cells items={T.split("")} tone={textTone} />
+        </div>
+        <div className="flex flex-wrap items-start gap-6">
+          <div>
+            <div className="eyebrow mb-1.5">模式 P</div>
+            <Cells items={P.split("")} tone={patTone} />
+          </div>
+          <div className="grid grid-cols-[auto_auto] gap-x-4 gap-y-1 font-mono text-[13px] tabular-nums">
+            <span className="text-ink-3">hash(P)</span><span className="text-ink">{HP}</span>
+            <span className="text-ink-3">hash(視窗)</span>
+            <span className={s.hw === null ? "text-ink-3" : s.result === "hit" ? "text-green" : s.result === "false" ? "text-accent" : "text-ink"}>{s.hw === null ? "·" : s.hw}</span>
+            <span className="text-ink-3">命中位置</span><span className="text-green">{s.hits.length ? s.hits.join("、") : "尚無"}</span>
+          </div>
+        </div>
+        {s.formula && s.i >= 0 && (
+          <div className="rounded-md border border-line bg-surface-2 px-3 py-2 font-mono text-[12.5px] text-ink">{s.formula}</div>
+        )}
+      </div>
+      <StepFooter k={k} total={steps.length}>{s.desc}</StepFooter>
+    </div>
+  );
+}

@@ -30,6 +30,23 @@ import { segmentLesson } from "@/content/tree/segment";
 import { fenwickLesson } from "@/content/tree/fenwick";
 import { adjacencyLesson } from "@/content/graph-ds/adjacency";
 import { unionFindLesson } from "@/content/graph-ds/union-find";
+import { manacherLesson } from "@/content/string/manacher";
+import { zAlgoLesson } from "@/content/string/z-algo";
+import { kmpLesson } from "@/content/string/kmp";
+import { rabinKarpLesson } from "@/content/string/rabin-karp";
+import { stringHashingLesson } from "@/content/string/hashing";
+import { bitmaskDpLesson } from "@/content/dp/bitmask-dp";
+import { treeDpLesson } from "@/content/dp/tree-dp";
+import { gridDpLesson } from "@/content/dp/grid-dp";
+import { intervalDpLesson } from "@/content/dp/interval-dp";
+import { lcsLesson } from "@/content/dp/lcs";
+import { editDistanceLesson } from "@/content/dp/edit-distance";
+import { bellmanFordLesson } from "@/content/graph/bellman-ford";
+import { fastPowLesson } from "@/content/divide-conquer/fast-pow";
+import { inversionsLesson } from "@/content/divide-conquer/inversions";
+import { countingSortLesson } from "@/content/sorting/counting";
+import { radixLesson } from "@/content/sorting/radix";
+import { lowerBoundLesson } from "@/content/sorting/lower-bound";
 import { maxSubarrayLesson } from "@/content/divide-conquer/max-subarray";
 import { intervalLesson } from "@/content/greedy/interval";
 import { jumpLesson } from "@/content/greedy/jump";
@@ -130,8 +147,25 @@ export const LESSONS: Record<string, Lesson> = {
   "greedy/interval": intervalLesson,
   "greedy/jump": jumpLesson,
   "greedy/huffman": huffmanLesson,
+  "sorting/counting": countingSortLesson,
+  "sorting/radix": radixLesson,
+  "sorting/lower-bound": lowerBoundLesson,
+  "divide-conquer/fast-pow": fastPowLesson,
+  "divide-conquer/inversions": inversionsLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
+  "string/manacher": manacherLesson,
+  "string/z-algo": zAlgoLesson,
+  "string/kmp": kmpLesson,
+  "string/rabin-karp": rabinKarpLesson,
+  "string/hashing": stringHashingLesson,
+  "dp/bitmask-dp": bitmaskDpLesson,
+  "dp/tree-dp": treeDpLesson,
+  "dp/grid-dp": gridDpLesson,
+  "dp/interval-dp": intervalDpLesson,
+  "dp/lcs": lcsLesson,
+  "dp/edit-distance": editDistanceLesson,
+  "graph/bellman-ford": bellmanFordLesson,
   "bits/subset-enum": subsetEnumLesson,
   "bits/basics": bitsBasicsLesson,
   "bits/xor": xorLesson,
