@@ -140,9 +140,9 @@ export const TOPICS: Topic[] = [
       { title: "即時中位數", desc: "資料流不斷進來，隨時要報中位數。一個最大堆積管左半、一個最小堆積管右半，中位數永遠在兩個頂端。", sub: "two-heaps" },
     ],
     subs: [
-      { id: "binary-heap", name: "Binary Heap", zh: "二元堆積", desc: "陣列表示、sift up / sift down、heapify", apply: "優先佇列、Dijkstra、事件模擬", time: "push/pop O(log n)", space: "O(n)", lvl: 2, state: "draft" },
-      { id: "top-k", name: "Top-K Problems", zh: "前 K 大", desc: "維持大小為 K 的堆積，或用 Quick Select", apply: "排行榜、推薦系統取前 K 個候選", time: "O(n log k)", space: "O(k)", lvl: 2, state: "draft" },
-      { id: "two-heaps", name: "Two Heaps", zh: "雙堆積", desc: "左最大堆、右最小堆，維持平衡", apply: "資料流中位數、滑動視窗中位數", time: "O(log n)", space: "O(n)", lvl: 3, state: "draft" },
+      { id: "binary-heap", name: "Binary Heap", zh: "二元堆積", desc: "陣列表示、sift up / sift down、heapify", apply: "優先佇列、Dijkstra、事件模擬", time: "push/pop O(log n)", space: "O(n)", lvl: 2, state: "ready" },
+      { id: "top-k", name: "Top-K Problems", zh: "前 K 大", desc: "維持大小為 K 的堆積，或用 Quick Select", apply: "排行榜、推薦系統取前 K 個候選", time: "O(n log k)", space: "O(k)", lvl: 2, state: "ready" },
+      { id: "two-heaps", name: "Two Heaps", zh: "雙堆積", desc: "左最大堆、右最小堆，維持平衡", apply: "資料流中位數、滑動視窗中位數", time: "O(log n)", space: "O(n)", lvl: 3, state: "ready" },
     ],
   },
   {

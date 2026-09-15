@@ -18,6 +18,9 @@ import { stackLesson } from "@/content/stack-queue/stack";
 import { queueLesson } from "@/content/stack-queue/queue";
 import { monotonicStackLesson } from "@/content/stack-queue/monotonic-stack";
 import { monotonicQueueLesson } from "@/content/stack-queue/monotonic-queue";
+import { binaryHeapLesson } from "@/content/heap/binary-heap";
+import { topKLesson } from "@/content/heap/top-k";
+import { twoHeapsLesson } from "@/content/heap/two-heaps";
 
 export interface Lesson {
   /** 顯示在課程頁「前置知識」欄 */
@@ -45,6 +48,9 @@ export const LESSONS: Record<string, Lesson> = {
   "stack-queue/queue": queueLesson,
   "stack-queue/monotonic-stack": monotonicStackLesson,
   "stack-queue/monotonic-queue": monotonicQueueLesson,
+  "heap/binary-heap": binaryHeapLesson,
+  "heap/top-k": topKLesson,
+  "heap/two-heaps": twoHeapsLesson,
   "graph/bfs": bfsLesson,
   "graph/dfs": dfsLesson,
 };
