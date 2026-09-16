@@ -38,15 +38,23 @@ export function StatusBadge({ topic, sub }: { topic: Topic; sub: Subtopic }) {
   return <span className={`justify-self-start whitespace-nowrap rounded-full px-2.5 py-[3px] text-[12px] ${cls}`}>{LABEL[st]}</span>;
 }
 
-/** 課程結尾的「標記為已學會」按鈕。全站唯一的進度寫入入口，所有斷點都要顯示。 */
-export function MarkDone({ lessonId }: { lessonId: string }) {
+/**
+ * 「標記為已學會」按鈕，全站唯一的進度寫入入口。
+ *
+ * 渲染兩次但每個斷點只顯示一顆：lg 以上在右欄 Rail（sticky，不用捲動就看得到），
+ * lg 以下在課文結尾（Rail 在小螢幕是隱藏的）。
+ * full 控制側欄用的滿寬版型。
+ */
+export function MarkDone({ lessonId, full }: { lessonId: string; full?: boolean }) {
   const { isDone, toggle } = useProgress();
   const done = isDone(lessonId);
   return (
     <button
       type="button"
       onClick={() => toggle(lessonId)}
-      className={`inline-flex h-9 cursor-pointer items-center rounded-[7px] border px-4 text-[14px] font-medium ${
+      className={`cursor-pointer rounded-[7px] border font-medium ${
+        full ? "mt-[18px] h-[34px] w-full text-[13px]" : "inline-flex h-9 items-center px-4 text-[14px]"
+      } ${
         done ? "border-transparent bg-green-soft text-green" : "border-line bg-surface hover:bg-surface-2"
       }`}
     >

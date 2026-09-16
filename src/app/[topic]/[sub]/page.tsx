@@ -62,7 +62,7 @@ export default async function LessonPage({ params }: PageProps<"/[topic]/[sub]">
             </div>
           )}
 
-          <div className="mt-3 border-t border-line pt-[22px]">
+          <div className="mt-3 border-t border-line pt-[22px] lg:hidden">
             <MarkDone lessonId={key} />
           </div>
 
