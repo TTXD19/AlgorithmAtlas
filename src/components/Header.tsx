@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 import { Search } from "./Search";
+import { AuthButton } from "./AuthButton";
 
 export function Header() {
   return (
@@ -24,6 +25,7 @@ export function Header() {
         <Link href="/" className="rounded-md px-2 py-1.5 text-[13.5px] font-medium whitespace-nowrap text-ink-2 hover:bg-surface-2 hover:text-ink md:px-2.5">主題</Link>
         <Link href="/roadmap" className="rounded-md px-2 py-1.5 text-[13.5px] font-medium whitespace-nowrap text-ink-2 hover:bg-surface-2 hover:text-ink md:px-2.5">學習路線</Link>
         <ThemeToggle />
+        <AuthButton />
       </nav>
     </header>
   );
