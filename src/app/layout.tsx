@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/goo
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { THEME_INIT_SCRIPT } from "@/components/ThemeToggle";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Sidebar />
           <main className="max-w-[1080px] px-5 pt-6 pb-16 md:px-12 md:pt-9 md:pb-20">{children}</main>
         </div>
+        <Analytics />
       </body>
     </html>
   );
