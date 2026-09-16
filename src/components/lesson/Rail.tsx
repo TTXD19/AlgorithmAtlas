@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { SECTIONS } from "./parts";
-import { MarkDone } from "../ProgressBits";
 
 export function Rail({ lessonId }: { lessonId: string }) {
   const [on, setOn] = useState<string>(SECTIONS[0].id);
@@ -30,7 +29,6 @@ export function Rail({ lessonId }: { lessonId: string }) {
           {s.title}
         </a>
       ))}
-      <MarkDone lessonId={lessonId} />
     </aside>
   );
 }

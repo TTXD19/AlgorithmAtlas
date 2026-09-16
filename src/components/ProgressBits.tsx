@@ -38,7 +38,7 @@ export function StatusBadge({ topic, sub }: { topic: Topic; sub: Subtopic }) {
   return <span className={`justify-self-start whitespace-nowrap rounded-full px-2.5 py-[3px] text-[12px] ${cls}`}>{LABEL[st]}</span>;
 }
 
-/** 課程頁右欄的「標記為已學會」按鈕。 */
+/** 課程結尾的「標記為已學會」按鈕。全站唯一的進度寫入入口，所有斷點都要顯示。 */
 export function MarkDone({ lessonId }: { lessonId: string }) {
   const { isDone, toggle } = useProgress();
   const done = isDone(lessonId);
@@ -46,7 +46,7 @@ export function MarkDone({ lessonId }: { lessonId: string }) {
     <button
       type="button"
       onClick={() => toggle(lessonId)}
-      className={`mt-[18px] h-[34px] w-full cursor-pointer rounded-[7px] border text-[13px] font-medium ${
+      className={`inline-flex h-9 cursor-pointer items-center rounded-[7px] border px-4 text-[14px] font-medium ${
         done ? "border-transparent bg-green-soft text-green" : "border-line bg-surface hover:bg-surface-2"
       }`}
     >

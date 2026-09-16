@@ -6,6 +6,7 @@ import { LESSONS } from "@/lib/lessons";
 import { Level } from "@/components/Level";
 import { Crumbs } from "@/components/Crumbs";
 import { Rail } from "@/components/lesson/Rail";
+import { MarkDone } from "@/components/ProgressBits";
 
 export function generateStaticParams() {
   return TOPICS.flatMap((t) => t.subs.map((s) => ({ topic: t.id, sub: s.id })));
@@ -61,7 +62,11 @@ export default async function LessonPage({ params }: PageProps<"/[topic]/[sub]">
             </div>
           )}
 
-          <div className="mt-3 flex justify-between gap-3 border-t border-line pt-[22px]">
+          <div className="mt-3 border-t border-line pt-[22px]">
+            <MarkDone lessonId={key} />
+          </div>
+
+          <div className="mt-5 flex justify-between gap-3">
             <PagerLink href={prev ? `/${t.id}/${prev.id}` : undefined} label="上一篇" name={prev?.name} />
             <PagerLink href={next ? `/${t.id}/${next.id}` : undefined} label="下一篇" name={next?.name} right />
           </div>
