@@ -64,6 +64,16 @@ src/
 | `code` | 程式碼 |
 | `problems` | 練習題 |
 
+## 部署
+
+正式站：**[beginalgo.com](https://beginalgo.com)**，部署在 Vercel。
+
+分支流程：
+
+1. 所有改動先進 `pilot`，push 後 Vercel 會產生 preview 部署
+2. 在 preview 上確認沒問題
+3. 才合併進 `main` — `main` 一有新 commit 就自動部署到正式站
+
 ## 規劃
 
 帳號系統、進度雲端同步、收藏、筆記、練習紀錄的需求整理在 [`docs/requirements.md`](docs/requirements.md)。
