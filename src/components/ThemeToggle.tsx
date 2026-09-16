@@ -1,22 +1,30 @@
 "use client";
 
-/** 循環切換：跟隨系統 → 深色 → 淺色。 */
+/**
+ * 在深淺色之間切換。
+ *
+ * 下一個主題依「目前實際看到的外觀」決定，不依 data-theme 的值：未設定時
+ * 外觀由系統偏好決定，照設定值推進的話會產生一次顏色完全沒變的點擊
+ * （原本的三段循環就是這樣，系統深色時第一下等於沒按）。
+ *
+ * 沒按過的訪客仍然跟隨系統——那是 globals.css 的 media query 在管，
+ * 只要 localStorage 沒有值就成立。按下去之後才固定成明確的選擇。
+ */
 export function ThemeToggle() {
-  const cycle = () => {
+  const toggle = () => {
     const root = document.documentElement;
-    const cur = root.getAttribute("data-theme");
-    const next = cur === null ? "dark" : cur === "dark" ? "light" : null;
-    if (next) root.setAttribute("data-theme", next);
-    else root.removeAttribute("data-theme");
+    const set = root.getAttribute("data-theme");
+    const isDark = set ? set === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const next = isDark ? "light" : "dark";
+    root.setAttribute("data-theme", next);
     try {
-      if (next) localStorage.setItem("atlas-theme", next);
-      else localStorage.removeItem("atlas-theme");
+      localStorage.setItem("atlas-theme", next);
     } catch {}
   };
   return (
     <button
       type="button"
-      onClick={cycle}
+      onClick={toggle}
       title="切換深淺色"
       className="cursor-pointer rounded-md px-2.5 py-1.5 text-[13.5px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"
     >
