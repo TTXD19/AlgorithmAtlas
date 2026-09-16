@@ -2,24 +2,7 @@ import type { ReactNode } from "react";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { getMessages } from "@/lib/messages";
 
-/** 課程六段固定結構的 id 與順序。標題在 messages 裡，隨語言變。 */
-export const SECTIONS = ["why", "concept", "steps", "demo", "code", "problems"] as const;
-export type SectionId = (typeof SECTIONS)[number];
-
-/** locale 選填：尚未遷移的課程不會傳，那些一律是原始語言。 */
-export function Section({ id, children, locale = DEFAULT_LOCALE }: { id: SectionId; children: ReactNode; locale?: Locale }) {
-  const idx = SECTIONS.indexOf(id);
-  const title = getMessages(locale).sections[id];
-  return (
-    <section id={`sec-${id}`} className="prose-lesson mb-10">
-      <h2 className="mb-3 scroll-mt-[72px] text-[21px] font-bold">
-        <span className="mr-2.5 font-mono text-[12px] font-medium text-ink-3">{String(idx + 1).padStart(2, "0")}</span>
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
+export { Section, SECTIONS, type SectionId } from "./Section";
 
 export function Steps({ items }: { items: ReactNode[] }) {
   return (

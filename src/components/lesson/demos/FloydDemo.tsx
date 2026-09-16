@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
+import { useLocale } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
 import { StepHeader, StepFooter, CELL } from "./StepBar";
 
 const NODES = ["A", "B", "C", "D"];
@@ -11,6 +13,66 @@ const EDGES: [number, number, number][] = [[0, 1, 4], [0, 3, 9], [3, 0, 1], [1, 
 const LABEL_AT: Record<string, [number, number]> = { "13": [0.28, 1], "20": [0.28, 1] };
 const INF = Number.POSITIVE_INFINITY;
 const QUERY: [number, number] = [3, 2]; // 最後還原 D → C 的路徑
+
+const TEXT = demoText(
+  {
+    sep: "、",
+    opInit: "初始化",
+    opDiag: "檢查對角線",
+    opPath: (from: string, to: string) => `路徑 ${from} → ${to}`,
+    init: "距離矩陣 dist[i][j] 一開始只有直接相連的邊：自己到自己是 0，有邊就是邊的權重，沒有邊是 ∞。這時的意思是「不經過任何中間點」的最短距離。接下來依序允許 A、B、C、D 當中間點。",
+    round: (prev: string, k: string, allowed: string) =>
+      `${prev}k = ${k}：現在允許經過 ${allowed}。對每一格檢查 dist[i][${k}] + dist[${k}][j] 是否比 dist[i][j] 小。只會用到第 ${k} 列和第 ${k} 行（黃框），而這兩條在這一輪自己不會變。`,
+    update: (i: string, j: string, old: string, k: string, a: string, b: string, via: string) =>
+      `dist[${i}][${j}] 原本是 ${old}。經過 ${k}：dist[${i}][${k}] + dist[${k}][${j}] = ${a} + ${b} = ${via} < ${old}，更新成 ${via}。`,
+    roundSummary: (k: string, count: number, list: string) => `k = ${k} 這一輪更新了 ${count} 格（${list}）。`,
+    final: (prev: string, verdict: string) =>
+      `${prev}四輪做完，矩陣就是任意兩點的最短距離。檢查對角線：dist[i][i] 全都是 0，${verdict}。如果某個 dist[i][i] 變成負的，代表從 i 出發繞一圈回來總權重是負的。`,
+    noNegCycle: "沒有負環",
+    hasNegCycle: "有負數，表示有負環",
+    pathDesc: (from: string, to: string, dist: string, path: string, weights: string, direct: string) =>
+      `要還原路徑，另外記錄 next[i][j]：從 i 往 j 走的第一步。更新 dist[i][j] 時令 next[i][j] = next[i][k]。${from} → ${to} 的最短距離是 ${dist}，沿著 next 走：${path}，權重 ${weights} = ${dist}，比直接走 ${from} → ${to} 那條權重 ${direct} 的邊還短。`,
+    caption: "4 個節點、8 條有向邊，B → C 為負權",
+    legendK: "中間點 k",
+    legendCur: "正在更新的 i、j",
+    legendUsed: "用到的兩格",
+    legendChanged: "這一輪更新過",
+    graphLabel: "Floyd-Warshall 示範圖",
+    viaUpTo: (k: string) => `（中間點可用到 ${k}）`,
+    pathLabel: "路徑",
+  },
+  {
+    en: {
+      sep: ", ",
+      opInit: "Initialise",
+      opDiag: "Check the diagonal",
+      opPath: (from: string, to: string) => `Path ${from} → ${to}`,
+      init: "The distance matrix dist[i][j] starts out holding direct edges only: 0 from a node to itself, the edge weight wherever an edge exists, and ∞ where none does. Right now it means the shortest distance that uses no intermediate node at all. From here we allow A, B, C and D as intermediate nodes, one at a time.",
+      round: (prev: string, k: string, allowed: string) =>
+        `${prev}k = ${k}: paths may now pass through ${allowed}. For every cell, check whether dist[i][${k}] + dist[${k}][j] is smaller than dist[i][j]. Only row ${k} and column ${k} are read (outlined in amber), and neither of them changes during this round.`,
+      update: (i: string, j: string, old: string, k: string, a: string, b: string, via: string) =>
+        `dist[${i}][${j}] was ${old}. Going through ${k}: dist[${i}][${k}] + dist[${k}][${j}] = ${a} + ${b} = ${via} < ${old}, so it becomes ${via}.`,
+      roundSummary: (k: string, count: number, list: string) =>
+        `Round k = ${k} updated ${count} cell${count === 1 ? "" : "s"} (${list}). `,
+      final: (prev: string, verdict: string) =>
+        `${prev}After all four rounds the matrix holds the shortest distance between every pair of nodes. Check the diagonal: ${verdict}. If some dist[i][i] had turned negative, it would mean a cycle that leaves i and returns to i with negative total weight.`,
+      noNegCycle: "every dist[i][i] is 0, so there is no negative cycle",
+      hasNegCycle: "some dist[i][i] is negative, so there is a negative cycle",
+      pathDesc: (from: string, to: string, dist: string, path: string, weights: string, direct: string) =>
+        `To recover the path itself, also keep next[i][j]: the first step on the way from i to j. Whenever dist[i][j] is updated, set next[i][j] = next[i][k]. The shortest distance from ${from} to ${to} is ${dist}, and following next gives ${path}, with weights ${weights} = ${dist} — shorter than the direct ${from} → ${to} edge of weight ${direct}.`,
+      caption: "4 nodes, 8 directed edges, B → C has negative weight",
+      legendK: "Intermediate node k",
+      legendCur: "The i and j being updated",
+      legendUsed: "The two cells read",
+      legendChanged: "Updated this round",
+      graphLabel: "Floyd-Warshall demo graph",
+      viaUpTo: (k: string) => ` (intermediate nodes up to ${k} allowed)`,
+      pathLabel: "Path",
+    },
+  },
+);
+
+type T = (typeof TEXT)["zh-Hant"];
 
 interface Step {
   desc: string;
@@ -28,7 +90,7 @@ const fmt = (x: number) => (x === INF ? "∞" : String(x));
 const num = (x: number) => (x < 0 ? `(−${-x})` : String(x));
 const lead = (x: number) => (x < 0 ? `−${-x}` : String(x));
 
-function buildSteps(): Step[] {
+function buildSteps(t: T): Step[] {
   const n = NODES.length;
   const d = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 0 : INF)));
   const nxt = Array.from({ length: n }, () => Array<number>(n).fill(-1));
@@ -39,12 +101,12 @@ function buildSteps(): Step[] {
   let k: number | null = null;
   const snap = (desc: string, op: string, extra: Partial<Step> = {}) => steps.push({ desc, op, k, d: d.map((r) => [...r]), changed: [...changed], ...extra });
 
-  snap(`距離矩陣 dist[i][j] 一開始只有直接相連的邊：自己到自己是 0，有邊就是邊的權重，沒有邊是 ∞。這時的意思是「不經過任何中間點」的最短距離。接下來依序允許 A、B、C、D 當中間點。`, "初始化");
+  snap(t.init, t.opInit);
   let prevRound = "";
   for (k = 0; k < n; k++) {
     changed = [];
-    const allowed = NODES.slice(0, k + 1).join("、");
-    snap(`${prevRound}k = ${NODES[k]}：現在允許經過 ${allowed}。對每一格檢查 dist[i][${NODES[k]}] + dist[${NODES[k]}][j] 是否比 dist[i][j] 小。只會用到第 ${NODES[k]} 列和第 ${NODES[k]} 行（黃框），而這兩條在這一輪自己不會變。`, `k = ${NODES[k]}`);
+    const allowed = NODES.slice(0, k + 1).join(t.sep);
+    snap(t.round(prevRound, NODES[k], allowed), `k = ${NODES[k]}`);
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         if (d[i][k] === INF || d[k][j] === INF) continue;
@@ -54,26 +116,39 @@ function buildSteps(): Step[] {
           d[i][j] = via;
           nxt[i][j] = nxt[i][k];
           changed.push([i, j]);
-          snap(`dist[${NODES[i]}][${NODES[j]}] 原本是 ${fmt(old)}。經過 ${NODES[k]}：dist[${NODES[i]}][${NODES[k]}] + dist[${NODES[k]}][${NODES[j]}] = ${lead(d[i][k])} + ${num(d[k][j])} = ${lead(via)} < ${fmt(old)}，更新成 ${lead(via)}。`, `k = ${NODES[k]}`, { cur: [i, j] });
+          snap(t.update(NODES[i], NODES[j], fmt(old), NODES[k], lead(d[i][k]), num(d[k][j]), lead(via)), `k = ${NODES[k]}`, { cur: [i, j] });
         }
       }
     }
-    prevRound = `k = ${NODES[k]} 這一輪更新了 ${changed.length} 格（${changed.map(([i, j]) => `${NODES[i]}→${NODES[j]}`).join("、")}）。`;
+    prevRound = t.roundSummary(NODES[k], changed.length, changed.map(([i, j]) => `${NODES[i]}→${NODES[j]}`).join(t.sep));
   }
   k = null;
   const diagOk = d.every((row, i) => row[i] >= 0);
-  snap(`${prevRound}四輪做完，矩陣就是任意兩點的最短距離。檢查對角線：dist[i][i] 全都是 0，${diagOk ? "沒有負環" : "有負數，表示有負環"}。如果某個 dist[i][i] 變成負的，代表從 i 出發繞一圈回來總權重是負的。`, "檢查對角線", { final: true });
+  snap(t.final(prevRound, diagOk ? t.noNegCycle : t.hasNegCycle), t.opDiag, { final: true });
 
-  const [s, t] = QUERY;
-  const path = [s];
-  let x = s;
-  while (x !== t) { x = nxt[x][t]; path.push(x); }
-  snap(`要還原路徑，另外記錄 next[i][j]：從 i 往 j 走的第一步。更新 dist[i][j] 時令 next[i][j] = next[i][k]。${NODES[s]} → ${NODES[t]} 的最短距離是 ${d[s][t]}，沿著 next 走：${path.map((p) => NODES[p]).join(" → ")}，權重 ${path.slice(1).map((v, idx) => num(EDGES.find(([a, b]) => a === path[idx] && b === v)![2])).join(" + ")} = ${d[s][t]}，比直接走 ${NODES[s]} → ${NODES[t]} 那條權重 ${EDGES.find(([a, b]) => a === s && b === t)![2]} 的邊還短。`, `路徑 ${NODES[s]} → ${NODES[t]}`, { final: true, path });
+  const [src, tgt] = QUERY;
+  const path = [src];
+  let x = src;
+  while (x !== tgt) { x = nxt[x][tgt]; path.push(x); }
+  snap(
+    t.pathDesc(
+      NODES[src],
+      NODES[tgt],
+      String(d[src][tgt]),
+      path.map((p) => NODES[p]).join(" → "),
+      path.slice(1).map((v, idx) => num(EDGES.find(([a, b]) => a === path[idx] && b === v)![2])).join(" + "),
+      String(EDGES.find(([a, b]) => a === src && b === tgt)![2]),
+    ),
+    t.opPath(NODES[src], NODES[tgt]),
+    { final: true, path },
+  );
   return steps;
 }
 
 export function FloydDemo() {
-  const steps = useMemo(() => buildSteps(), []);
+  const locale = useLocale();
+  const t = TEXT[locale];
+  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const onPath = (u: number, v: number) => !!s.path && s.path.some((p, idx) => idx + 1 < s.path!.length && p === u && s.path![idx + 1] === v);
@@ -96,16 +171,16 @@ export function FloydDemo() {
 
   return (
     <div className="@container overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right="4 個節點、8 條有向邊，B → C 為負權" />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={t.caption} />
       <div className="flex flex-wrap gap-x-3.5 gap-y-1.5 border-b border-line px-3.5 py-2 text-[12px] text-ink-2">
-        <Legend cls="border-amber bg-amber-soft">中間點 k</Legend>
-        <Legend cls="border-accent bg-accent">正在更新的 i、j</Legend>
-        <span className="whitespace-nowrap"><i className={`mr-1.5 inline-block h-2.5 w-2.5 rounded-[3px] border align-[-1px] ${CELL.amber}`} />用到的兩格</span>
-        <span className="whitespace-nowrap"><i className={`mr-1.5 inline-block h-2.5 w-2.5 rounded-[3px] border align-[-1px] ${CELL.green}`} />這一輪更新過</span>
+        <Legend cls="border-amber bg-amber-soft">{t.legendK}</Legend>
+        <Legend cls="border-accent bg-accent">{t.legendCur}</Legend>
+        <span className="whitespace-nowrap"><i className={`mr-1.5 inline-block h-2.5 w-2.5 rounded-[3px] border align-[-1px] ${CELL.amber}`} />{t.legendUsed}</span>
+        <span className="whitespace-nowrap"><i className={`mr-1.5 inline-block h-2.5 w-2.5 rounded-[3px] border align-[-1px] ${CELL.green}`} />{t.legendChanged}</span>
       </div>
 
       <div className="grid grid-cols-1 @[640px]:grid-cols-[minmax(0,1fr)_260px]">
-        <svg viewBox="0 0 420 270" role="img" aria-label="Floyd-Warshall 示範圖" className="block h-auto w-full">
+        <svg viewBox="0 0 420 270" role="img" aria-label={t.graphLabel} className="block h-auto w-full">
           <defs>
             <marker id="fw-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--line-strong)" /></marker>
             <marker id="fw-arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)" /></marker>
@@ -117,9 +192,9 @@ export function FloydDemo() {
             const off = EDGES.some(([p, q]) => p === b && q === a) ? 5 : 0;
             const x1 = cx1 + nx * off, y1 = cy1 + ny * off, x2 = cx2 + nx * off, y2 = cy2 + ny * off;
             const ex = x2 - (dx / len) * 21, ey = y2 - (dy / len) * 21;
-            const [t, side] = LABEL_AT[`${a}${b}`] ?? [0.5, 1];
+            const [at, side] = LABEL_AT[`${a}${b}`] ?? [0.5, 1];
             const hot = onPath(a, b);
-            const mx = x1 + dx * t + nx * 12 * side, my = y1 + dy * t + ny * 12 * side;
+            const mx = x1 + dx * at + nx * 12 * side, my = y1 + dy * at + ny * 12 * side;
             return (
               <g key={`${a}${b}`}>
                 <line x1={x1} y1={y1} x2={ex} y2={ey} stroke={hot ? "var(--accent)" : "var(--line-strong)"} strokeWidth={hot ? 3 : 1.5} markerEnd={hot ? "url(#fw-arrow-accent)" : "url(#fw-arrow)"} />
@@ -140,7 +215,7 @@ export function FloydDemo() {
         </svg>
 
         <div className="border-t border-line p-4 @[640px]:border-t-0 @[640px]:border-l">
-          <div className="eyebrow mb-1.5">dist[i][j]{s.k !== null ? `（中間點可用到 ${NODES[s.k]}）` : ""}</div>
+          <div className="eyebrow mb-1.5">dist[i][j]{s.k !== null ? t.viaUpTo(NODES[s.k]) : ""}</div>
           <div className="grid grid-cols-5 gap-1 font-mono text-[12.5px] tabular-nums">
             <span className="text-center text-[10.5px] text-ink-3">i \ j</span>
             {NODES.map((nm) => <span key={`h${nm}`} className="text-center text-[11px] text-ink-3">{nm}</span>)}
@@ -154,7 +229,7 @@ export function FloydDemo() {
           </div>
           {s.path && (
             <div className="mt-3 text-[12.5px]">
-              <span className="eyebrow mr-2">路徑</span>
+              <span className="eyebrow mr-2">{t.pathLabel}</span>
               <span className="font-mono text-accent">{s.path.map((p) => NODES[p]).join(" → ")}</span>
             </div>
           )}

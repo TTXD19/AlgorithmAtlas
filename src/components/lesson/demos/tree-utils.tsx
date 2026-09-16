@@ -1,6 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useLocale, useT } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
+
+const LABEL = demoText(
+  { treeAria: "樹狀圖" },
+  { en: { treeAria: "Tree diagram" } },
+);
 
 /** 可序列化的二元樹節點（示範用） */
 export interface BNode {
@@ -52,7 +59,7 @@ export function cloneTree(n: BNode | null | undefined): BNode | null {
 /** 畫一棵二元樹。tone 決定每個節點的顏色，sub 是節點下方的小標籤。 */
 export function BinaryTreeSVG({
   root, width = 640, height, levelH = 56, r = 17,
-  tone = () => "none", sub, onPick, picked, empty = "空",
+  tone = () => "none", sub, onPick, picked, empty,
 }: {
   root: BNode | null | undefined;
   width?: number; height?: number; levelH?: number; r?: number;
@@ -62,10 +69,12 @@ export function BinaryTreeSVG({
   picked?: BNode | null;
   empty?: string;
 }) {
+  const label = LABEL[useLocale()];
+  const ui = useT();
   const placed = layoutBinary(root, width, levelH);
   const h = height ?? 26 + Math.max(treeHeight(root), 1) * levelH;
   return (
-    <svg viewBox={`0 0 ${width} ${h}`} className="block h-auto w-full" role="img" aria-label="樹狀圖">
+    <svg viewBox={`0 0 ${width} ${h}`} className="block h-auto w-full" role="img" aria-label={label.treeAria}>
       {placed.map((p, i) => p.parent && (
         <line key={`e${i}`} x1={p.parent.x} y1={p.parent.y} x2={p.x} y2={p.y} stroke="var(--line-strong)" strokeWidth="1.5" />
       ))}
@@ -80,7 +89,7 @@ export function BinaryTreeSVG({
           </g>
         );
       })}
-      {!root && <text x={width / 2} y={h / 2} textAnchor="middle" fontSize="12" fill="var(--ink-3)">{empty}</text>}
+      {!root && <text x={width / 2} y={h / 2} textAnchor="middle" fontSize="12" fill="var(--ink-3)">{empty ?? ui.demo.empty}</text>}
     </svg>
   );
 }
@@ -115,11 +124,12 @@ export function ForestSVG({
   tone?: (n: GNode, depth: number) => Tone;
   sub?: (n: GNode, depth: number) => ReactNode;
 }) {
+  const label = LABEL[useLocale()];
   const placed = layoutForest(roots, width, levelH);
   const maxDepth = placed.reduce((a, p) => Math.max(a, p.depth), 0);
   const h = height ?? 24 + (maxDepth + 1) * levelH;
   return (
-    <svg viewBox={`0 0 ${width} ${h}`} className="block h-auto w-full" role="img" aria-label="樹狀圖">
+    <svg viewBox={`0 0 ${width} ${h}`} className="block h-auto w-full" role="img" aria-label={label.treeAria}>
       {placed.map((p, i) => p.parent && (
         <line key={`e${i}`} x1={p.parent.x} y1={p.parent.y} x2={p.x} y2={p.y} stroke="var(--line-strong)" strokeWidth="1.5" />
       ))}

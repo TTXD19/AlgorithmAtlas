@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale, useT } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
 
 const VALS = [1, 2, 3, 4];
 const CODE = [
@@ -14,34 +16,64 @@ const CODE = [
   "    return prev",
 ];
 
+const TEXT = demoText(
+  {
+    init: "prev 指向 None，cur 指向 head。prev 是「已經反轉好的那段」的頭，一開始是空的。",
+    saveNext: (nxt: string) => `先把 cur 的下一個記在 nxt（${nxt}），等一下改掉 cur.next 之後才找得到路。`,
+    rewire: (prev: string, cur: number) => `把 cur.next 從指向後面改成指向 prev（${prev}）。節點 ${cur} 的箭頭轉向了。`,
+    movePrev: (v: number) => `prev 往前推到 cur。已反轉的那段現在是 ${v} 開頭。`,
+    moveCurEnd: "cur 往前推，變成 None，迴圈結束。",
+    moveCur: (v: number) => `cur 往前推到 nxt，也就是 ${v}。`,
+    ret: (v: number) => `回傳 prev，它就是新的 head（${v}）。每個節點只碰一次，O(n) 時間、O(1) 額外空間。`,
+    arrowNote: "箭頭是每個節點的 next：→ 指向右邊、← 指向左邊、∅ 指向 None。綠色代表箭頭已經轉向。",
+  },
+  {
+    en: {
+      init: "prev points at None and cur points at head. prev is the head of the part that has already been reversed, and it starts out empty.",
+      saveNext: (nxt: string) => `Save cur's next node in nxt (${nxt}) first: once cur.next is overwritten, there is no other way to reach it.`,
+      rewire: (prev: string, cur: number) => `Point cur.next at prev (${prev}) instead of at the node after it. The arrow on node ${cur} has flipped.`,
+      movePrev: (v: number) => `Move prev forward to cur. The reversed part now starts at ${v}.`,
+      moveCurEnd: "cur moves forward to None, so the loop ends.",
+      moveCur: (v: number) => `cur moves forward to nxt, which is ${v}.`,
+      ret: (v: number) => `Return prev — it is the new head (${v}). Every node is touched exactly once: O(n) time and O(1) extra space.`,
+      arrowNote: "Each arrow is that node's next pointer: → points right, ← points left, ∅ points at None. Green means the arrow has already been flipped.",
+    },
+  },
+);
+
+type T = (typeof TEXT)["zh-Hant"];
+
 /** next[i]：節點 i 的 next 指向哪個節點索引，null 表示指向 None */
 interface Step { desc: string; line: number; next: (number | null)[]; prev: number | null; cur: number | null; nxt: number | null; done?: boolean }
 
-function buildSteps(): Step[] {
+function buildSteps(t: T): Step[] {
   const n = VALS.length;
   const next: (number | null)[] = VALS.map((_, i) => (i + 1 < n ? i + 1 : null));
   const steps: Step[] = [];
   let prev: number | null = null, cur: number | null = 0, nxt: number | null = null;
   const snap = (desc: string, line: number, done = false) => steps.push({ desc, line, next: [...next], prev, cur, nxt, done });
-  snap("prev 指向 None，cur 指向 head。prev 是「已經反轉好的那段」的頭，一開始是空的。", 2);
+  snap(t.init, 2);
   while (cur !== null) {
     nxt = next[cur];
-    snap(`先把 cur 的下一個記在 nxt（${nxt === null ? "None" : VALS[nxt]}），等一下改掉 cur.next 之後才找得到路。`, 4);
+    snap(t.saveNext(nxt === null ? "None" : String(VALS[nxt])), 4);
     next[cur] = prev;
-    snap(`把 cur.next 從指向後面改成指向 prev（${prev === null ? "None" : VALS[prev]}）。節點 ${VALS[cur]} 的箭頭轉向了。`, 5);
+    snap(t.rewire(prev === null ? "None" : String(VALS[prev]), VALS[cur]), 5);
     prev = cur;
-    snap(`prev 往前推到 cur。已反轉的那段現在是 ${VALS[prev]} 開頭。`, 6);
+    snap(t.movePrev(VALS[prev]), 6);
     cur = nxt;
-    snap(cur === null ? "cur 往前推，變成 None，迴圈結束。" : `cur 往前推到 nxt，也就是 ${VALS[cur]}。`, 7);
+    snap(cur === null ? t.moveCurEnd : t.moveCur(VALS[cur]), 7);
   }
-  snap(`回傳 prev，它就是新的 head（${VALS[prev!]}）。每個節點只碰一次，O(n) 時間、O(1) 額外空間。`, 8, true);
+  snap(t.ret(VALS[prev!]), 8, true);
   return steps;
 }
 
 const BTN = "h-[30px] cursor-pointer whitespace-nowrap rounded-md border px-3 text-[13px] font-medium disabled:cursor-default disabled:opacity-45";
 
 export function ReverseListDemo() {
-  const steps = useMemo(() => buildSteps(), []);
+  const locale = useLocale();
+  const t = TEXT[locale];
+  const ui = useT();
+  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
   const [k, setK] = useState(0);
   const s = steps[k];
 
@@ -49,9 +81,9 @@ export function ReverseListDemo() {
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
       <div className="flex flex-wrap items-center gap-2.5 border-b border-line bg-surface-2 px-3.5 py-2.5 text-[13px] text-ink-2">
         <div className="flex gap-1.5">
-          <button type="button" className={`${BTN} border-line bg-surface hover:bg-surface-2`} onClick={() => setK((x) => Math.max(0, x - 1))} disabled={k === 0}>上一步</button>
-          <button type="button" className={`${BTN} border-accent bg-accent text-accent-ink hover:brightness-110`} onClick={() => setK((x) => Math.min(steps.length - 1, x + 1))} disabled={k === steps.length - 1}>下一步</button>
-          <button type="button" className={`${BTN} border-line bg-surface hover:bg-surface-2`} onClick={() => setK(0)}>重設</button>
+          <button type="button" className={`${BTN} border-line bg-surface hover:bg-surface-2`} onClick={() => setK((x) => Math.max(0, x - 1))} disabled={k === 0}>{ui.demo.prev}</button>
+          <button type="button" className={`${BTN} border-accent bg-accent text-accent-ink hover:brightness-110`} onClick={() => setK((x) => Math.min(steps.length - 1, x + 1))} disabled={k === steps.length - 1}>{ui.demo.next}</button>
+          <button type="button" className={`${BTN} border-line bg-surface hover:bg-surface-2`} onClick={() => setK(0)}>{ui.demo.reset}</button>
         </div>
         <span className="ml-auto font-mono text-[12px] text-ink-3">1 → 2 → 3 → 4</span>
       </div>
@@ -79,7 +111,7 @@ export function ReverseListDemo() {
             );
           })}
         </div>
-        <p className="mt-1 mb-0 text-[12px] text-ink-3">箭頭是每個節點的 next：→ 指向右邊、← 指向左邊、∅ 指向 None。綠色代表箭頭已經轉向。</p>
+        <p className="mt-1 mb-0 text-[12px] text-ink-3">{t.arrowNote}</p>
       </div>
 
       <pre className="m-0 overflow-x-auto border-t border-line bg-code-bg px-4 py-3 font-mono text-[13px] leading-[1.7] text-code-ink">
@@ -92,7 +124,7 @@ export function ReverseListDemo() {
       </pre>
 
       <div className="flex items-center gap-3 border-t border-line px-3.5 py-2.5 text-[13.5px]">
-        <span className="shrink-0 font-mono text-[12px] text-ink-3">步驟 {k}/{steps.length - 1}</span>
+        <span className="shrink-0 font-mono text-[12px] text-ink-3">{ui.demo.step} {k}/{steps.length - 1}</span>
         <span className="flex-1">{s.desc}</span>
       </div>
     </div>

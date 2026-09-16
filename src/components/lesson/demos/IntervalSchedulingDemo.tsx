@@ -1,33 +1,98 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
 import { StepHeader, StepFooter } from "./StepBar";
 
 /** 一間會議室、9 場申請。時間單位是半小時，0 代表 9:00。 */
 interface Mtg { id: string; name: string; s: number; e: number }
-const MTGS: Mtg[] = [
-  { id: "A", name: "站會", s: 0, e: 3 },
-  { id: "B", name: "面試", s: 1, e: 6 },
-  { id: "C", name: "設計評審", s: 2, e: 4 },
-  { id: "D", name: "需求討論", s: 4, e: 7 },
-  { id: "E", name: "午餐會", s: 6, e: 8 },
-  { id: "F", name: "客戶會議", s: 7, e: 11 },
-  { id: "G", name: "一對一", s: 8, e: 12 },
-  { id: "H", name: "回顧會", s: 10, e: 14 },
-  { id: "I", name: "週報", s: 13, e: 16 },
-];
 const T_MAX = 16;
 const clock = (u: number) => `${9 + Math.floor(u / 2)}:${u % 2 ? "30" : "00"}`;
 
+const TEXT = demoText(
+  {
+    standup: "站會",
+    interview: "面試",
+    designReview: "設計評審",
+    requirements: "需求討論",
+    lunch: "午餐會",
+    client: "客戶會議",
+    oneOnOne: "一對一",
+    retro: "回顧會",
+    weekly: "週報",
+    intro: "9 場會議申請同一間會議室，目標是排進最多場。先不要急著挑，關鍵在排序的依據。",
+    sorted: (order: string) => `按結束時間排序：${order}。結束得越早，留給後面的時間越多。這一步 O(n log n)，是整個演算法最貴的部分。`,
+    takeFirst: (id: string, name: string, from: string, end: string) =>
+      `${id}「${name}」${from} 開始，會議室還空著，排進去。結束時間更新為 ${end}。`,
+    take: (id: string, name: string, from: string, prev: string, end: string) =>
+      `${id}「${name}」${from} 開始，不早於目前的結束時間 ${prev}，排進去。結束時間更新為 ${end}。`,
+    skip: (id: string, name: string, from: string, free: string) =>
+      `${id}「${name}」${from} 開始，但會議室要到 ${free} 才空出來，衝突，跳過。`,
+    done: (count: number, list: string) =>
+      `掃完一輪。排進 ${count} 場：${list}。排序後只需要一個變數記住「目前最後結束時間」，每場會議看一次，O(n)。`,
+    sep: "、",
+    caption: "一間會議室 · 9 場申請 · 選最多場",
+    svgLabel: "會議時間軸",
+    scheduled: "已排",
+    skipped: (n: number) => ` · 跳過 ${n}`,
+    legend: "列的順序就是掃描順序；藍色排進、虛線衝突、黃線是目前最後結束時間",
+  },
+  {
+    en: {
+      standup: "Standup",
+      interview: "Interview",
+      designReview: "Design review",
+      requirements: "Requirements",
+      lunch: "Lunch meeting",
+      client: "Client meeting",
+      oneOnOne: "One-on-one",
+      retro: "Retrospective",
+      weekly: "Weekly report",
+      intro: "Nine meetings are competing for the same room, and the goal is to fit in as many as possible. Do not start picking yet — the whole trick is deciding what to sort by.",
+      sorted: (order: string) => `Sorted by finishing time: ${order}. The earlier a meeting ends, the more of the day it leaves for the ones after it. This step costs O(n log n) and is the most expensive part of the algorithm.`,
+      takeFirst: (id: string, name: string, from: string, end: string) =>
+        `${id} "${name}" starts at ${from} and the room is still free, so it goes in. The running end time becomes ${end}.`,
+      take: (id: string, name: string, from: string, prev: string, end: string) =>
+        `${id} "${name}" starts at ${from}, no earlier than the current end time of ${prev}, so it goes in. The running end time becomes ${end}.`,
+      skip: (id: string, name: string, from: string, free: string) =>
+        `${id} "${name}" starts at ${from}, but the room is busy until ${free}. That is a clash, so skip it.`,
+      done: (count: number, list: string) =>
+        `One sweep is all it takes. ${count} meetings fit: ${list}. After the sort, a single variable holding the latest end time is enough, and every meeting is looked at once — O(n).`,
+      sep: ", ",
+      caption: "One room · 9 requests · fit as many as possible",
+      svgLabel: "Meeting timeline",
+      scheduled: "Scheduled",
+      skipped: (n: number) => ` · skipped ${n}`,
+      legend: "Rows are in scan order; blue is scheduled, dashed is a clash, and the amber line marks the current end time.",
+    },
+  },
+);
+
+type Dict = (typeof TEXT)["zh-Hant"];
+
+const meetings = (t: Dict): Mtg[] => [
+  { id: "A", name: t.standup, s: 0, e: 3 },
+  { id: "B", name: t.interview, s: 1, e: 6 },
+  { id: "C", name: t.designReview, s: 2, e: 4 },
+  { id: "D", name: t.requirements, s: 4, e: 7 },
+  { id: "E", name: t.lunch, s: 6, e: 8 },
+  { id: "F", name: t.client, s: 7, e: 11 },
+  { id: "G", name: t.oneOnOne, s: 8, e: 12 },
+  { id: "H", name: t.retro, s: 10, e: 14 },
+  { id: "I", name: t.weekly, s: 13, e: 16 },
+];
+
 interface Step { desc: string; order: string[]; chosen: string[]; rejected: string[]; cur?: string; lastEnd: number; sorted: boolean }
 
-function buildSteps(): Step[] {
+function buildSteps(t: Dict): Step[] {
   const steps: Step[] = [];
-  const byId = MTGS.map((m) => m.id);
-  steps.push({ desc: "9 場會議申請同一間會議室，目標是排進最多場。先不要急著挑，關鍵在排序的依據。", order: byId, chosen: [], rejected: [], lastEnd: 0, sorted: false });
-  const sorted = [...MTGS].sort((a, b) => a.e - b.e);
+  const all = meetings(t);
+  const byId = all.map((m) => m.id);
+  steps.push({ desc: t.intro, order: byId, chosen: [], rejected: [], lastEnd: 0, sorted: false });
+  const sorted = [...all].sort((a, b) => a.e - b.e);
   const order = sorted.map((m) => m.id);
-  steps.push({ desc: `按結束時間排序：${order.join(" → ")}。結束得越早，留給後面的時間越多。這一步 O(n log n)，是整個演算法最貴的部分。`, order, chosen: [], rejected: [], lastEnd: 0, sorted: true });
+  steps.push({ desc: t.sorted(order.join(" → ")), order, chosen: [], rejected: [], lastEnd: 0, sorted: true });
   const chosen: string[] = [];
   const rejected: string[] = [];
   let lastEnd = 0;
@@ -36,30 +101,35 @@ function buildSteps(): Step[] {
       chosen.push(m.id);
       const prev = lastEnd;
       lastEnd = m.e;
-      steps.push({ desc: `${m.id}「${m.name}」${clock(m.s)} 開始，${prev === 0 && chosen.length === 1 ? "會議室還空著" : `不早於目前的結束時間 ${clock(prev)}`}，排進去。結束時間更新為 ${clock(m.e)}。`, order, chosen: [...chosen], rejected: [...rejected], cur: m.id, lastEnd, sorted: true });
+      const desc = prev === 0 && chosen.length === 1
+        ? t.takeFirst(m.id, m.name, clock(m.s), clock(m.e))
+        : t.take(m.id, m.name, clock(m.s), clock(prev), clock(m.e));
+      steps.push({ desc, order, chosen: [...chosen], rejected: [...rejected], cur: m.id, lastEnd, sorted: true });
     } else {
       rejected.push(m.id);
-      steps.push({ desc: `${m.id}「${m.name}」${clock(m.s)} 開始，但會議室要到 ${clock(lastEnd)} 才空出來，衝突，跳過。`, order, chosen: [...chosen], rejected: [...rejected], cur: m.id, lastEnd, sorted: true });
+      steps.push({ desc: t.skip(m.id, m.name, clock(m.s), clock(lastEnd)), order, chosen: [...chosen], rejected: [...rejected], cur: m.id, lastEnd, sorted: true });
     }
   }
-  steps.push({ desc: `掃完一輪。排進 ${chosen.length} 場：${chosen.join("、")}。排序後只需要一個變數記住「目前最後結束時間」，每場會議看一次，O(n)。`, order, chosen: [...chosen], rejected: [...rejected], lastEnd, sorted: true });
+  steps.push({ desc: t.done(chosen.length, chosen.join(t.sep)), order, chosen: [...chosen], rejected: [...rejected], lastEnd, sorted: true });
   return steps;
 }
 
 const W = 640, LEFT = 96, ROW = 22, TOP = 14;
 
 export function IntervalSchedulingDemo() {
-  const steps = useMemo(() => buildSteps(), []);
+  const t = TEXT[useLocale()];
+  const steps = useMemo(() => buildSteps(t), [t]);
+  const all = useMemo(() => meetings(t), [t]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const x = (t: number) => LEFT + (t / T_MAX) * (W - LEFT - 14);
-  const rows = s.order.map((id) => MTGS.find((m) => m.id === id)!);
+  const rows = s.order.map((id) => all.find((m) => m.id === id)!);
   const H = TOP + rows.length * ROW + 24;
 
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.sorted ? "sort by end → scan" : "input"}</span>} right="一間會議室 · 9 場申請 · 選最多場" />
-      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="會議時間軸">
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.sorted ? "sort by end → scan" : "input"}</span>} right={t.caption} />
+      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label={t.svgLabel}>
         {Array.from({ length: T_MAX / 2 + 1 }, (_, i) => i * 2).map((t) => (
           <g key={t}>
             <line x1={x(t)} y1={TOP} x2={x(t)} y2={TOP + rows.length * ROW} stroke="var(--line)" strokeWidth="1" strokeDasharray="2 3" />
@@ -94,11 +164,11 @@ export function IntervalSchedulingDemo() {
       </svg>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-line px-3.5 py-2.5 text-[12.5px] text-ink-2">
         <span className="font-mono">
-          已排 <span className="font-semibold text-accent">{s.chosen.length}</span>
-          <span className="text-ink-3"> · 跳過 {s.rejected.length}</span>
+          {t.scheduled} <span className="font-semibold text-accent">{s.chosen.length}</span>
+          <span className="text-ink-3">{t.skipped(s.rejected.length)}</span>
         </span>
         <span className="font-mono text-ink-3">last_end = {s.lastEnd > 0 ? clock(s.lastEnd) : "—"}</span>
-        <span className="text-[12px] text-ink-3">列的順序就是掃描順序；藍色排進、虛線衝突、黃線是目前最後結束時間</span>
+        <span className="text-[12px] text-ink-3">{t.legend}</span>
       </div>
       <StepFooter k={k} total={steps.length}>{s.desc}</StepFooter>
     </div>

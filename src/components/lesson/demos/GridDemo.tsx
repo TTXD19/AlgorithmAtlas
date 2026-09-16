@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { StepHeader, StepFooter, BTN } from "./StepBar";
+import { useLocale, useT } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
 
 /** 5×6 的地圖：1 是陸地、0 是水 */
 const GRID = [
@@ -12,8 +14,89 @@ const GRID = [
   [1, 0, 0, 0, 0, 1],
 ];
 const R = GRID.length, C = GRID[0].length;
-const DIRS: [number, number, string][] = [[-1, 0, "上"], [1, 0, "下"], [0, -1, "左"], [0, 1, "右"]];
 const key = (r: number, c: number) => `${r},${c}`;
+
+const TEXT = demoText(
+  {
+    sep: "、",
+    queue: "佇列",
+    stack: "堆疊",
+    dirUp: "上",
+    dirDown: "下",
+    dirLeft: "左",
+    dirRight: "右",
+    intro: "把每一格當成節點，上下左右相鄰的陸地之間有邊。從 (0, 0) 開始逐格掃描，找還沒拜訪過的陸地。",
+    seed: (r: number, c: number, count: number, name: string) =>
+      `掃描到 (${r}, ${c}) 是還沒拜訪的陸地：這是第 ${count} 座島的起點。標記它並放入${name}，接著把整座島走完。`,
+    takeFront: (r: number, c: number) => `取出佇列前端 (${r}, ${c})`,
+    popTop: (r: number, c: number) => `彈出堆疊頂端 (${r}, ${c})`,
+    expand: (take: string, list: string, n: number, name: string) =>
+      `${take}，看四個方向：${list} 是未拜訪的陸地，標記後放入${name}。`,
+    dead: (take: string) => `${take}，四個方向都是水、邊界或已拜訪，這格處理完畢。`,
+    cleared: (name: string, count: number) => `${name}清空，第 ${count} 座島填色完成。回到掃描，繼續找下一塊未拜訪的陸地。`,
+    finish: (count: number, name: string) => `掃描結束，共 ${count} 座島。每格最多進出${name}一次，時間 O(mn)。`,
+    modeBfs: "BFS（佇列）",
+    modeDfs: "DFS（堆疊）",
+    gridNote: (r: number, c: number) => `${r}×${c} 網格 · 四方向`,
+    legendWater: "水",
+    legendUnseen: "未發現的陸地",
+    legendInQueue: "在佇列中",
+    legendInStack: "在堆疊中",
+    legendCur: "處理中",
+    legendDone: "已完成（數字是島編號）",
+    legendNeighbour: "可走的鄰居",
+    queueTitle: "佇列（前 → 後）",
+    stackTitle: "堆疊（底 → 頂）",
+    probeTitle: "目前格子的四方向",
+    noCur: "沒有正在處理的格子",
+    islandCount: "島嶼數",
+  },
+  {
+    en: {
+      sep: ", ",
+      queue: "queue",
+      stack: "stack",
+      dirUp: "up",
+      dirDown: "down",
+      dirLeft: "left",
+      dirRight: "right",
+      intro: "Treat every cell as a node, with an edge between any two land cells that touch vertically or horizontally. Scan cell by cell from (0, 0), looking for land that has not been visited yet.",
+      seed: (r: number, c: number, count: number, name: string) =>
+        `The scan reaches (${r}, ${c}), an unvisited land cell, and that makes it the seed of island ${count}. Mark it, put it on the ${name}, and then walk the island to its edges.`,
+      takeFront: (r: number, c: number) => `Take (${r}, ${c}) from the front of the queue`,
+      popTop: (r: number, c: number) => `Pop (${r}, ${c}) off the top of the stack`,
+      expand: (take: string, list: string, n: number, name: string) =>
+        `${take} and look in all four directions. ${list} ${n === 1 ? "is" : "are"} unvisited land, so mark ${n === 1 ? "it" : "them"} and add ${n === 1 ? "it" : "them"} to the ${name}.`,
+      dead: (take: string) => `${take}. All four directions are water, off the edge, or already visited, so this cell is finished.`,
+      cleared: (name: string, count: number) => `The ${name} is empty, so island ${count} is completely filled in. Back to the scan, to look for the next patch of unvisited land.`,
+      finish: (count: number, name: string) => `The scan is over, with ${count} islands in total. Each cell enters and leaves the ${name} at most once, so the time is O(mn).`,
+      modeBfs: "BFS (queue)",
+      modeDfs: "DFS (stack)",
+      gridNote: (r: number, c: number) => `${r}×${c} grid, four directions`,
+      legendWater: "Water",
+      legendUnseen: "Undiscovered land",
+      legendInQueue: "In the queue",
+      legendInStack: "In the stack",
+      legendCur: "Being processed",
+      legendDone: "Finished (the number is the island's id)",
+      legendNeighbour: "A neighbour worth moving to",
+      queueTitle: "Queue (front → back)",
+      stackTitle: "Stack (bottom → top)",
+      probeTitle: "The current cell's four directions",
+      noCur: "No cell is being processed",
+      islandCount: "Islands",
+    },
+  },
+);
+
+type T = (typeof TEXT)["zh-Hant"];
+
+const DIRS: [number, number, (t: T) => string][] = [
+  [-1, 0, (t) => t.dirUp],
+  [1, 0, (t) => t.dirDown],
+  [0, -1, (t) => t.dirLeft],
+  [0, 1, (t) => t.dirRight],
+];
 
 type Mode = "bfs" | "dfs";
 interface Step {
@@ -29,7 +112,7 @@ interface Step {
   scan: string | null;
 }
 
-function buildSteps(mode: Mode): Step[] {
+function buildSteps(t: T, mode: Mode): Step[] {
   const steps: Step[] = [];
   const island = GRID.map((row) => row.map(() => 0));
   const seen = new Set<string>();
@@ -37,16 +120,16 @@ function buildSteps(mode: Mode): Step[] {
   let count = 0;
   const snap = (desc: string, cur: string | null = null, probe: Step["probe"] = [], scan: string | null = null) =>
     steps.push({ desc, island: island.map((r) => [...r]), active: [...active], cur, probe, count, scan });
-  const name = mode === "bfs" ? "佇列" : "堆疊";
+  const name = mode === "bfs" ? t.queue : t.stack;
 
-  snap(`把每一格當成節點，上下左右相鄰的陸地之間有邊。從 (0, 0) 開始逐格掃描，找還沒拜訪過的陸地。`);
+  snap(t.intro);
   for (let r = 0; r < R; r++) {
     for (let c = 0; c < C; c++) {
       if (GRID[r][c] === 0 || seen.has(key(r, c))) continue;
       count++;
       seen.add(key(r, c));
       active.push(key(r, c));
-      snap(`掃描到 (${r}, ${c}) 是還沒拜訪的陸地：這是第 ${count} 座島的起點。標記它並放入${name}，接著把整座島走完。`, null, [], key(r, c));
+      snap(t.seed(r, c, count, name), null, [], key(r, c));
       while (active.length) {
         const k = mode === "bfs" ? active.shift()! : active.pop()!;
         const [cr, cc] = k.split(",").map(Number);
@@ -58,26 +141,27 @@ function buildSteps(mode: Mode): Step[] {
           const nk = key(nr, nc);
           const ok = GRID[nr][nc] === 1 && !seen.has(nk);
           probe.push({ k: nk, ok });
-          if (ok) { seen.add(nk); active.push(nk); pushed.push(`${d} (${nr}, ${nc})`); }
+          if (ok) { seen.add(nk); active.push(nk); pushed.push(`${d(t)} (${nr}, ${nc})`); }
         }
         island[cr][cc] = count;
+        const take = mode === "bfs" ? t.takeFront(cr, cc) : t.popTop(cr, cc);
         snap(
-          pushed.length
-            ? `${mode === "bfs" ? "取出佇列前端" : "彈出堆疊頂端"} (${cr}, ${cc})，看四個方向：${pushed.join("、")} 是未拜訪的陸地，標記後放入${name}。`
-            : `${mode === "bfs" ? "取出佇列前端" : "彈出堆疊頂端"} (${cr}, ${cc})，四個方向都是水、邊界或已拜訪，這格處理完畢。`,
+          pushed.length ? t.expand(take, pushed.join(t.sep), pushed.length, name) : t.dead(take),
           k, probe,
         );
       }
-      snap(`${name}清空，第 ${count} 座島填色完成。回到掃描，繼續找下一塊未拜訪的陸地。`);
+      snap(t.cleared(name, count));
     }
   }
-  snap(`掃描結束，共 ${count} 座島。每格最多進出${name}一次，時間 O(mn)。`);
+  snap(t.finish(count, name));
   return steps;
 }
 
 export function GridDemo() {
-  const bfs = useMemo(() => buildSteps("bfs"), []);
-  const dfs = useMemo(() => buildSteps("dfs"), []);
+  const t = TEXT[useLocale()];
+  const ui = useT();
+  const bfs = useMemo(() => buildSteps(t, "bfs"), [t]);
+  const dfs = useMemo(() => buildSteps(t, "dfs"), [t]);
   const [mode, setMode] = useState<Mode>("bfs");
   const [k, setK] = useState(0);
   const steps = mode === "bfs" ? bfs : dfs;
@@ -94,12 +178,12 @@ export function GridDemo() {
           <div className="flex gap-1">
             {(["bfs", "dfs"] as Mode[]).map((m) => (
               <button key={m} type="button" className={`${BTN} ${mode === m ? "border-accent bg-accent-soft text-accent" : "border-line bg-surface hover:bg-surface-2"}`} onClick={() => switchMode(m)}>
-                {m === "bfs" ? "BFS（佇列）" : "DFS（堆疊）"}
+                {m === "bfs" ? t.modeBfs : t.modeDfs}
               </button>
             ))}
           </div>
         }
-        right={`${R}×${C} 網格 · 四方向`}
+        right={t.gridNote(R, C)}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-[auto_minmax(0,1fr)]">
@@ -127,42 +211,42 @@ export function GridDemo() {
             )}
           </div>
           <div className="mt-2.5 flex flex-wrap gap-x-3.5 gap-y-1 text-[12px] text-ink-2">
-            <Legend cls="border-line bg-surface-2">水</Legend>
-            <Legend cls="border-line-strong bg-surface">未發現的陸地</Legend>
-            <Legend cls="border-amber bg-amber-soft">{mode === "bfs" ? "在佇列中" : "在堆疊中"}</Legend>
-            <Legend cls="border-accent bg-accent">處理中</Legend>
-            <Legend cls="border-ink bg-ink">已完成（數字是島編號）</Legend>
-            <Legend cls="border-green bg-surface ring-2 ring-green">可走的鄰居</Legend>
+            <Legend cls="border-line bg-surface-2">{t.legendWater}</Legend>
+            <Legend cls="border-line-strong bg-surface">{t.legendUnseen}</Legend>
+            <Legend cls="border-amber bg-amber-soft">{mode === "bfs" ? t.legendInQueue : t.legendInStack}</Legend>
+            <Legend cls="border-accent bg-accent">{t.legendCur}</Legend>
+            <Legend cls="border-ink bg-ink">{t.legendDone}</Legend>
+            <Legend cls="border-green bg-surface ring-2 ring-green">{t.legendNeighbour}</Legend>
           </div>
         </div>
 
         <div className="flex flex-col gap-3.5 border-t border-line p-4 text-[13px] md:border-t-0 md:border-l">
           <div>
-            <div className="eyebrow mb-1.5">{mode === "bfs" ? "佇列（前 → 後）" : "堆疊（底 → 頂）"}</div>
+            <div className="eyebrow mb-1.5">{mode === "bfs" ? t.queueTitle : t.stackTitle}</div>
             <div className="flex min-h-[30px] flex-wrap gap-1.5">
               {s.active.length ? (
                 s.active.map((kk) => (
                   <span key={kk} className="grid h-7 place-items-center rounded-md border border-amber bg-amber-soft px-1.5 font-mono text-[12px] text-amber">({kk})</span>
                 ))
               ) : (
-                <span className="rounded-md border border-dashed border-line-strong px-2 text-[12px] leading-7 text-ink-3">空</span>
+                <span className="rounded-md border border-dashed border-line-strong px-2 text-[12px] leading-7 text-ink-3">{ui.demo.empty}</span>
               )}
             </div>
           </div>
           <div>
-            <div className="eyebrow mb-1.5">目前格子的四方向</div>
+            <div className="eyebrow mb-1.5">{t.probeTitle}</div>
             <div className="flex min-h-[30px] flex-wrap gap-1.5">
               {s.probe.length ? (
                 s.probe.map((p) => (
                   <span key={p.k} className={`grid h-7 place-items-center rounded-md border px-1.5 font-mono text-[12px] ${p.ok ? "border-green bg-green-soft text-green" : "border-line bg-surface-2 text-ink-3 line-through"}`}>({p.k})</span>
                 ))
               ) : (
-                <span className="text-[12px] text-ink-3">{s.cur ? "" : "沒有正在處理的格子"}</span>
+                <span className="text-[12px] text-ink-3">{s.cur ? "" : t.noCur}</span>
               )}
             </div>
           </div>
           <div>
-            <div className="eyebrow mb-1.5">島嶼數</div>
+            <div className="eyebrow mb-1.5">{t.islandCount}</div>
             <div className="font-display text-[24px] tabular-nums text-ink">{s.count}</div>
           </div>
         </div>

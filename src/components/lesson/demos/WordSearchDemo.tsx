@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { StepHeader, StepFooter, Cells, CELL } from "./StepBar";
+import { useLocale, useT } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
 
 const GRID = [
   ["A", "B", "C", "E"],
@@ -10,12 +12,78 @@ const GRID = [
 ];
 const WORD = "SEE";
 const ROWS = GRID.length, COLS = GRID[0].length;
-const DIRS: [number, number, string][] = [[-1, 0, "上"], [0, 1, "右"], [1, 0, "下"], [0, -1, "左"]];
+type DirName = "up" | "right" | "down" | "left";
+const DIRS: [number, number, DirName][] = [[-1, 0, "up"], [0, 1, "right"], [1, 0, "down"], [0, -1, "left"]];
+
+const TEXT = demoText(
+  {
+    up: "上",
+    right: "右",
+    down: "下",
+    left: "左",
+    dirOp: (dir: string) => `往${dir}`,
+    opStart: "開始",
+    opEnd: "結束",
+    intro: `在 ${ROWS}×${COLS} 網格裡找「${WORD}」。每個格子都可能是起點，從起點開始往四個方向 DFS，走過的格子標記起來，不能重複用。`,
+    found: (r: number, c: number, ch: string, path: string) =>
+      `(${r}, ${c}) 是「${ch}」，對上最後一個字母。路徑 ${path} 拼出「${WORD}」，回傳 true。`,
+    foundOp: `找到「${WORD}」`,
+    mark: (r: number, c: number, ch: string, i: number, next: string) =>
+      `(${r}, ${c}) 是「${ch}」，對上 word[${i}]。標記為已走過，接著往四個方向找 word[${i + 1}] = 「${next}」。`,
+    markOp: (r: number, c: number) => `標記 (${r}, ${c})`,
+    visitedProbe: (dir: string, r: number, c: number) => `往${dir} (${r}, ${c})：已經在路徑上，不能再用，跳過。`,
+    miss: (dir: string, r: number, c: number, ch: string, want: string) =>
+      `往${dir} (${r}, ${c}) 是「${ch}」，不是「${want}」，這個方向不通。`,
+    unmark: (r: number, c: number) => `(${r}, ${c}) 四個方向都走不通。回復標記：把它設回未走過，這樣別條路徑之後還能經過它。`,
+    unmarkOp: (r: number, c: number) => `回復 (${r}, ${c})`,
+    skipScan: (list: string, first: string) => `起點掃描：${list} 的字母都不是「${first}」，直接跳過。`,
+    skipOp: "掃描起點",
+    listSep: "、",
+    finished: "每個起點往 4 個方向、深度 L，上界 O(m·n·4ᴸ)（不回頭的話是 3ᴸ）。回復標記是關鍵：沒有它，第一次失敗的格子會永遠被鎖住。",
+    headerRight: `找「${WORD}」 · 方向順序：上、右、下、左`,
+    wordLabel: (i: number) => `word（i = ${i}）`,
+    pathTitle: "目前路徑",
+    legend: "實色框是路徑上已標記的格子（角落數字是第幾步），黃色是正在探的鄰格，虛線框是剛回復標記的格子。",
+  },
+  {
+    en: {
+      up: "up",
+      right: "right",
+      down: "down",
+      left: "left",
+      dirOp: (dir: string) => `Go ${dir}`,
+      opStart: "Start",
+      opEnd: "Done",
+      intro: `Find "${WORD}" in a ${ROWS}×${COLS} grid. Every cell is a possible starting point; from a start, a DFS explores all four directions, marking each cell it walks through so that the same cell is never reused.`,
+      found: (r: number, c: number, ch: string, path: string) =>
+        `(${r}, ${c}) holds "${ch}", which matches the last letter. The path ${path} spells "${WORD}", so return true.`,
+      foundOp: `Found "${WORD}"`,
+      mark: (r: number, c: number, ch: string, i: number, next: string) =>
+        `(${r}, ${c}) holds "${ch}", which matches word[${i}]. Mark it as visited, then look in all four directions for word[${i + 1}] = "${next}".`,
+      markOp: (r: number, c: number) => `Mark (${r}, ${c})`,
+      visitedProbe: (dir: string, r: number, c: number) => `Going ${dir} to (${r}, ${c}): it is already on the path, so it cannot be reused — skip it.`,
+      miss: (dir: string, r: number, c: number, ch: string, want: string) =>
+        `Going ${dir} to (${r}, ${c}): it holds "${ch}", not "${want}", so this direction is a dead end.`,
+      unmark: (r: number, c: number) => `All four directions out of (${r}, ${c}) are dead ends. Undo the mark — set it back to unvisited — so that another path can still pass through it later.`,
+      unmarkOp: (r: number, c: number) => `Undo (${r}, ${c})`,
+      skipScan: (list: string, first: string) => `Scanning for starting points: none of the letters at ${list} is "${first}", so skip them.`,
+      skipOp: "Scan for starts",
+      listSep: ", ",
+      finished: "Each start branches four ways to depth L, giving an upper bound of O(m·n·4ᴸ), or 3ᴸ if you never step straight back. Undoing the mark is what makes this work: without it, a cell that failed once would stay locked out forever.",
+      headerRight: `Find "${WORD}" · direction order: up, right, down, left`,
+      wordLabel: (i: number) => `word (i = ${i})`,
+      pathTitle: "Current path",
+      legend: "A solid cell is a marked cell on the path (the small number is its position in the path), amber is the neighbour being probed, and a dashed border marks the cell whose mark was just undone.",
+    },
+  },
+);
+
+type T = (typeof TEXT)["zh-Hant"];
 
 type Pos = [number, number];
 interface Step { desc: string; op: string; path: Pos[]; i: number; probe?: Pos; kind: "mark" | "miss" | "visited" | "unmark" | "found" | "skip" | "none"; skipped: Pos[] }
 
-function buildSteps(): Step[] {
+function buildSteps(t: T): Step[] {
   const steps: Step[] = [];
   const path: Pos[] = [];
   const skipped: Pos[] = [];
@@ -23,31 +91,32 @@ function buildSteps(): Step[] {
     steps.push({ desc, op, path: path.map((p) => [...p] as Pos), i, probe, kind, skipped: skipped.map((p) => [...p] as Pos) });
   const visited = GRID.map((row) => row.map(() => false));
 
-  snap(`在 ${ROWS}×${COLS} 網格裡找「${WORD}」。每個格子都可能是起點，從起點開始往四個方向 DFS，走過的格子標記起來，不能重複用。`, "開始", 0, "none");
+  snap(t.intro, t.opStart, 0, "none");
   const dfs = (r: number, c: number, i: number): boolean => {
     visited[r][c] = true;
     path.push([r, c]);
     if (i === WORD.length - 1) {
-      snap(`(${r}, ${c}) 是「${GRID[r][c]}」，對上最後一個字母。路徑 ${path.map(([a, b]) => `(${a},${b})`).join("→")} 拼出「${WORD}」，回傳 true。`, `找到「${WORD}」`, i, "found");
+      snap(t.found(r, c, GRID[r][c], path.map(([a, b]) => `(${a},${b})`).join("→")), t.foundOp, i, "found");
       return true;
     }
-    snap(`(${r}, ${c}) 是「${GRID[r][c]}」，對上 word[${i}]。標記為已走過，接著往四個方向找 word[${i + 1}] = 「${WORD[i + 1]}」。`, `標記 (${r}, ${c})`, i, "mark");
+    snap(t.mark(r, c, GRID[r][c], i, WORD[i + 1]), t.markOp(r, c), i, "mark");
     for (const [dr, dc, name] of DIRS) {
       const nr = r + dr, nc = c + dc;
       if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+      const dir = t[name];
       if (visited[nr][nc]) {
-        snap(`往${name} (${nr}, ${nc})：已經在路徑上，不能再用，跳過。`, `往${name}`, i + 1, "visited", [nr, nc]);
+        snap(t.visitedProbe(dir, nr, nc), t.dirOp(dir), i + 1, "visited", [nr, nc]);
         continue;
       }
       if (GRID[nr][nc] !== WORD[i + 1]) {
-        snap(`往${name} (${nr}, ${nc}) 是「${GRID[nr][nc]}」，不是「${WORD[i + 1]}」，這個方向不通。`, `往${name}`, i + 1, "miss", [nr, nc]);
+        snap(t.miss(dir, nr, nc, GRID[nr][nc], WORD[i + 1]), t.dirOp(dir), i + 1, "miss", [nr, nc]);
         continue;
       }
       if (dfs(nr, nc, i + 1)) return true;
     }
     visited[r][c] = false;
     path.pop();
-    snap(`(${r}, ${c}) 四個方向都走不通。回復標記：把它設回未走過，這樣別條路徑之後還能經過它。`, `回復 (${r}, ${c})`, i, "unmark", [r, c]);
+    snap(t.unmark(r, c), t.unmarkOp(r, c), i, "unmark", [r, c]);
     return false;
   };
 
@@ -55,7 +124,7 @@ function buildSteps(): Step[] {
   const flush = () => {
     if (!pending.length) return;
     skipped.push(...pending);
-    snap(`起點掃描：${pending.map(([a, b]) => `(${a},${b})`).join("、")} 的字母都不是「${WORD[0]}」，直接跳過。`, "掃描起點", 0, "skip");
+    snap(t.skipScan(pending.map(([a, b]) => `(${a},${b})`).join(t.listSep), WORD[0]), t.skipOp, 0, "skip");
     pending = [];
   };
   let done = false;
@@ -66,12 +135,15 @@ function buildSteps(): Step[] {
       if (dfs(r, c, 0)) done = true;
     }
   }
-  snap(`每個起點往 4 個方向、深度 L，上界 O(m·n·4ᴸ)（不回頭的話是 3ᴸ）。回復標記是關鍵：沒有它，第一次失敗的格子會永遠被鎖住。`, "結束", WORD.length - 1, "none");
+  snap(t.finished, t.opEnd, WORD.length - 1, "none");
   return steps;
 }
 
 export function WordSearchDemo() {
-  const steps = useMemo(() => buildSteps(), []);
+  const locale = useLocale();
+  const t = TEXT[locale];
+  const ui = useT();
+  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const onPath = (r: number, c: number) => s.path.findIndex(([a, b]) => a === r && b === c);
@@ -79,7 +151,7 @@ export function WordSearchDemo() {
 
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`找「${WORD}」 · 方向順序：上、右、下、左`} />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={t.headerRight} />
       <div className="grid grid-cols-1 gap-4 p-3.5 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
         <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${COLS}, 44px)` }}>
           {GRID.map((row, r) =>
@@ -101,11 +173,11 @@ export function WordSearchDemo() {
           )}
         </div>
         <div className="text-[13px] text-ink-2">
-          <div className="eyebrow mb-1.5">word（i = {s.i}）</div>
+          <div className="eyebrow mb-1.5">{t.wordLabel(s.i)}</div>
           <Cells items={WORD.split("")} tone={(i) => (i === s.i ? (s.kind === "found" ? CELL.green : CELL.accent) : i < s.i ? CELL.dim : "")} />
-          <div className="eyebrow mt-3 mb-1.5">目前路徑</div>
-          <div className="font-mono text-[12.5px]">{s.path.length ? s.path.map(([a, b]) => `(${a},${b})`).join(" → ") : <span className="text-ink-3">空</span>}</div>
-          <p className="mt-3 mb-0 text-[12.5px] text-ink-3">實色框是路徑上已標記的格子（角落數字是第幾步），黃色是正在探的鄰格，虛線框是剛回復標記的格子。</p>
+          <div className="eyebrow mt-3 mb-1.5">{t.pathTitle}</div>
+          <div className="font-mono text-[12.5px]">{s.path.length ? s.path.map(([a, b]) => `(${a},${b})`).join(" → ") : <span className="text-ink-3">{ui.demo.empty}</span>}</div>
+          <p className="mt-3 mb-0 text-[12.5px] text-ink-3">{t.legend}</p>
         </div>
       </div>
       <StepFooter k={k} total={steps.length}>{s.desc}</StepFooter>

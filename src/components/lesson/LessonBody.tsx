@@ -22,29 +22,29 @@ export function LessonBody({
 }) {
   return (
     <>
-      <Section id="why" locale={locale}>
+      <Section id="why">
         <Applications items={text.applications} cue={text.cue} locale={locale} />
       </Section>
 
-      <Section id="concept" locale={locale}>
+      <Section id="concept">
         <Concept />
       </Section>
 
-      <Section id="steps" locale={locale}>
+      <Section id="steps">
         <Steps items={text.steps.map(inline)} />
       </Section>
 
-      <Section id="demo" locale={locale}>
+      <Section id="demo">
         <p>{inline(text.demoNote)}</p>
         {skeleton.demo}
       </Section>
 
-      <Section id="code" locale={locale}>
+      <Section id="code">
         <p>{inline(text.codeNote)}</p>
         <CodeTabs samples={skeleton.code} />
       </Section>
 
-      <Section id="problems" locale={locale}>
+      <Section id="problems">
         {text.problemsNote && <p>{inline(text.problemsNote)}</p>}
         <Problems items={skeleton.problems} />
       </Section>

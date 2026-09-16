@@ -1,8 +1,49 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
 import { BinaryTreeSVG, treeHeight, type BNode } from "./tree-utils";
 import { Cells, CELL } from "./StepBar";
+
+const TEXT = demoText(
+  {
+    hint: "點任何一個節點",
+    caption: "完全二元樹 · 7 個節點",
+    nodeTitle: (v: number | string) => `節點 ${v}`,
+    depth: "深度",
+    height: "高度",
+    subtreeSize: "子樹大小",
+    kind: "類型",
+    root: "根",
+    leaf: "葉",
+    internal: "內部節點",
+    arrayIndex: (i: number) => `陣列索引 ${i}`,
+    parent: "父",
+    children: "子",
+    arrayTitle: "同一棵樹的陣列表示（層序）",
+    legend: "藍色是選中的節點、黃色是它的父、綠色是它的子。完全二元樹才能這樣不留空洞地存。",
+  },
+  {
+    en: {
+      hint: "Click any node",
+      caption: "Complete binary tree · 7 nodes",
+      nodeTitle: (v: number | string) => `Node ${v}`,
+      depth: "Depth",
+      height: "Height",
+      subtreeSize: "Subtree size",
+      kind: "Kind",
+      root: "root",
+      leaf: "leaf",
+      internal: "internal node",
+      arrayIndex: (i: number) => `Array index ${i}`,
+      parent: "Parent",
+      children: "Children",
+      arrayTitle: "The same tree stored as an array (level order)",
+      legend: "Blue is the selected node, amber is its parent, green are its children. Only a complete tree packs into an array like this with no gaps.",
+    },
+  },
+);
 
 /** 完全二元樹：層序 1..7，剛好對應陣列索引 0..6 */
 const TREE: BNode = {
@@ -25,6 +66,7 @@ function info(root: BNode, target: BNode) {
 }
 
 export function TreeBasicsDemo() {
+  const t = TEXT[useLocale()];
   const [picked, setPicked] = useState<BNode>(TREE.l!);
   const i = info(TREE, picked);
   const idx = ORDER.indexOf(picked.v as number);
@@ -34,8 +76,8 @@ export function TreeBasicsDemo() {
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
       <div className="flex flex-wrap items-center gap-2.5 border-b border-line bg-surface-2 px-3.5 py-2.5 text-[13px] text-ink-2">
-        點任何一個節點
-        <span className="ml-auto text-[12px] text-ink-3">完全二元樹 · 7 個節點</span>
+        {t.hint}
+        <span className="ml-auto text-[12px] text-ink-3">{t.caption}</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_220px]">
         <BinaryTreeSVG
@@ -47,27 +89,27 @@ export function TreeBasicsDemo() {
         />
         <div className="flex flex-col gap-3 border-t border-line p-4 text-[13px] md:border-t-0 md:border-l">
           <div>
-            <div className="eyebrow mb-1">節點 {picked.v}</div>
+            <div className="eyebrow mb-1">{t.nodeTitle(picked.v)}</div>
             <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 font-mono text-[12.5px] tabular-nums">
-              <dt className="text-ink-3">深度</dt><dd>{i.depth}</dd>
-              <dt className="text-ink-3">高度</dt><dd>{i.height}</dd>
-              <dt className="text-ink-3">子樹大小</dt><dd>{i.size}</dd>
-              <dt className="text-ink-3">類型</dt><dd className="font-sans">{i.depth === 0 ? "根" : i.leaf ? "葉" : "內部節點"}</dd>
+              <dt className="text-ink-3">{t.depth}</dt><dd>{i.depth}</dd>
+              <dt className="text-ink-3">{t.height}</dt><dd>{i.height}</dd>
+              <dt className="text-ink-3">{t.subtreeSize}</dt><dd>{i.size}</dd>
+              <dt className="text-ink-3">{t.kind}</dt><dd className="font-sans">{i.depth === 0 ? t.root : i.leaf ? t.leaf : t.internal}</dd>
             </dl>
           </div>
           <div>
-            <div className="eyebrow mb-1">陣列索引 {idx}</div>
+            <div className="eyebrow mb-1">{t.arrayIndex(idx)}</div>
             <div className="font-mono text-[12.5px] text-ink-2">
-              父 {parent >= 0 ? `(${idx}−1)/2 = ${parent}` : "—"}<br />
-              子 {kids.length ? `2·${idx}+1, 2·${idx}+2 = ${kids.join(", ")}` : "—"}
+              {t.parent} {parent >= 0 ? `(${idx}−1)/2 = ${parent}` : "—"}<br />
+              {t.children} {kids.length ? `2·${idx}+1, 2·${idx}+2 = ${kids.join(", ")}` : "—"}
             </div>
           </div>
         </div>
       </div>
       <div className="border-t border-line px-3.5 py-3">
-        <div className="eyebrow mb-1.5">同一棵樹的陣列表示（層序）</div>
+        <div className="eyebrow mb-1.5">{t.arrayTitle}</div>
         <Cells items={ORDER} tone={(k) => (k === idx ? CELL.accent : k === parent ? CELL.amber : kids.includes(k) ? CELL.green : "")} />
-        <div className="mt-1.5 text-[12px] text-ink-3">藍色是選中的節點、黃色是它的父、綠色是它的子。完全二元樹才能這樣不留空洞地存。</div>
+        <div className="mt-1.5 text-[12px] text-ink-3">{t.legend}</div>
       </div>
     </div>
   );

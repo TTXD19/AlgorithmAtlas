@@ -1,6 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "../../LocaleProvider";
+import { demoText } from "@/lib/demo-i18n";
+
+const TEXT = demoText(
+  {
+    title: "操作次數隨 n 的成長",
+    chartLabel: "六種複雜度在 n 從 1 到 12 時的操作次數折線圖",
+    xAxis: "輸入大小 n",
+    yAxis: "操作次數",
+    caption:
+      "y 軸只畫到 60，標了 ↑ 的曲線在那之前就衝出去了：O(2ⁿ) 在 n = 6 就超過 60，O(n²) 在 n = 8。O(log n) 和 O(1) 幾乎貼在底部。滑過圖表可看每個 n 的數值。",
+  },
+  {
+    en: {
+      title: "How the number of operations grows with n",
+      chartLabel: "Line chart of the operation counts for six complexity classes as n goes from 1 to 12",
+      xAxis: "Input size n",
+      yAxis: "Operations",
+      caption:
+        "The y axis only goes up to 60, and the curves marked ↑ leave the chart before that: O(2ⁿ) passes 60 at n = 6, and O(n²) at n = 8. O(log n) and O(1) stay almost flat along the bottom. Hover over the chart to read the value at each n.",
+    },
+  },
+);
 
 /** 順序固定：顏色跟著複雜度，不跟著排名。六色已用 CVD 驗證通過。 */
 const SERIES = [
@@ -24,6 +47,7 @@ const sy = (v: number) => M.top + PH - (Math.min(v, Y_MAX * 1.15) / Y_MAX) * PH;
 const fmt = (v: number) => (v >= 100 ? Math.round(v).toLocaleString("en-US") : v < 10 ? v.toFixed(1) : Math.round(v).toString());
 
 export function GrowthChart() {
+  const t = TEXT[useLocale()];
   const [hoverN, setHoverN] = useState<number | null>(null);
   const ns = Array.from({ length: N_MAX }, (_, i) => i + 1);
 
@@ -56,7 +80,7 @@ export function GrowthChart() {
   return (
     <figure className="m-0 my-4 max-w-[72ch] overflow-hidden rounded-xl border border-line bg-surface">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-line bg-surface-2 px-3.5 py-2 text-[12px] text-ink-2">
-        <span className="font-semibold text-ink">操作次數隨 n 的成長</span>
+        <span className="font-semibold text-ink">{t.title}</span>
         {SERIES.map((s) => (
           <span key={s.name} className="inline-flex items-center gap-1.5 font-mono">
             <i className="inline-block h-0.5 w-3.5 rounded-sm" style={{ background: s.color }} />
@@ -70,7 +94,7 @@ export function GrowthChart() {
           viewBox={`0 0 ${W} ${H}`}
           className="block h-auto w-full"
           role="img"
-          aria-label="六種複雜度在 n 從 1 到 12 時的操作次數折線圖"
+          aria-label={t.chartLabel}
           onMouseMove={onMove}
           onMouseLeave={() => setHoverN(null)}
         >
@@ -89,8 +113,8 @@ export function GrowthChart() {
           {ns.map((n) => (
             <text key={n} x={sx(n)} y={M.top + PH + 16} textAnchor="middle" fontSize="10.5" fill="var(--ink-3)" fontFamily="var(--font-mono)">{n}</text>
           ))}
-          <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize="11" fill="var(--ink-3)">輸入大小 n</text>
-          <text x={12} y={M.top + PH / 2} textAnchor="middle" fontSize="11" fill="var(--ink-3)" transform={`rotate(-90 12 ${M.top + PH / 2})`}>操作次數</text>
+          <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize="11" fill="var(--ink-3)">{t.xAxis}</text>
+          <text x={12} y={M.top + PH / 2} textAnchor="middle" fontSize="11" fill="var(--ink-3)" transform={`rotate(-90 12 ${M.top + PH / 2})`}>{t.yAxis}</text>
 
           {/* 曲線 */}
           <g clipPath="url(#growth-clip)">
@@ -136,7 +160,7 @@ export function GrowthChart() {
       </div>
 
       <figcaption className="border-t border-line px-3.5 py-2 text-[12.5px] text-ink-3">
-        y 軸只畫到 60，標了 ↑ 的曲線在那之前就衝出去了：O(2ⁿ) 在 n = 6 就超過 60，O(n²) 在 n = 8。O(log n) 和 O(1) 幾乎貼在底部。滑過圖表可看每個 n 的數值。
+        {t.caption}
       </figcaption>
     </figure>
   );
