@@ -62,6 +62,17 @@ export const en: Messages = {
     open: "Open",
     close: "Close",
   },
+  demo: {
+    prev: "Back",
+    next: "Next",
+    reset: "Reset",
+    step: "Step",
+    undiscovered: "Undiscovered",
+    processing: "Processing",
+    finished: "Done",
+    order: "Visit order",
+    empty: "empty",
+  },
   lesson: {
     fullStop: ".",
     onThisPage: "On this page",

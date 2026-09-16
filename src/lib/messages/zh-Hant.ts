@@ -66,6 +66,17 @@ export const zhHant = {
     open: "前往",
     close: "關閉",
   },
+  demo: {
+    prev: "上一步",
+    next: "下一步",
+    reset: "重設",
+    step: "步驟",
+    undiscovered: "未發現",
+    processing: "處理中",
+    finished: "已完成",
+    order: "走訪順序",
+    empty: "空",
+  },
   lesson: {
     fullStop: "。",
     onThisPage: "本頁",

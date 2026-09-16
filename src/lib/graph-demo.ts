@@ -1,4 +1,9 @@
-/** BFS / DFS 互動示範共用的小圖與步驟產生器。 */
+/**
+ * BFS / DFS 互動示範共用的小圖與步驟產生器。
+ *
+ * 邏輯只有這一份；敘述文字由呼叫端依語言傳進來（見 lib/demo-text）。
+ */
+import type { GraphDemoText } from "./demo-text";
 
 export const DEMO_GRAPH = {
   nodes: {
@@ -39,6 +44,8 @@ export interface DemoConfig {
   steps: () => DemoStep[];
 }
 
+export type DemoAlgo = "bfs" | "dfs";
+
 function adjacency() {
   const adj: Record<string, string[]> = {};
   Object.keys(DEMO_GRAPH.nodes).forEach((n) => (adj[n] = []));
@@ -50,7 +57,7 @@ function adjacency() {
   return adj;
 }
 
-export function bfsSteps(): DemoStep[] {
+export function bfsSteps(t: GraphDemoText): DemoStep[] {
   const adj = adjacency();
   const start = "A";
   const steps: DemoStep[] = [];
@@ -68,7 +75,7 @@ export function bfsSteps(): DemoStep[] {
       tree: [...tree],
     });
 
-  snap(`把起點 ${start} 放入佇列，dist[${start}] = 0。`, null);
+  snap(t.bfs.start(start), null);
   while (queue.length) {
     const u = queue.shift()!;
     order.push(u);
@@ -83,16 +90,16 @@ export function bfsSteps(): DemoStep[] {
     }
     snap(
       found.length
-        ? `取出 ${u}，鄰居 ${found.join("、")} 尚未發現：設 dist = ${dist[u] + 1}，依序放入佇列尾端。`
-        : `取出 ${u}，它的鄰居都已經被發現，不需要做任何事。`,
+        ? t.bfs.popFound(u, found.join(t.listSeparator), dist[u] + 1)
+        : t.bfs.popNone(u),
       u,
     );
   }
-  snap("佇列為空，走訪結束。每個節點上的數字就是到 A 的最短距離。", null);
+  snap(t.bfs.done(start), null);
   return steps;
 }
 
-export function dfsSteps(): DemoStep[] {
+export function dfsSteps(t: GraphDemoText): DemoStep[] {
   const adj = adjacency();
   const start = "A";
   const steps: DemoStep[] = [];
@@ -111,17 +118,12 @@ export function dfsSteps(): DemoStep[] {
       tree: [...tree],
     });
 
-  snap(`從起點 ${start} 呼叫 dfs(${start})。`, null);
+  snap(t.dfs.start(start), null);
   const go = (u: string, from: string | null) => {
     seen[u] = order.length + 1;
     order.push(u);
     stack.push(u);
-    snap(
-      from
-        ? `${from} 的鄰居 ${u} 尚未發現，遞迴呼叫 dfs(${u})，把 ${u} 推入堆疊。`
-        : `拜訪 ${u}，把它推入堆疊。`,
-      u,
-    );
+    snap(from ? t.dfs.descend(from, u) : t.dfs.visit(u), u);
     for (const v of adj[u]) {
       if (!(v in seen)) {
         tree.push([u, v]);
@@ -131,20 +133,17 @@ export function dfsSteps(): DemoStep[] {
     stack.pop();
     finished.push(u);
     const back = stack[stack.length - 1] ?? null;
-    snap(
-      back
-        ? `${u} 的鄰居都探索完了，dfs(${u}) 返回，回溯到 ${back}，繼續看 ${back} 剩下的鄰居。`
-        : `${u} 的鄰居都探索完了，dfs(${u}) 返回。`,
-      back,
-    );
+    snap(back ? t.dfs.returnTo(u, back) : t.dfs.returnDone(u), back);
   };
   go(start, null);
-  snap("堆疊清空，走訪結束。節點下方的編號是被拜訪的先後順序。", null);
+  snap(t.dfs.done, null);
   return steps;
 }
 
-export type DemoAlgo = "bfs" | "dfs";
-export const DEMO_CONFIGS: Record<DemoAlgo, DemoConfig> = {
-  bfs: { activeLegend: "在佇列中", activeTitle: "佇列（前 → 後）", steps: bfsSteps },
-  dfs: { activeLegend: "在堆疊中", activeTitle: "呼叫堆疊（底 → 頂）", steps: dfsSteps },
-};
+/** 依語言組出示範設定。文字來自 demo-text，邏輯共用這一份。 */
+export function demoConfigs(t: GraphDemoText): Record<DemoAlgo, DemoConfig> {
+  return {
+    bfs: { activeLegend: t.bfs.activeLegend, activeTitle: t.bfs.activeTitle, steps: () => bfsSteps(t) },
+    dfs: { activeLegend: t.dfs.activeLegend, activeTitle: t.dfs.activeTitle, steps: () => dfsSteps(t) },
+  };
+}
