@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { TOPICS, KIND_LABEL, getTopic } from "@/lib/topics";
+import { TOPICS } from "@/lib/topics";
+import { getTopicBy, getKindLabel } from "@/lib/topics-text";
 import { Level } from "@/components/Level";
 import { StatusBadge } from "@/components/ProgressBits";
 import { Crumbs } from "@/components/Crumbs";
@@ -13,9 +14,9 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/[topic]">): Promise<Metadata> {
-  const { topic } = await params;
-  const t = getTopic(topic);
-  return { title: t ? `${t.en} ${t.zh}` : "主題" };
+  const { lang, topic } = await params;
+  const t = getTopicBy(lang as Locale, topic);
+  return { title: t ? `${t.en} ${t.zh}` : undefined };
 }
 
 const GRID = "grid grid-cols-[24px_minmax(0,1fr)_92px] md:grid-cols-[30px_minmax(0,1fr)_150px_92px_96px] items-center gap-4";
@@ -23,14 +24,14 @@ const GRID = "grid grid-cols-[24px_minmax(0,1fr)_92px] md:grid-cols-[30px_minmax
 export default async function TopicPage({ params }: PageProps<"/[lang]/[topic]">) {
   const { lang, topic } = await params;
   const h = (path: string) => `/${lang}${path}`;
-  const t = getTopic(topic);
+  const t = getTopicBy(lang as Locale, topic);
   if (!t) notFound();
 
   return (
     <>
       <Crumbs items={[{ href: h(""), label: getMessages(lang as Locale).nav.topics }, { label: t.en }]} />
       <div className="mb-7">
-        <div className="eyebrow">{KIND_LABEL[t.kind]} · {t.subs.length} 個細項</div>
+        <div className="eyebrow">{getKindLabel(lang as Locale)[t.kind]} · {t.subs.length} 個細項</div>
         <h1 className="display mt-1.5 mb-3 text-[clamp(30px,4vw,42px)] leading-[1.08] font-extrabold">
           {t.en}
           <small className="mt-1.5 block font-sans text-[15px] font-medium tracking-normal text-ink-3">{t.zh}</small>

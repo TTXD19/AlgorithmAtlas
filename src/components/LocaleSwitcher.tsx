@@ -1,15 +1,18 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { LOCALES, LOCALE_LABEL, isLocale, type Locale } from "@/lib/i18n";
 import { useLocale, useT } from "./LocaleProvider";
 
 /**
  * 切換語言時停在同一頁：把路徑的第一段換成新語言。
  * 例如 /zh-Hant/graph/bfs → /en/graph/bfs。
+ *
+ * 用整頁導航而不是 router.push：換語言會換掉 <html lang>、metadata 與整份內容，
+ * 而 root layout 在 [lang] 底下，client 端導航會讓它連同 <html>/<head> 一起
+ * 重新渲染，實測會噴 React #418。整頁導航語意上也更正確。
  */
 export function LocaleSwitcher() {
-  const router = useRouter();
   const pathname = usePathname();
   const current = useLocale();
   const t = useT();
@@ -18,7 +21,7 @@ export function LocaleSwitcher() {
     const parts = pathname.split("/");
     if (isLocale(parts[1])) parts[1] = next;
     else parts.splice(1, 0, next);
-    router.push(parts.join("/") || `/${next}`);
+    window.location.assign(parts.join("/") || `/${next}`);
   };
 
   return (

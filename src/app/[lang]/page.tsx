@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { TOPICS, KIND_LABEL, type TopicKind, type Topic } from "@/lib/topics";
+import { type TopicKind, type Topic } from "@/lib/topics";
+import { getTopics, getKindLabel } from "@/lib/topics-text";
+import { getMessages } from "@/lib/messages";
+import type { Locale } from "@/lib/i18n";
 import { LESSONS } from "@/lib/lessons";
 import { TopicGlyph } from "@/components/TopicGlyph";
 import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
@@ -7,7 +10,11 @@ import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   const h = (path: string) => `/${lang}${path}`;
-  const total = TOPICS.reduce((a, t) => a + t.subs.length, 0);
+  const locale = lang as Locale;
+  const topics = getTopics(locale);
+  const kindLabel = getKindLabel(locale);
+  const t18n = getMessages(locale);
+  const total = topics.reduce((a, t) => a + t.subs.length, 0);
   const written = Object.keys(LESSONS).length;
 
   return (
@@ -16,36 +23,36 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <div>
           <div className="eyebrow">Topic-based curriculum</div>
           <h1 className="display mt-2 mb-3.5 text-[clamp(34px,4.6vw,52px)] leading-[1.05] font-extrabold">
-            一次一個主題，<br />把演算法<em className="text-accent not-italic">真的</em>學進去。
+            {t18n.home.headline}
           </h1>
           <p className="m-0 max-w-[58ch] text-[16px] text-ink-2">
-            每個主題底下是一組相關的演算法。每一篇都有相同的結構：概念、步驟、可以親手按的互動示範、程式碼，以及對應的練習題。
+            {t18n.home.lede}
           </p>
           <div className="mt-5 flex flex-wrap gap-2.5">
             <Link href={h("/roadmap")} className="inline-flex h-9 items-center rounded-[7px] bg-accent px-4 text-[14px] font-semibold text-accent-ink hover:brightness-110">
-              從學習路線開始 →
+              {t18n.home.startRoadmap}
             </Link>
             <Link href={h("/graph/bfs")} className="inline-flex h-9 items-center rounded-[7px] border border-line bg-surface px-4 text-[14px] font-medium hover:bg-surface-2">
-              看一篇範例課程
+              {t18n.home.sampleLesson}
             </Link>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line">
-          <Stat n={TOPICS.length} label="個主題" />
-          <Stat n={total} label="個演算法" />
-          <Stat n={written} label="篇已完成撰寫" />
-          <Stat n={<DoneTotal />} label="個你已學會" />
+          <Stat n={topics.length} label={t18n.home.statTopics} />
+          <Stat n={total} label={t18n.home.statLessons} />
+          <Stat n={written} label={t18n.home.statWritten} />
+          <Stat n={<DoneTotal />} label={t18n.home.statDone} />
         </div>
       </div>
 
       {(["ds", "algo"] as TopicKind[]).map((kind) => {
-        const list = TOPICS.filter((t) => t.kind === kind);
+        const list = topics.filter((t) => t.kind === kind);
         return (
           <section key={kind} className="mb-10">
             <div className="mb-3.5 flex items-baseline justify-between">
-              <h2 className="m-0 text-[20px] font-bold">{KIND_LABEL[kind]}</h2>
+              <h2 className="m-0 text-[20px] font-bold">{kindLabel[kind]}</h2>
               <span className="text-[13px] text-ink-3">
-                {list.length} 個主題 · {list.reduce((a, t) => a + t.subs.length, 0)} 篇
+                {list.length} {t18n.home.topicsCount} · {list.reduce((a, t) => a + t.subs.length, 0)} {t18n.home.lessonsCount}
               </span>
             </div>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3.5">
@@ -59,6 +66,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 }
 
 function TopicCard({ t, lang }: { t: Topic; lang: string }) {
+  const t18n = getMessages(lang as Locale);
   return (
     <Link
       href={`/${lang}/${t.id}`}
@@ -70,12 +78,12 @@ function TopicCard({ t, lang }: { t: Topic; lang: string }) {
         </div>
         <div>
           <b className="block font-display text-[18px] leading-[1.15] font-bold tracking-[-0.01em]">{t.en}</b>
-          <span className="text-[13px] text-ink-3">{t.zh} · {t.subs.length} 個細項</span>
+          <span className="text-[13px] text-ink-3">{t.zh} · {t.subs.length} {t18n.home.subsCount}</span>
         </div>
       </div>
       <p className="m-0 text-[13.5px] leading-[1.55] text-ink-2">{t.desc}</p>
       <p className="m-0 text-[12.5px] leading-[1.5] text-ink-3">
-        <span className="font-semibold">用在：</span>{t.applications.map((a) => a.title).join("、")}
+        <span className="font-semibold">{t18n.home.usedFor}</span>{t.applications.map((a) => a.title).join(t18n.home.listSeparator)}
       </p>
       <div className="flex flex-wrap gap-1.5">
         {t.subs.slice(0, 4).map((s) => (

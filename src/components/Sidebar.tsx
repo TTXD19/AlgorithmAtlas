@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TOPICS, KIND_LABEL, lessonKey, type TopicKind } from "@/lib/topics";
+import { lessonKey, type TopicKind } from "@/lib/topics";
+import { getTopics, getKindLabel } from "@/lib/topics-text";
+import { useLocale, useT } from "./LocaleProvider";
 import { useProgress } from "@/lib/progress";
 import { TopicGlyph } from "./TopicGlyph";
 import { useHref } from "./LocaleProvider";
@@ -13,6 +15,10 @@ export function Sidebar() {
   const [, , topicId, subId] = path.split("/");
   const { isDone } = useProgress();
   const h = useHref();
+  const locale = useLocale();
+  const tx = useT();
+  const topics = getTopics(locale);
+  const kindLabel = getKindLabel(locale);
 
   return (
     <aside className="sticky top-14 hidden h-[calc(100vh-56px)] overflow-y-auto border-r border-line bg-surface/55 px-3.5 pt-5 pb-10 md:block">
@@ -26,13 +32,13 @@ export function Sidebar() {
           <circle cx="6" cy="5" r="2.2" /><circle cx="18" cy="12" r="2.2" /><circle cx="6" cy="19" r="2.2" />
           <path d="M8 6.2c4 0 4 4.8 8 4.8M8 17.8c4 0 4-4.8 8-4.8" />
         </svg>
-        學習路線
+        {tx.nav.roadmap}
       </Link>
       {(["ds", "algo"] as TopicKind[]).map((kind) => (
         <div key={kind} className="mb-4">
-          <div className="eyebrow px-2.5 pb-2">{KIND_LABEL[kind]}</div>
+          <div className="eyebrow px-2.5 pb-2">{kindLabel[kind]}</div>
           <ul className="m-0 list-none p-0">
-        {TOPICS.filter((t) => t.kind === kind).map((t) => {
+        {topics.filter((t) => t.kind === kind).map((t) => {
           const open = topicId === t.id;
           const doneCount = t.subs.filter((s) => isDone(lessonKey(t.id, s.id))).length;
           const active = open && !subId;

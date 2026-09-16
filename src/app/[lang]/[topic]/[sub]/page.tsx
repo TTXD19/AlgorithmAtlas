@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { TOPICS, getSubtopic, lessonKey, LEVEL_LABEL } from "@/lib/topics";
+import { TOPICS, lessonKey } from "@/lib/topics";
+import { getSubtopicBy, getLevelLabel } from "@/lib/topics-text";
 import { loadLesson } from "@/lib/lesson-loader";
 import { LessonBody } from "@/components/lesson/LessonBody";
 import { Level } from "@/components/Level";
@@ -16,8 +17,8 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/[topic]/[sub]">): Promise<Metadata> {
-  const { topic, sub } = await params;
-  const hit = getSubtopic(topic, sub);
+  const { lang, topic, sub } = await params;
+  const hit = getSubtopicBy(lang as Locale, topic, sub);
   return { title: hit ? `${hit.sub.name} ${hit.sub.zh}` : "課程" };
 }
 
@@ -26,7 +27,7 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
   const locale = lang as Locale;
   const t18n = getMessages(locale);
   const h = (path: string) => `/${lang}${path}`;
-  const hit = getSubtopic(topic, sub);
+  const hit = getSubtopicBy(locale, topic, sub);
   if (!hit) notFound();
   const { topic: t, sub: s } = hit;
   const idx = t.subs.indexOf(s);
@@ -46,14 +47,14 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
           {s.name}
           <small className="mt-1.5 block font-sans text-[15px] font-medium tracking-normal text-ink-3">{s.zh}</small>
         </h1>
-        {s.desc && <p className="m-0 max-w-[62ch] text-[16px] text-ink-2">{s.desc}。</p>}
+        {s.desc && <p className="m-0 max-w-[62ch] text-[16px] text-ink-2">{s.desc}{t18n.lesson.fullStop}</p>}
         <p className="mt-2 max-w-[62ch] text-[14px] text-ink-3"><span className="font-semibold text-ink-2">{t18n.lesson.apply}</span>{s.apply}</p>
       </div>
 
       <div className="mt-[22px] mb-9 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line md:grid-cols-4">
         <Fact label={t18n.lesson.time} mono>{s.time}</Fact>
         <Fact label={t18n.lesson.space} mono>{s.space}</Fact>
-        <Fact label={t18n.lesson.level}>{LEVEL_LABEL[s.lvl]} <Level n={s.lvl} /></Fact>
+        <Fact label={t18n.lesson.level}>{getLevelLabel(locale)[s.lvl]} <Level n={s.lvl} /></Fact>
         <Fact label={t18n.lesson.prereq}>{loaded?.kind === "modern" ? loaded.prereq : loaded?.kind === "legacy" ? loaded.lesson.prereq : "—"}</Fact>
       </div>
 

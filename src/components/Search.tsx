@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { TOPICS, KIND_LABEL, type GlyphId, type Level as LevelNum } from "@/lib/topics";
+import { type GlyphId, type Level as LevelNum } from "@/lib/topics";
+import { getTopics, getKindLabel } from "@/lib/topics-text";
+import { useLocale, useT } from "./LocaleProvider";
+import type { Locale } from "@/lib/i18n";
 import { TopicGlyph } from "./TopicGlyph";
 import { useHref } from "./LocaleProvider";
 import { Level } from "./Level";
@@ -24,15 +27,19 @@ interface Entry {
   hay: string;
 }
 
-/** 資料是靜態的，索引在模組載入時建一次就好。 */
-const INDEX: Entry[] = TOPICS.flatMap((t): Entry[] => [
+/** 每種語言的索引各建一次就好，資料是靜態的。 */
+const CACHE = new Map<Locale, Entry[]>();
+
+function buildIndex(locale: Locale): Entry[] {
+  const kindLabel = getKindLabel(locale);
+  return getTopics(locale).flatMap((t): Entry[] => [
   {
     kind: "topic",
     href: `/${t.id}`,
     glyph: t.glyph,
     title: t.en,
     sub: `${t.zh} · ${t.desc}`,
-    context: KIND_LABEL[t.kind],
+    context: kindLabel[t.kind],
     hay: [t.id, t.zh, t.desc, t.intro ?? "", ...t.applications.map((a) => `${a.title} ${a.desc}`)].join(" ").toLowerCase(),
   },
   ...t.subs.map((s): Entry => ({
@@ -46,9 +53,14 @@ const INDEX: Entry[] = TOPICS.flatMap((t): Entry[] => [
     draft: s.state === "draft",
     hay: [s.id, s.zh, s.desc ?? "", s.apply, t.en, t.zh].join(" ").toLowerCase(),
   })),
-]);
+  ]);
+}
 
-const TOPIC_ENTRIES = INDEX.filter((e) => e.kind === "topic");
+function indexFor(locale: Locale): Entry[] {
+  let idx = CACHE.get(locale);
+  if (!idx) CACHE.set(locale, (idx = buildIndex(locale)));
+  return idx;
+}
 
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -83,6 +95,10 @@ function Mark({ text, tokens }: { text: string; tokens: string[] }) {
 export function Search() {
   const router = useRouter();
   const h = useHref();
+  const locale = useLocale();
+  const tx = useT();
+  const index = useMemo(() => indexFor(locale), [locale]);
+  const topicEntries = useMemo(() => index.filter((e) => e.kind === "topic"), [index]);
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
@@ -94,13 +110,13 @@ export function Search() {
   const tokens = useMemo(() => q.trim().toLowerCase().split(/\s+/).filter(Boolean), [q]);
 
   const results = useMemo(() => {
-    if (!tokens.length) return TOPIC_ENTRIES;
-    return INDEX.map((e) => ({ e, s: score(e, tokens) }))
+    if (!tokens.length) return topicEntries;
+    return index.map((e) => ({ e, s: score(e, tokens) }))
       .filter((r) => r.s >= 0)
       .sort((a, b) => b.s - a.s)
       .slice(0, 24)
       .map((r) => r.e);
-  }, [tokens]);
+  }, [tokens, index, topicEntries]);
 
   const reset = () => {
     setQ("");
@@ -178,18 +194,18 @@ export function Search() {
       <button
         type="button"
         onClick={(e) => openFrom(e.currentTarget)}
-        aria-label="搜尋演算法"
+        aria-label={tx.search.label}
         className="hidden h-8 min-w-[220px] cursor-pointer items-center gap-2 rounded-[7px] border border-line bg-surface px-2.5 text-[13px] text-ink-3 hover:border-line-strong hover:text-ink-2 md:flex"
       >
         <SearchIcon />
-        搜尋演算法⋯
+        {tx.search.trigger}
         <kbd className="ml-auto rounded border border-line px-1.5 font-sans text-[11px]">⌘K</kbd>
       </button>
 
       <button
         type="button"
         onClick={(e) => openFrom(e.currentTarget)}
-        aria-label="搜尋演算法"
+        aria-label={tx.search.label}
         className="flex cursor-pointer items-center rounded-md p-1.5 text-ink-2 hover:bg-surface-2 hover:text-ink md:hidden"
       >
         <SearchIcon size={17} />
@@ -204,7 +220,7 @@ export function Search() {
             <div
               role="dialog"
               aria-modal="true"
-              aria-label="搜尋演算法"
+              aria-label={tx.search.label}
               className="relative flex max-h-[min(70vh,540px)] w-full max-w-[580px] flex-col overflow-hidden rounded-[12px] border border-line bg-surface shadow-card"
             >
               <div className="flex h-12 shrink-0 items-center gap-2.5 border-b border-line px-3.5 text-ink-3">
@@ -216,8 +232,8 @@ export function Search() {
                     setQ(e.target.value);
                     setActive(0);
                   }}
-                  placeholder="搜尋演算法、資料結構、主題⋯"
-                  aria-label="搜尋演算法"
+                  placeholder={tx.search.placeholder}
+                  aria-label={tx.search.label}
                   role="combobox"
                   aria-expanded="true"
                   aria-controls={listId}
@@ -230,13 +246,13 @@ export function Search() {
 
               {results.length === 0 ? (
                 <div className="px-4 py-10 text-center text-[14px] text-ink-3">
-                  找不到「{q.trim()}」相關的內容。<br />
-                  試試 <span className="inl">BFS</span>、<span className="inl">二分</span> 或 <span className="inl">dp</span>。
+                  {tx.search.empty}<br />
+                  {tx.search.tryHint} <span className="inl">BFS</span> · <span className="inl">heap</span> · <span className="inl">dp</span>
                 </div>
               ) : (
                 <>
-                  <div className="eyebrow shrink-0 px-4 pt-3 pb-1">{tokens.length ? `${results.length} 個結果` : "全部主題"}</div>
-                  <ul ref={listRef} id={listId} role="listbox" aria-label="搜尋結果" className="m-0 min-h-0 flex-1 list-none overflow-y-auto p-1.5 pt-0">
+                  <div className="eyebrow shrink-0 px-4 pt-3 pb-1">{tokens.length ? `${results.length} ${tx.search.resultCount}` : tx.search.allTopics}</div>
+                  <ul ref={listRef} id={listId} role="listbox" aria-label={tx.search.results} className="m-0 min-h-0 flex-1 list-none overflow-y-auto p-1.5 pt-0">
                     {results.map((e, i) => {
                       const on = i === active;
                       return (
@@ -251,7 +267,7 @@ export function Search() {
                             <span className="min-w-0 flex-1">
                               <span className="block truncate text-[14px] font-semibold text-ink">
                                 <Mark text={e.title} tokens={tokens} />
-                                {e.draft && <span className="ml-1.5 align-middle text-[11px] font-medium text-ink-3">撰寫中</span>}
+                                {e.draft && <span className="ml-1.5 align-middle text-[11px] font-medium text-ink-3">{tx.progress.draft}</span>}
                               </span>
                               <span className="block truncate text-[12.5px] text-ink-3">
                                 <Mark text={e.sub} tokens={tokens} />
@@ -270,9 +286,9 @@ export function Search() {
               )}
 
               <div className="flex shrink-0 items-center gap-3 border-t border-line px-3.5 py-2 text-[11.5px] text-ink-3">
-                <span><kbd className="font-sans">↑↓</kbd> 移動</span>
-                <span><kbd className="font-sans">↵</kbd> 前往</span>
-                <span><kbd className="font-sans">esc</kbd> 關閉</span>
+                <span><kbd className="font-sans">↑↓</kbd> {tx.search.move}</span>
+                <span><kbd className="font-sans">↵</kbd> {tx.search.open}</span>
+                <span><kbd className="font-sans">esc</kbd> {tx.search.close}</span>
               </div>
             </div>
           </div>,
