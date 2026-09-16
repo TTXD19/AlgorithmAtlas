@@ -164,13 +164,30 @@ v1 必須一併處理。建議把 `MarkDone` 從 `Rail` 抽出來，改放在課
 
 建議整篇鎖。若要段落試閱，切點定義成「前 N 段」而不是「切在 concept 之後」——`SECTIONS` 近期才從五段變成六段（`lessons.ts:99` 與 `parts.tsx:3` 的註解都還寫「五段」），它不是凍結契約。
 
-### Q6. 部署與環境（v0 的前置）
+### Q6. 部署與環境 — ✅ 部分已決定
 
-- 部署平台？
-- 幾個 Supabase project（正式／preview／本地）？
-- schema 版控：用 supabase CLI 的 migration 檔進 git，還是在 Studio 手改？
+**已決定（2026-09-16）：**
 
-第三項特別重要：若不決定，RLS policy 會只存在於正式專案的 Studio 裡，沒有 code review、沒有 diff、沒有回退。
+- 部署平台：Vercel，正式站 beginalgo.com
+- schema 版控：用 `supabase/migrations/` 的檔案進 git，`supabase db push` 套用。**不要用 `supabase config push`**，理由見 `supabase/config.toml` 開頭的警告
+- **Supabase 專案數：先用一個，prod / preview / development 共用**
+
+**共用一個資料庫的代價，以及必須守的規則：**
+
+`supabase db push` 推的是那個共用資料庫，所以 schema 改動在 pilot 的程式碼還沒上 prod 之前，就已經套用到 prod 的資料庫了。因此：
+
+> **共用期間，migration 只做新增，不做刪除或改名。**
+> 新增欄位／新增表對舊版程式碼無害；刪欄位會當場弄壞正式站。
+
+在 pilot 上測試也會把真實資料列寫進正式資料庫。現在使用者是 0，所以實際損害是 0。
+
+**切換到兩個專案的時機**：真的有讀者開始累積資料時，或要做第一個破壞性 migration 之前。切換很便宜——Vercel 的環境變數是分環境的，只要改 Preview 那兩個變數，prod 完全不用動。但要記得回 GitHub / Google 的 OAuth App 多加一組 redirect URI（兩邊都支援多組，不必重建 App）。
+
+### Q6-b. 尚未決定
+
+本機開發要不要用 `supabase start` 跑一份本地資料庫，還是就直接連線上專案？
+
+目前是直接連線上專案（`.env.local` 指向正式的 Supabase）。這在只有你一個人、且沒有真實使用者時沒問題，但等有讀者之後，本機隨手測試就會動到真資料。
 
 ---
 
