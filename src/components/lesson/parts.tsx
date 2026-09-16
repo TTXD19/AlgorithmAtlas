@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** 課程五段固定結構的 id 與標題，右欄目錄與 scroll spy 都依這份清單。 */
+/** 課程六段固定結構的 id 與標題，右欄目錄與 scroll spy 都依這份清單。 */
 export const SECTIONS = [
   { id: "why", title: "為什麼需要它" },
   { id: "concept", title: "核心概念" },

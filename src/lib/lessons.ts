@@ -96,7 +96,7 @@ import { gcdLesson } from "@/content/math/gcd";
 export interface Lesson {
   /** 顯示在課程頁「前置知識」欄 */
   prereq: string;
-  /** 課程本體：五段固定結構 */
+  /** 課程本體：六段固定結構 */
   Body: ComponentType;
 }
 

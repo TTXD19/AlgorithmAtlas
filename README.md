@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 演算法圖鑑 Algorithm Atlas
 
-## Getting Started
+主題式的繁體中文演算法學習網站。17 個主題、93 篇課程，每一篇都有相同的結構：概念、步驟、可以親手按的互動示範、程式碼，以及對應的練習題。
 
-First, run the development server:
+## 開發
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+npm run build   # 正式建置，會預渲染全部 115 頁
+npm run lint
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+需要 Node 20 以上。目前沒有任何環境變數。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 技術
 
-## Learn More
+Next.js 16（App Router）、React 19、Tailwind CSS v4、TypeScript。
 
-To learn more about Next.js, take a look at the following resources:
+全站靜態預渲染，零後端、零資料庫。深淺色主題與學習進度存在瀏覽器 localStorage（`atlas-theme`、`atlas-done`）。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 專案結構
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/
+    page.tsx              首頁：主題總覽
+    roadmap/page.tsx      學習路線圖
+    [topic]/page.tsx      單一主題頁
+    [topic]/[sub]/page.tsx  課程頁
+  lib/
+    topics.ts             主題與細項的定義（全站的資料來源）
+    lessons.ts            課程 key → 課程內容的對照表
+    roadmap.ts            學習路線圖的節點與連線
+    progress.ts           學習進度（localStorage）
+  content/<topic>/<sub>.tsx   課程內容本體
+  components/
+    lesson/parts.tsx      課程的六段結構
+    lesson/demos/         各課程的互動示範
+```
 
-## Deploy on Vercel
+## 新增一篇課程
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+課程 key 的格式是 `topicId/subId`（例如 `graph/bfs`），四個地方都要一致：
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **`src/lib/topics.ts`** — 在對應主題的 `subs` 裡加一筆（名稱、中文、複雜度、難度）
+2. **`src/content/<topic>/<sub>.tsx`** — 寫內容，export 一個 `Lesson { prereq, Body }`
+3. **`src/lib/lessons.ts`** — 把它註冊進 `LESSONS`，key 用 `topic/sub`
+4. **`src/lib/roadmap.ts`** — 把 key 加進某一個節點的 `lessons` 陣列
+
+第 4 步會被檢查：`validateRoadmap()` 要求每一篇課程**恰好**出現在一個節點裡，缺少、重複或指向不存在的課程都會讓 `npm run build` 直接失敗。
+
+課程內容用 `src/components/lesson/parts.tsx` 的六段結構：
+
+| id | 標題 |
+|---|---|
+| `why` | 為什麼需要它 |
+| `concept` | 核心概念 |
+| `steps` | 演算法步驟 |
+| `demo` | 互動示範 |
+| `code` | 程式碼 |
+| `problems` | 練習題 |
+
+## 規劃
+
+帳號系統、進度雲端同步、收藏、筆記、練習紀錄的需求整理在 [`docs/requirements.md`](docs/requirements.md)。
+
+**目前這 93 篇課程永久免費。**
