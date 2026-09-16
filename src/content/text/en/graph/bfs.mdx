@@ -1,0 +1,3 @@
+BFS starts at one node and **finishes everything at distance 1 before it looks at distance 2**, spreading outward like a ripple. What makes the rings possible is the **queue** it keeps of nodes waiting to be processed: whatever was discovered first is processed first.
+
+That property gives BFS its most useful guarantee. On an **unweighted** graph, the moment BFS first reaches a node, the number of edges it walked is the shortest distance from the start.

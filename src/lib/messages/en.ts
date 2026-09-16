@@ -26,7 +26,16 @@ export const en: Messages = {
     learnable: "available",
     draft: "Draft",
   },
+  sections: {
+    why: "Why it exists",
+    concept: "The core idea",
+    steps: "The algorithm",
+    demo: "Interactive demo",
+    code: "Code",
+    problems: "Practice",
+  },
   lesson: {
+    onThisPage: "On this page",
     breadcrumb: "Breadcrumb",
     apply: "Used for:",
     time: "Time complexity",
@@ -36,5 +45,7 @@ export const en: Messages = {
     prev: "Previous",
     next: "Next",
     untranslated: "This lesson has not been translated yet. The original is shown below.",
+    whyThis: "Why this fits",
+    cue: "Reach for it when you see:",
   },
 };

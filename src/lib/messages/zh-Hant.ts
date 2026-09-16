@@ -30,7 +30,16 @@ export const zhHant = {
     learnable: "可學習",
     draft: "撰寫中",
   },
+  sections: {
+    why: "為什麼需要它",
+    concept: "核心概念",
+    steps: "演算法步驟",
+    demo: "互動示範",
+    code: "程式碼",
+    problems: "練習題",
+  },
   lesson: {
+    onThisPage: "本頁",
     breadcrumb: "麵包屑",
     apply: "用在：",
     time: "時間複雜度",
@@ -40,6 +49,8 @@ export const zhHant = {
     prev: "上一篇",
     next: "下一篇",
     untranslated: "這篇課程還沒有翻譯，以下是原文。",
+    whyThis: "為什麼用它",
+    cue: "看到這些關鍵字就想到它：",
   },
 } as const;
 

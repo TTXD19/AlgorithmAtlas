@@ -2,11 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { TOPICS, getSubtopic, lessonKey, LEVEL_LABEL } from "@/lib/topics";
-import { LESSONS } from "@/lib/lessons";
+import { loadLesson } from "@/lib/lesson-loader";
+import { LessonBody } from "@/components/lesson/LessonBody";
 import { Level } from "@/components/Level";
 import { Crumbs } from "@/components/Crumbs";
 import { getMessages } from "@/lib/messages";
-import type { Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { Rail } from "@/components/lesson/Rail";
 import { MarkDone } from "@/components/ProgressBits";
 
@@ -32,7 +33,7 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
   const prev = t.subs[idx - 1];
   const next = t.subs[idx + 1];
   const key = lessonKey(t.id, s.id);
-  const lesson = LESSONS[key];
+  const loaded = await loadLesson(key, locale);
 
   return (
     <>
@@ -53,17 +54,25 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
         <Fact label={t18n.lesson.time} mono>{s.time}</Fact>
         <Fact label={t18n.lesson.space} mono>{s.space}</Fact>
         <Fact label={t18n.lesson.level}>{LEVEL_LABEL[s.lvl]} <Level n={s.lvl} /></Fact>
-        <Fact label={t18n.lesson.prereq}>{lesson?.prereq ?? "—"}</Fact>
+        <Fact label={t18n.lesson.prereq}>{loaded?.kind === "modern" ? loaded.prereq : loaded?.kind === "legacy" ? loaded.lesson.prereq : "—"}</Fact>
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_184px]">
         <div>
-          {lesson ? (
-            <lesson.Body />
+          {loaded?.kind === "modern" && !loaded.translated && (
+            <p className="mb-6 max-w-[66ch] rounded-lg border border-line bg-surface-2 px-4 py-2.5 text-[13.5px] text-ink-2">
+              {t18n.lesson.untranslated}
+            </p>
+          )}
+
+          {loaded?.kind === "modern" ? (
+            <LessonBody skeleton={loaded.skeleton} text={loaded.text} Concept={loaded.Concept} locale={loaded.translated ? locale : DEFAULT_LOCALE} />
+          ) : loaded?.kind === "legacy" ? (
+            <loaded.lesson.Body />
           ) : (
             <div className="max-w-[66ch] rounded-xl border border-dashed border-line-strong p-7 text-center text-ink-3">
-              <b className="mb-1 block text-ink">{s.name} 內容撰寫中</b>
-              這頁會沿用 BFS 的版型：為什麼需要它、核心概念、步驟、互動示範、程式碼與練習題。
+              <b className="mb-1 block text-ink">{s.name}</b>
+              {t18n.lesson.untranslated}
             </div>
           )}
 
