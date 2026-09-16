@@ -1,3 +1,12 @@
+# ⚠️ 不要跑 `supabase config push`。
+#
+# 這個檔案是 `supabase init` 產生的「本機開發」設定，不是線上專案的鏡像。
+# 2026-09-16 實測 `supabase config diff`：推上去會用本機預設值覆蓋 11 項線上設定，
+# 包括關掉 email 驗證、把寄信頻率從 1 分鐘放寬到 1 秒、OTP 從 8 碼降成 6 碼、
+# 關掉 MFA 與簡訊。線上 auth 設定一律在 Supabase 後台改。
+#
+# 資料庫 schema 則相反：一律用 supabase/migrations/ 的檔案，靠 `supabase db push` 套用。
+
 # For detailed configuration reference documentation, visit:
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
