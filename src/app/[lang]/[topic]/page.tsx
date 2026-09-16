@@ -5,12 +5,14 @@ import { TOPICS, KIND_LABEL, getTopic } from "@/lib/topics";
 import { Level } from "@/components/Level";
 import { StatusBadge } from "@/components/ProgressBits";
 import { Crumbs } from "@/components/Crumbs";
+import { getMessages } from "@/lib/messages";
+import type { Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return TOPICS.map((t) => ({ topic: t.id }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/[topic]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[lang]/[topic]">): Promise<Metadata> {
   const { topic } = await params;
   const t = getTopic(topic);
   return { title: t ? `${t.en} ${t.zh}` : "主題" };
@@ -18,14 +20,15 @@ export async function generateMetadata({ params }: PageProps<"/[topic]">): Promi
 
 const GRID = "grid grid-cols-[24px_minmax(0,1fr)_92px] md:grid-cols-[30px_minmax(0,1fr)_150px_92px_96px] items-center gap-4";
 
-export default async function TopicPage({ params }: PageProps<"/[topic]">) {
-  const { topic } = await params;
+export default async function TopicPage({ params }: PageProps<"/[lang]/[topic]">) {
+  const { lang, topic } = await params;
+  const h = (path: string) => `/${lang}${path}`;
   const t = getTopic(topic);
   if (!t) notFound();
 
   return (
     <>
-      <Crumbs items={[{ href: "/", label: "主題" }, { label: t.en }]} />
+      <Crumbs items={[{ href: h(""), label: getMessages(lang as Locale).nav.topics }, { label: t.en }]} />
       <div className="mb-7">
         <div className="eyebrow">{KIND_LABEL[t.kind]} · {t.subs.length} 個細項</div>
         <h1 className="display mt-1.5 mb-3 text-[clamp(30px,4vw,42px)] leading-[1.08] font-extrabold">
@@ -56,7 +59,7 @@ export default async function TopicPage({ params }: PageProps<"/[topic]">) {
                 <div className="mb-1 text-[15px] font-semibold">{a.title}</div>
                 <p className="m-0 text-[13.5px] leading-[1.6] text-ink-2">{a.desc}</p>
                 {sub && (
-                  <Link href={`/${t.id}/${sub.id}`} className="mt-2.5 self-start text-[12.5px] font-semibold text-accent hover:underline">
+                  <Link href={h(`/${t.id}/${sub.id}`)} className="mt-2.5 self-start text-[12.5px] font-semibold text-accent hover:underline">
                     → 對應課程：{sub.name}
                   </Link>
                 )}
@@ -75,7 +78,7 @@ export default async function TopicPage({ params }: PageProps<"/[topic]">) {
           <span>#</span><span>演算法</span><span className="hidden md:block">複雜度</span><span>難度</span><span className="hidden md:block">狀態</span>
         </div>
         {t.subs.map((s, i) => (
-          <Link key={s.id} href={`/${t.id}/${s.id}`} className={`${GRID} border-t border-line px-[18px] py-3.5 transition hover:bg-surface-2`}>
+          <Link key={s.id} href={h(`/${t.id}/${s.id}`)} className={`${GRID} border-t border-line px-[18px] py-3.5 transition hover:bg-surface-2`}>
             <span className="font-mono text-[12px] text-ink-3 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
             <span>
               <b className="block text-[15px] font-semibold">

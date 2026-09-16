@@ -5,16 +5,19 @@ import { usePathname } from "next/navigation";
 import { TOPICS, KIND_LABEL, lessonKey, type TopicKind } from "@/lib/topics";
 import { useProgress } from "@/lib/progress";
 import { TopicGlyph } from "./TopicGlyph";
+import { useHref } from "./LocaleProvider";
 
 export function Sidebar() {
   const path = usePathname();
-  const [, topicId, subId] = path.split("/");
+  // 路徑是 /<lang>/<topic>/<sub>，第一段是語言，要跳過
+  const [, , topicId, subId] = path.split("/");
   const { isDone } = useProgress();
+  const h = useHref();
 
   return (
     <aside className="sticky top-14 hidden h-[calc(100vh-56px)] overflow-y-auto border-r border-line bg-surface/55 px-3.5 pt-5 pb-10 md:block">
       <Link
-        href="/roadmap"
+        href={h("/roadmap")}
         className={`mb-4 flex items-center gap-2.5 rounded-md border px-2.5 py-1.5 text-[14px] font-semibold ${
           topicId === "roadmap" ? "border-accent bg-accent-soft text-accent" : "border-line bg-surface hover:bg-surface-2"
         }`}
@@ -36,7 +39,7 @@ export function Sidebar() {
           return (
             <li key={t.id}>
               <Link
-                href={`/${t.id}`}
+                href={h(`/${t.id}`)}
                 className={`flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[14px] font-semibold ${
                   active ? "bg-accent-soft text-accent" : "hover:bg-surface-2"
                 }`}
@@ -55,7 +58,7 @@ export function Sidebar() {
                     return (
                       <li key={s.id}>
                         <Link
-                          href={`/${t.id}/${s.id}`}
+                          href={h(`/${t.id}/${s.id}`)}
                           className={`flex items-center gap-2 rounded-[5px] px-2.5 py-1 text-[13.5px] hover:bg-surface-2 hover:text-ink ${
                             cur ? "font-semibold text-accent" : s.state === "draft" ? "text-ink-3" : "text-ink-2"
                           }`}

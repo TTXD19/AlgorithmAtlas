@@ -4,7 +4,9 @@ import { LESSONS } from "@/lib/lessons";
 import { TopicGlyph } from "@/components/TopicGlyph";
 import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
 
-export default function Home() {
+export default async function Home({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
+  const h = (path: string) => `/${lang}${path}`;
   const total = TOPICS.reduce((a, t) => a + t.subs.length, 0);
   const written = Object.keys(LESSONS).length;
 
@@ -20,10 +22,10 @@ export default function Home() {
             每個主題底下是一組相關的演算法。每一篇都有相同的結構：概念、步驟、可以親手按的互動示範、程式碼，以及對應的練習題。
           </p>
           <div className="mt-5 flex flex-wrap gap-2.5">
-            <Link href="/roadmap" className="inline-flex h-9 items-center rounded-[7px] bg-accent px-4 text-[14px] font-semibold text-accent-ink hover:brightness-110">
+            <Link href={h("/roadmap")} className="inline-flex h-9 items-center rounded-[7px] bg-accent px-4 text-[14px] font-semibold text-accent-ink hover:brightness-110">
               從學習路線開始 →
             </Link>
-            <Link href="/graph/bfs" className="inline-flex h-9 items-center rounded-[7px] border border-line bg-surface px-4 text-[14px] font-medium hover:bg-surface-2">
+            <Link href={h("/graph/bfs")} className="inline-flex h-9 items-center rounded-[7px] border border-line bg-surface px-4 text-[14px] font-medium hover:bg-surface-2">
               看一篇範例課程
             </Link>
           </div>
@@ -47,7 +49,7 @@ export default function Home() {
               </span>
             </div>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3.5">
-              {list.map((t) => <TopicCard key={t.id} t={t} />)}
+              {list.map((t) => <TopicCard key={t.id} t={t} lang={lang} />)}
             </div>
           </section>
         );
@@ -56,10 +58,10 @@ export default function Home() {
   );
 }
 
-function TopicCard({ t }: { t: Topic }) {
+function TopicCard({ t, lang }: { t: Topic; lang: string }) {
   return (
     <Link
-      href={`/${t.id}`}
+      href={`/${lang}/${t.id}`}
       className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-[18px] pb-4 transition hover:-translate-y-px hover:border-line-strong hover:shadow-card"
     >
       <div className="flex items-center gap-3">

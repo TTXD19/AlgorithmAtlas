@@ -2,6 +2,7 @@
 
 import { TOPICS, lessonKey, type Topic, type Subtopic } from "@/lib/topics";
 import { useProgress } from "@/lib/progress";
+import { useT } from "./LocaleProvider";
 
 /** 主題卡片底部的進度條。 */
 export function TopicProgress({ topic }: { topic: Topic }) {
@@ -24,18 +25,20 @@ export function DoneTotal() {
   return <>{Object.keys(done).length}</>;
 }
 
-const LABEL = { ready: "可學習", done: "已學會", draft: "撰寫中" } as const;
+
 
 /** 細項清單裡的狀態徽章：已學會會覆蓋原本狀態。 */
 export function StatusBadge({ topic, sub }: { topic: Topic; sub: Subtopic }) {
   const { isDone } = useProgress();
+  const t = useT();
   const st = isDone(lessonKey(topic.id, sub.id)) ? "done" : sub.state;
+  const label = { ready: t.progress.learnable, done: t.progress.doneLabel, draft: t.progress.draft }[st];
   const cls = {
     ready: "bg-accent-soft text-accent font-semibold",
     done: "bg-green-soft text-green font-semibold",
     draft: "bg-surface-2 text-ink-3 font-medium",
   }[st];
-  return <span className={`justify-self-start whitespace-nowrap rounded-full px-2.5 py-[3px] text-[12px] ${cls}`}>{LABEL[st]}</span>;
+  return <span className={`justify-self-start whitespace-nowrap rounded-full px-2.5 py-[3px] text-[12px] ${cls}`}>{label}</span>;
 }
 
 /**
@@ -47,6 +50,7 @@ export function StatusBadge({ topic, sub }: { topic: Topic; sub: Subtopic }) {
  */
 export function MarkDone({ lessonId, full }: { lessonId: string; full?: boolean }) {
   const { isDone, toggle } = useProgress();
+  const t = useT();
   const done = isDone(lessonId);
   return (
     <button
@@ -58,7 +62,7 @@ export function MarkDone({ lessonId, full }: { lessonId: string; full?: boolean 
         done ? "border-transparent bg-green-soft text-green" : "border-line bg-surface hover:bg-surface-2"
       }`}
     >
-      {done ? "✓ 已學會" : "標記為已學會"}
+      {done ? t.progress.done : t.progress.markDone}
     </button>
   );
 }

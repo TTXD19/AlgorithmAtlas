@@ -9,11 +9,13 @@ import {
 import { useProgress } from "@/lib/progress";
 import { TopicGlyph } from "./TopicGlyph";
 import { Level } from "./Level";
+import { useHref } from "./LocaleProvider";
 
 type NodeState = "none" | "partial" | "done";
 
 export function RoadmapView() {
   const { isDone } = useProgress();
+  const h = useHref();
   const [selected, setSelected] = useState<string>(ROADMAP_NODES[0].id);
   const [hover, setHover] = useState<string | null>(null);
 
@@ -59,7 +61,7 @@ export function RoadmapView() {
           <div className="text-[13px] text-ink-2">
             <div className="eyebrow">建議下一步</div>
             {next ? (
-              <Link href={`/${next.topic.id}/${next.sub.id}`} className="font-semibold text-accent hover:underline">
+              <Link href={h(`/${next.topic.id}/${next.sub.id}`)} className="font-semibold text-accent hover:underline">
                 {next.sub.name} {next.sub.zh}
               </Link>
             ) : (
@@ -174,6 +176,7 @@ function NodeCard({
   onPick: (id: string) => void;
   cardRef: (el: HTMLDivElement | null) => void;
 }) {
+  const h = useHref();
   const { d, total, state } = progress;
   return (
     <div
@@ -198,7 +201,7 @@ function NodeCard({
           const isNext = nextKey === l.key;
           return (
             <li key={l.key} className={i > 0 ? "border-t border-line" : ""}>
-              <Link href={`/${l.topic.id}/${l.sub.id}`} className={`flex items-center gap-2.5 py-2.5 hover:text-accent ${draft ? "text-ink-3" : ""}`}>
+              <Link href={h(`/${l.topic.id}/${l.sub.id}`)} className={`flex items-center gap-2.5 py-2.5 hover:text-accent ${draft ? "text-ink-3" : ""}`}>
                 <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full font-mono text-[11px] ${done ? "bg-green text-white" : "bg-surface-2 text-ink-3"}`}>
                   {done ? "✓" : i + 1}
                 </span>

@@ -5,6 +5,8 @@ import { TOPICS, getSubtopic, lessonKey, LEVEL_LABEL } from "@/lib/topics";
 import { LESSONS } from "@/lib/lessons";
 import { Level } from "@/components/Level";
 import { Crumbs } from "@/components/Crumbs";
+import { getMessages } from "@/lib/messages";
+import type { Locale } from "@/lib/i18n";
 import { Rail } from "@/components/lesson/Rail";
 import { MarkDone } from "@/components/ProgressBits";
 
@@ -12,14 +14,17 @@ export function generateStaticParams() {
   return TOPICS.flatMap((t) => t.subs.map((s) => ({ topic: t.id, sub: s.id })));
 }
 
-export async function generateMetadata({ params }: PageProps<"/[topic]/[sub]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[lang]/[topic]/[sub]">): Promise<Metadata> {
   const { topic, sub } = await params;
   const hit = getSubtopic(topic, sub);
   return { title: hit ? `${hit.sub.name} ${hit.sub.zh}` : "課程" };
 }
 
-export default async function LessonPage({ params }: PageProps<"/[topic]/[sub]">) {
-  const { topic, sub } = await params;
+export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/[sub]">) {
+  const { lang, topic, sub } = await params;
+  const locale = lang as Locale;
+  const t18n = getMessages(locale);
+  const h = (path: string) => `/${lang}${path}`;
   const hit = getSubtopic(topic, sub);
   if (!hit) notFound();
   const { topic: t, sub: s } = hit;
@@ -31,7 +36,7 @@ export default async function LessonPage({ params }: PageProps<"/[topic]/[sub]">
 
   return (
     <>
-      <Crumbs items={[{ href: "/", label: "主題" }, { href: `/${t.id}`, label: t.en }, { label: s.name }]} />
+      <Crumbs items={[{ href: h(""), label: t18n.nav.topics }, { href: h(`/${t.id}`), label: t.en }, { label: s.name }]} />
       <div className="mb-7">
         <div className="eyebrow">
           {t.en} · {String(idx + 1).padStart(2, "0")} / {String(t.subs.length).padStart(2, "0")}
@@ -41,14 +46,14 @@ export default async function LessonPage({ params }: PageProps<"/[topic]/[sub]">
           <small className="mt-1.5 block font-sans text-[15px] font-medium tracking-normal text-ink-3">{s.zh}</small>
         </h1>
         {s.desc && <p className="m-0 max-w-[62ch] text-[16px] text-ink-2">{s.desc}。</p>}
-        <p className="mt-2 max-w-[62ch] text-[14px] text-ink-3"><span className="font-semibold text-ink-2">用在：</span>{s.apply}</p>
+        <p className="mt-2 max-w-[62ch] text-[14px] text-ink-3"><span className="font-semibold text-ink-2">{t18n.lesson.apply}</span>{s.apply}</p>
       </div>
 
       <div className="mt-[22px] mb-9 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line md:grid-cols-4">
-        <Fact label="時間複雜度" mono>{s.time}</Fact>
-        <Fact label="空間複雜度" mono>{s.space}</Fact>
-        <Fact label="難度">{LEVEL_LABEL[s.lvl]} <Level n={s.lvl} /></Fact>
-        <Fact label="前置知識">{lesson?.prereq ?? "—"}</Fact>
+        <Fact label={t18n.lesson.time} mono>{s.time}</Fact>
+        <Fact label={t18n.lesson.space} mono>{s.space}</Fact>
+        <Fact label={t18n.lesson.level}>{LEVEL_LABEL[s.lvl]} <Level n={s.lvl} /></Fact>
+        <Fact label={t18n.lesson.prereq}>{lesson?.prereq ?? "—"}</Fact>
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_184px]">
@@ -67,8 +72,8 @@ export default async function LessonPage({ params }: PageProps<"/[topic]/[sub]">
           </div>
 
           <div className="mt-5 flex justify-between gap-3">
-            <PagerLink href={prev ? `/${t.id}/${prev.id}` : undefined} label="上一篇" name={prev?.name} />
-            <PagerLink href={next ? `/${t.id}/${next.id}` : undefined} label="下一篇" name={next?.name} right />
+            <PagerLink href={prev ? h(`/${t.id}/${prev.id}`) : undefined} label={t18n.lesson.prev} name={prev?.name} />
+            <PagerLink href={next ? h(`/${t.id}/${next.id}`) : undefined} label={t18n.lesson.next} name={next?.name} right />
           </div>
         </div>
         <Rail lessonId={key} />

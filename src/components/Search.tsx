@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { TOPICS, KIND_LABEL, type GlyphId, type Level as LevelNum } from "@/lib/topics";
 import { TopicGlyph } from "./TopicGlyph";
+import { useHref } from "./LocaleProvider";
 import { Level } from "./Level";
 
 interface Entry {
@@ -81,6 +82,7 @@ function Mark({ text, tokens }: { text: string; tokens: string[] }) {
 
 export function Search() {
   const router = useRouter();
+  const h = useHref();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
@@ -116,7 +118,7 @@ export function Search() {
   const go = (href: string) => {
     setOpen(false);
     reset();
-    router.push(href);
+    router.push(h(href));
   };
 
   // ⌘K / Ctrl+K 開關
