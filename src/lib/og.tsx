@@ -1,5 +1,6 @@
 import type { ImageResponseOptions } from "next/server";
 import type { Locale } from "./i18n";
+import { LOGO_FAINT_OPACITY, LOGO_SHAPES, LOGO_VIEWBOX } from "./logo";
 
 /**
  * Open Graph 圖片的共用部分：尺寸、字型、版型。
@@ -77,7 +78,7 @@ export function OgCard({ locale, eyebrow, title, subtitle, siteName, tagline }: 
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-        <div style={{ width: 18, height: 18, borderRadius: 5, background: C.accent }} />
+        <OgLogo size={44} />
         <div style={{ fontSize: 30, fontWeight: 700 }}>{siteName}</div>
         <div style={{ fontSize: 24, color: C.ink3 }}>{tagline}</div>
       </div>
@@ -93,6 +94,23 @@ export function OgCard({ locale, eyebrow, title, subtitle, siteName, tagline }: 
         <div style={{ fontSize: 22, color: C.ink3 }}>{locale === "zh-Hant" ? "概念 · 步驟 · 互動示範 · 程式碼 · 練習題" : "Concept · Steps · Demo · Code · Practice"}</div>
       </div>
     </div>
+  );
+}
+
+/** 站台 logo。satori 不吃 CSS class，顏色直接寫在屬性上，固定用淺色主題。 */
+function OgLogo({ size }: { size: number }) {
+  const color = { ink: C.ink, accent: C.accent, faint: C.ink };
+  return (
+    <svg width={size} height={size} viewBox={LOGO_VIEWBOX}>
+      {LOGO_SHAPES.map((s, i) => {
+        const opacity = s.role === "faint" ? LOGO_FAINT_OPACITY : 1;
+        return s.kind === "path" ? (
+          <path key={i} d={s.d} fill="none" stroke={color[s.role]} strokeOpacity={opacity} strokeWidth={s.width} strokeLinecap="round" strokeLinejoin="round" />
+        ) : (
+          <circle key={i} cx={s.cx} cy={s.cy} r={s.r} fill={color[s.role]} fillOpacity={opacity} />
+        );
+      })}
+    </svg>
   );
 }
 

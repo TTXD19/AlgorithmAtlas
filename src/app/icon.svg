@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 站台 logo「格點路徑」，數值同 src/lib/logo.ts。分頁上只有 16px，省略淡色格點。 -->
+  <style>
+    .i { fill: #171c23 }
+    .a { fill: #2a4bd7 }
+    .p { fill: none; stroke: #2a4bd7; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round }
+    @media (prefers-color-scheme: dark) {
+      .i { fill: #e8eae4 }
+      .a { fill: #7b93ff }
+      .p { stroke: #7b93ff }
+    }
+  </style>
+  <path class="p" d="M7 25V16h9V7h9"/>
+  <circle class="i" cx="7" cy="25" r="3.5"/>
+  <circle class="a" cx="7" cy="16" r="2.3"/>
+  <circle class="a" cx="16" cy="16" r="2.3"/>
+  <circle class="a" cx="16" cy="7" r="2.3"/>
+  <circle class="a" cx="25" cy="7" r="3.9"/>
+</svg>
