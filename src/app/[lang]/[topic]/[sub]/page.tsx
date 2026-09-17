@@ -11,7 +11,8 @@ import { getMessages } from "@/lib/messages";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { Rail } from "@/components/lesson/Rail";
 import { MarkDone } from "@/components/ProgressBits";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, localizedUrl } from "@/lib/site";
+import { JsonLd } from "@/components/JsonLd";
 
 export function generateStaticParams() {
   return TOPICS.flatMap((t) => t.subs.map((s) => ({ topic: t.id, sub: s.id })));
@@ -49,6 +50,22 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
 
   return (
     <>
+      {/* LearningResource 而不是 Course：Google 的 Course 富摘要是給課程目錄用的，要 provider 等欄位，
+          單篇教學誤用會被當成垃圾標記。LearningResource 語意正確，Google 不會渲染但也不會懲罰。 */}
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "LearningResource",
+          name: `${s.name} ${s.zh}`,
+          description: s.desc ? `${s.desc}${t18n.lesson.fullStop}` : s.apply,
+          url: localizedUrl(locale, `/${t.id}/${s.id}`),
+          inLanguage: lang,
+          learningResourceType: "Lesson",
+          educationalLevel: getLevelLabel(locale)[s.lvl],
+          isAccessibleForFree: true,
+          isPartOf: { "@type": "WebSite", name: t18n.site.name, url: localizedUrl(locale, "") },
+        }}
+      />
       <Crumbs items={[{ href: h(""), label: t18n.nav.topics }, { href: h(`/${t.id}`), label: t.en }, { label: s.name }]} />
       <div className="mb-7">
         <div className="eyebrow">

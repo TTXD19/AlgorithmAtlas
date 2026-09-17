@@ -7,7 +7,8 @@ import { WRITTEN_COUNT } from "@/content/registry";
 import { TopicGlyph } from "@/components/TopicGlyph";
 import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
 import type { Metadata } from "next";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, localizedUrl } from "@/lib/site";
+import { JsonLd } from "@/components/JsonLd";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
   const { lang } = await params;
@@ -26,6 +27,16 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: t18n.site.name,
+          url: localizedUrl(locale, ""),
+          description: t18n.site.description,
+          inLanguage: lang,
+        }}
+      />
       <div className="mb-10 grid grid-cols-1 items-end gap-10 md:grid-cols-[minmax(0,1fr)_300px]">
         <div>
           <div className="eyebrow">Topic-based curriculum</div>
