@@ -55,27 +55,23 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
         <Fact label={t18n.lesson.time} mono>{s.time}</Fact>
         <Fact label={t18n.lesson.space} mono>{s.space}</Fact>
         <Fact label={t18n.lesson.level}>{getLevelLabel(locale)[s.lvl]} <Level n={s.lvl} /></Fact>
-        <Fact label={t18n.lesson.prereq}>{loaded?.kind === "modern" ? loaded.prereq : loaded?.kind === "legacy" ? loaded.lesson.prereq : "—"}</Fact>
+        <Fact label={t18n.lesson.prereq}>{loaded.prereq}</Fact>
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_184px]">
         <div>
-          {loaded?.kind === "modern" && !loaded.translated && (
+          {!loaded.translated && (
             <p className="mb-6 max-w-[66ch] rounded-lg border border-line bg-surface-2 px-4 py-2.5 text-[13.5px] text-ink-2">
               {t18n.lesson.untranslated}
             </p>
           )}
 
-          {loaded?.kind === "modern" ? (
-            <LessonBody skeleton={loaded.skeleton} text={loaded.text} Concept={loaded.Concept} locale={loaded.translated ? locale : DEFAULT_LOCALE} />
-          ) : loaded?.kind === "legacy" ? (
-            <loaded.lesson.Body />
-          ) : (
-            <div className="max-w-[66ch] rounded-xl border border-dashed border-line-strong p-7 text-center text-ink-3">
-              <b className="mb-1 block text-ink">{s.name}</b>
-              {t18n.lesson.untranslated}
-            </div>
-          )}
+          <LessonBody
+            skeleton={loaded.skeleton}
+            text={loaded.text}
+            Concept={loaded.Concept}
+            locale={loaded.translated ? locale : DEFAULT_LOCALE}
+          />
 
           <div className="mt-3 border-t border-line pt-[22px] lg:hidden">
             <MarkDone lessonId={key} />

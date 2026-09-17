@@ -3,7 +3,7 @@ import { type TopicKind, type Topic } from "@/lib/topics";
 import { getTopics, getKindLabel } from "@/lib/topics-text";
 import { getMessages } from "@/lib/messages";
 import type { Locale } from "@/lib/i18n";
-import { LESSONS } from "@/lib/lessons";
+import { WRITTEN_COUNT } from "@/content/registry";
 import { TopicGlyph } from "@/components/TopicGlyph";
 import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
 
@@ -15,7 +15,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const kindLabel = getKindLabel(locale);
   const t18n = getMessages(locale);
   const total = topics.reduce((a, t) => a + t.subs.length, 0);
-  const written = Object.keys(LESSONS).length;
 
   return (
     <>
@@ -40,7 +39,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line">
           <Stat n={topics.length} label={t18n.home.statTopics} />
           <Stat n={total} label={t18n.home.statLessons} />
-          <Stat n={written} label={t18n.home.statWritten} />
+          <Stat n={WRITTEN_COUNT} label={t18n.home.statWritten} />
           <Stat n={<DoneTotal />} label={t18n.home.statDone} />
         </div>
       </div>
