@@ -152,6 +152,7 @@ export const en: TopicsText = {
     },
     graph: {
       zh: "Traversal, shortest paths, ordering",
+      prereq: ["Queue", "Stack", "Recursion", "Adjacency list"],
       desc: "Start with traversal, then shortest paths, dependency order and connectivity.",
       intro:
         "Graphs describe maps, social networks, task dependencies — anything where things relate to other things. This topic starts with the two basic traversals and works up through cycle detection, topological sort, the shortest-path family and minimum spanning trees.",
@@ -220,6 +221,8 @@ export const en: TopicsText = {
       zh: "Recursion",
       desc: "A function calling itself, with the call stack remembering the way back",
       apply: "Tree traversal, DFS, divide and conquer, and where DP starts",
+      time: "Depends on the recursion tree",
+      space: "O(depth)",
     },
     "foundations/amortized": {
       zh: "Amortised analysis",
@@ -230,16 +233,19 @@ export const en: TopicsText = {
       zh: "Arrays and dynamic arrays",
       desc: "Contiguous memory, O(1) access, but inserting in the middle shifts everything",
       apply: "Every language's list or vector",
+      time: "Access O(1), insert O(n)",
     },
     "arrays/prefix-sum": {
       zh: "Prefix sums",
       desc: "Accumulate once, and a range sum becomes a single subtraction",
       apply: "Range totals in reports, subarray-sum problems",
+      time: "Build O(n), query O(1)",
     },
     "arrays/hash-table": {
       zh: "Hash tables",
       desc: "Hash functions, collision handling, load factor",
       apply: "Caches, sessions, database indexes, deduplication",
+      time: "O(1) average",
     },
     "arrays/hash-map-apps": {
       zh: "Counting and deduplication",
@@ -255,11 +261,13 @@ export const en: TopicsText = {
       zh: "Singly linked lists",
       desc: "Nodes, pointers, head and sentinel nodes",
       apply: "Building pointer intuition; implementing queues and stacks",
+      time: "Insert O(1), search O(n)",
     },
     "linked-list/doubly": {
       zh: "Doubly linked lists",
       desc: "Walk both ways, delete any known node in O(1)",
       apply: "LRU caches, browsing history, undo/redo",
+      time: "O(1) delete",
     },
     "linked-list/reverse": {
       zh: "Reversing a list",
@@ -380,6 +388,7 @@ export const en: TopicsText = {
       zh: "Quicksort",
       desc: "Pick a pivot, split, recurse. Fastest on average",
       apply: "The basis of most built-in sorts; Quick Select finds the kth largest",
+      time: "O(n log n) average",
     },
     "sorting/heap-sort": {
       zh: "Heapsort",
@@ -440,11 +449,13 @@ export const en: TopicsText = {
       zh: "Combinations and pruning",
       desc: "Start from an index to avoid repeats; sort first to prune early",
       apply: "Making up an amount, picking a team",
+      time: "Exponential",
     },
     "backtracking/n-queens": {
       zh: "N-queens",
       desc: "Place row by row, tracking attacked columns and diagonals in sets",
       apply: "The prototype constraint-satisfaction problem: timetabling, rostering",
+      time: "Exponential",
     },
     "backtracking/word-search": {
       zh: "Backtracking on a grid",
@@ -615,6 +626,7 @@ export const en: TopicsText = {
       zh: "Rolling hash matching",
       desc: "Update the hash in O(1) as the window moves",
       apply: "Plagiarism detection, multi-pattern matching",
+      time: "O(n+m) average",
     },
     "string/kmp": {
       zh: "Prefix-function matching",

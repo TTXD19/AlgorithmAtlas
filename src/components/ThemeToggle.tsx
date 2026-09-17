@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "./LocaleProvider";
+
 /**
  * 在深淺色之間切換。
  *
@@ -11,6 +13,7 @@
  * 只要 localStorage 沒有值就成立。按下去之後才固定成明確的選擇。
  */
 export function ThemeToggle() {
+  const t = useT();
   const toggle = () => {
     const root = document.documentElement;
     const set = root.getAttribute("data-theme");
@@ -25,7 +28,8 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      title="切換深淺色"
+      title={t.nav.theme}
+      aria-label={t.nav.theme}
       className="cursor-pointer rounded-md px-2.5 py-1.5 text-[13.5px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"
     >
       ◐

@@ -2,10 +2,10 @@ import Link from "next/link";
 import { SITE_URL } from "@/lib/site";
 import { JsonLd } from "./JsonLd";
 
-export function Crumbs({ items }: { items: { href?: string; label: string }[] }) {
+export function Crumbs({ items, label }: { items: { href?: string; label: string }[]; label: string }) {
   return (
     <>
-      <nav className="mb-3.5 flex items-center gap-2 text-[13px] text-ink-3" aria-label="麵包屑">
+      <nav className="mb-3.5 flex items-center gap-2 text-[13px] text-ink-3" aria-label={label}>
         {items.map((it, i) => (
           <span key={i} className="flex items-center gap-2">
             {i > 0 && <span className="opacity-60">/</span>}

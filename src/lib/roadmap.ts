@@ -1,4 +1,6 @@
 import { TOPICS, getSubtopic, type Subtopic, type Topic } from "./topics";
+import { getSubtopicBy } from "./topics-text";
+import { DEFAULT_LOCALE, type Locale } from "./i18n";
 
 export interface RoadmapNode {
   id: string;
@@ -52,6 +54,43 @@ export const ROADMAP_NODES: RoadmapNode[] = [
   { id: "math",          label: "Math & Number Theory",   zh: "數學與數論",    x: 820, y: 845, lessons: ["math/gcd", "math/sieve", "math/modular", "math/combinatorics"] },
 ];
 
+/**
+ * 其他語言的節點副標。跟 topics-text 一樣，欄位名沿用 `zh`，語意上是
+ * 「顯示在英文名旁邊的本地化副標」。漏掉任何節點會被 validateRoadmap 抓到。
+ */
+const NODE_SUBTITLES: Partial<Record<Locale, Record<string, string>>> = {
+  en: {
+    foundations: "Complexity and recursion",
+    arrays: "Access by index and by key",
+    "two-pointers": "Two indices, one pass",
+    stack: "LIFO, FIFO and monotonic variants",
+    sorting: "Comparison and counting sorts",
+    "binary-search": "Linear and binary search",
+    "sliding-window": "A moving range over a sequence",
+    "linked-list": "Nodes joined by pointers",
+    divide: "Split, solve, combine",
+    trees: "Binary trees and BSTs",
+    tries: "Prefix trees",
+    heap: "Always know the smallest",
+    backtracking: "Try, undo, try again",
+    "range-trees": "Range query structures",
+    strings: "String matching algorithms",
+    greedy: "Take the best choice now",
+    graphs: "Representing and traversing graphs",
+    dp1: "DP over a single index",
+    "adv-graphs": "Shortest paths and spanning trees",
+    dp2: "Two-dimensional and advanced DP",
+    bits: "Working with bits directly",
+    math: "GCD, primes and modular arithmetic",
+  },
+};
+
+/** 依語言取得節點。原文語言直接回傳 ROADMAP_NODES，其他語言換掉副標。 */
+export function getRoadmapNodes(locale: Locale): RoadmapNode[] {
+  const o = NODE_SUBTITLES[locale];
+  return o ? ROADMAP_NODES.map((n) => ({ ...n, zh: o[n.id] ?? n.zh })) : ROADMAP_NODES;
+}
+
 export const ROADMAP_EDGES: RoadmapEdge[] = [
   ["foundations", "arrays"],
   ["arrays", "two-pointers"],
@@ -92,20 +131,20 @@ export interface RoadmapLesson {
 }
 
 /** 把 topic/sub 字串解析成實際資料；指到不存在的課程會直接丟錯。 */
-export function resolveLessons(keys: string[]): RoadmapLesson[] {
+export function resolveLessons(keys: string[], locale: Locale = DEFAULT_LOCALE): RoadmapLesson[] {
   return keys.map((key) => {
     const [t, s] = key.split("/");
-    const hit = getSubtopic(t, s);
+    const hit = getSubtopicBy(locale, t, s);
     if (!hit) throw new Error(`Roadmap 指到不存在的課程：${key}`);
     return { key, topic: hit.topic, sub: hit.sub };
   });
 }
 
 /** 依拓撲順序（依 y 再依 x）攤平所有課程，用來找「建議下一步」。 */
-export function roadmapOrder(): RoadmapLesson[] {
+export function roadmapOrder(locale: Locale = DEFAULT_LOCALE): RoadmapLesson[] {
   return [...ROADMAP_NODES]
     .sort((a, b) => a.y - b.y || a.x - b.x)
-    .flatMap((n) => resolveLessons(n.lessons));
+    .flatMap((n) => resolveLessons(n.lessons, locale));
 }
 
 /** 開發時檢查：每篇課程都要恰好出現在一個節點、每條邊都指到存在的節點。 */
@@ -127,6 +166,14 @@ export function validateRoadmap() {
   const ids = new Set(ROADMAP_NODES.map((n) => n.id));
   ROADMAP_EDGES.forEach(([a, b]) => {
     if (!ids.has(a) || !ids.has(b)) problems.push(`邊指到不存在的節點：${a} → ${b}`);
+  });
+  Object.entries(NODE_SUBTITLES).forEach(([locale, subtitles]) => {
+    ids.forEach((id) => {
+      if (!subtitles[id]) problems.push(`${locale} 缺少節點副標：${id}`);
+    });
+    Object.keys(subtitles).forEach((id) => {
+      if (!ids.has(id)) problems.push(`${locale} 有多餘的節點副標：${id}`);
+    });
   });
   return problems;
 }

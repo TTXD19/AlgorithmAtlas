@@ -275,7 +275,7 @@ export function Search() {
                             </span>
                             <span className="flex shrink-0 items-center gap-2.5">
                               <span className="hidden max-w-[110px] truncate text-[11.5px] text-ink-3 sm:block">{e.context}</span>
-                              {e.lvl && <Level n={e.lvl} />}
+                              {e.lvl && <Level n={e.lvl} label={tx.lesson.level} />}
                             </span>
                           </button>
                         </li>

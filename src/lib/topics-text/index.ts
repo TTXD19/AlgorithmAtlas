@@ -30,10 +30,10 @@ export function getTopics(locale: Locale): Topic[] {
     const tt = o.topics[t.id as keyof typeof o.topics];
     return {
       ...t,
-      ...(tt ? { zh: tt.zh, desc: tt.desc, intro: tt.intro ?? t.intro, applications: tt.applications } : {}),
+      ...(tt ? { zh: tt.zh, desc: tt.desc, intro: tt.intro ?? t.intro, prereq: tt.prereq ?? t.prereq, applications: tt.applications } : {}),
       subs: t.subs.map((s): Subtopic => {
         const st = o.subs[`${t.id}/${s.id}` as keyof typeof o.subs];
-        return st ? { ...s, zh: st.zh, desc: st.desc ?? s.desc, apply: st.apply } : s;
+        return st ? { ...s, zh: st.zh, desc: st.desc ?? s.desc, apply: st.apply, time: st.time ?? s.time, space: st.space ?? s.space } : s;
       }),
     };
   });

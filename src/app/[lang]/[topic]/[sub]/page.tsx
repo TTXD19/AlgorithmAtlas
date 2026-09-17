@@ -66,7 +66,7 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
           isPartOf: { "@type": "WebSite", name: t18n.site.name, url: localizedUrl(locale, "") },
         }}
       />
-      <Crumbs items={[{ href: h(""), label: t18n.nav.topics }, { href: h(`/${t.id}`), label: t.en }, { label: s.name }]} />
+      <Crumbs label={t18n.lesson.breadcrumb} items={[{ href: h(""), label: t18n.nav.topics }, { href: h(`/${t.id}`), label: t.en }, { label: s.name }]} />
       <div className="mb-7">
         <div className="eyebrow">
           {t.en} · {String(idx + 1).padStart(2, "0")} / {String(t.subs.length).padStart(2, "0")}
@@ -82,7 +82,7 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
       <div className="mt-[22px] mb-9 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line md:grid-cols-4">
         <Fact label={t18n.lesson.time} mono>{s.time}</Fact>
         <Fact label={t18n.lesson.space} mono>{s.space}</Fact>
-        <Fact label={t18n.lesson.level}>{getLevelLabel(locale)[s.lvl]} <Level n={s.lvl} /></Fact>
+        <Fact label={t18n.lesson.level}>{getLevelLabel(locale)[s.lvl]} <Level n={s.lvl} label={t18n.lesson.level} /></Fact>
         <Fact label={t18n.lesson.prereq}>{loaded.prereq}</Fact>
       </div>
 

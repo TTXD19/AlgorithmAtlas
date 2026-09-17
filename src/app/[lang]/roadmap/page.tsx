@@ -24,7 +24,7 @@ export default async function RoadmapPage({ params }: PageProps<"/[lang]/roadmap
   if (problems.length) throw new Error(`路線圖資料有誤：\n${problems.join("\n")}`);
   return (
     <>
-      <Crumbs items={[{ href: `/${lang}`, label: t18n.nav.topics }, { label: t18n.nav.roadmap }]} />
+      <Crumbs label={t18n.lesson.breadcrumb} items={[{ href: `/${lang}`, label: t18n.nav.topics }, { label: t18n.nav.roadmap }]} />
       <RoadmapView />
     </>
   );
