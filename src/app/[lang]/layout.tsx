@@ -8,6 +8,7 @@ import { LocaleProvider } from "@/components/LocaleProvider";
 import { getMessages } from "@/lib/messages";
 import { ProgressSync } from "@/components/ProgressSync";
 import { Analytics } from "@vercel/analytics/next";
+import { SITE_URL } from "@/lib/site";
 import "../globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -27,18 +28,16 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
 });
 
-const DESCRIPTION: Record<Locale, string> = {
-  "zh-Hant": "主題式的演算法學習網站：每個主題底下是一組相關演算法，每一篇都有概念、步驟、互動示範、程式碼與練習題。",
-  en: "A topic-based guide to algorithms. Every lesson has the same shape: the concept, the steps, an interactive demo, the code, and practice problems.",
-};
-
 export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Promise<Metadata> {
   const { lang } = await params;
   const locale = lang as Locale;
-  const name = getMessages(locale).site.name;
+  const { name, description } = getMessages(locale).site;
   return {
+    // 各頁的 canonical、hreflang 與 Open Graph 由 pageMeta() 逐頁給，不放在這裡：
+    // metadata 是淺層合併，寫在 layout 只會被第一個定義 alternates 的頁面整組蓋掉。
+    metadataBase: new URL(SITE_URL),
     title: { default: name, template: `%s · ${name}` },
-    description: DESCRIPTION[locale],
+    description,
   };
 }
 

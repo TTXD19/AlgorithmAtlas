@@ -4,6 +4,7 @@ export const en: Messages = {
   site: {
     name: "Begin Algo",
     tagline: "演算法圖鑑",
+    description: "A topic-based guide to algorithms. Every lesson has the same shape: the concept, the steps, an interactive demo, the code, and practice problems.",
   },
   nav: {
     topics: "Topics",
@@ -33,6 +34,10 @@ export const en: Messages = {
     demo: "Interactive demo",
     code: "Code",
     problems: "Practice",
+  },
+  roadmap: {
+    title: "Roadmap",
+    description: "Every algorithm lesson on the site laid out in learning order: start with complexity and recursion, move through arrays, trees and graphs, and finish with dynamic programming. Every stop lists its prerequisites so you never get stuck.",
   },
   home: {
     headline: "One topic at a time, until the algorithms actually stick.",

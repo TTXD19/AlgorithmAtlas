@@ -11,6 +11,7 @@ import { getMessages } from "@/lib/messages";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { Rail } from "@/components/lesson/Rail";
 import { MarkDone } from "@/components/ProgressBits";
+import { pageMeta } from "@/lib/site";
 
 export function generateStaticParams() {
   return TOPICS.flatMap((t) => t.subs.map((s) => ({ topic: t.id, sub: s.id })));
@@ -18,8 +19,18 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/[topic]/[sub]">): Promise<Metadata> {
   const { lang, topic, sub } = await params;
-  const hit = getSubtopicBy(lang as Locale, topic, sub);
-  return { title: hit ? `${hit.sub.name} ${hit.sub.zh}` : "課程" };
+  const locale = lang as Locale;
+  const hit = getSubtopicBy(locale, topic, sub);
+  if (!hit) return {};
+  const { topic: t, sub: s } = hit;
+  const t18n = getMessages(locale);
+  // 一句講它是什麼，再一句講用在哪：跟頁面開頭給讀者看的是同一組文字。
+  const description = [s.desc, `${t18n.lesson.apply}${s.apply}`].filter(Boolean).join(`${t18n.lesson.fullStop} `);
+  return pageMeta(locale, `/${t.id}/${s.id}`, {
+    title: `${s.name} ${s.zh}`,
+    description,
+    siteName: t18n.site.name,
+  });
 }
 
 export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/[sub]">) {

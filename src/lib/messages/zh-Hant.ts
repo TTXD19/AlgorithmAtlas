@@ -8,6 +8,7 @@ export const zhHant = {
   site: {
     name: "演算法圖鑑",
     tagline: "Begin Algo",
+    description: "主題式的演算法學習網站：每個主題底下是一組相關演算法，每一篇都有概念、步驟、互動示範、程式碼與練習題。",
   },
   nav: {
     topics: "主題",
@@ -37,6 +38,10 @@ export const zhHant = {
     demo: "互動示範",
     code: "程式碼",
     problems: "練習題",
+  },
+  roadmap: {
+    title: "學習路線",
+    description: "把全站的演算法課程排成一條有先後順序的路線：從複雜度與遞迴出發，經過陣列、樹、圖，走到動態規劃。每一站都標好前置知識，照著走不會卡關。",
   },
   home: {
     headline: "一次一個主題，把演算法真的學進去。",

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { TOPICS } from "@/lib/topics";
-import { LOCALES, type Locale } from "@/lib/i18n";
-import { SITE_URL } from "@/lib/site";
+import { LOCALES } from "@/lib/i18n";
+import { localizedUrl, languageAlternates } from "@/lib/site";
 
 /**
  * 全站 sitemap。
@@ -23,20 +23,12 @@ function paths(): string[] {
   ];
 }
 
-const localized = (locale: Locale, path: string) => `${SITE_URL}/${locale}${path}`;
-
 export default function sitemap(): MetadataRoute.Sitemap {
   return paths().flatMap((path) => {
     // 同一頁的各語言版本互相指認，Google 才不會把它們當成彼此的重複內容。
-    // x-default 指向沒有語言前綴的網址：proxy.ts 會依 Accept-Language 決定給哪個版本，
-    // 正好就是「沒有更適合的語言時該去哪」的定義。
-    const languages = Object.fromEntries([
-      ...LOCALES.map((l) => [l, localized(l, path)]),
-      ["x-default", `${SITE_URL}${path || "/"}`],
-    ]) as Record<Locale | "x-default", string>;
-
+    const languages = languageAlternates(path);
     return LOCALES.map((locale) => ({
-      url: localized(locale, path),
+      url: localizedUrl(locale, path),
       alternates: { languages },
     }));
   });

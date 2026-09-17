@@ -6,6 +6,14 @@ import type { Locale } from "@/lib/i18n";
 import { WRITTEN_COUNT } from "@/content/registry";
 import { TopicGlyph } from "@/components/TopicGlyph";
 import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
+
+export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
+  const { lang } = await params;
+  const { name, description } = getMessages(lang as Locale).site;
+  return pageMeta(lang as Locale, "", { description, siteName: name });
+}
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;

@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/ProgressBits";
 import { Crumbs } from "@/components/Crumbs";
 import { getMessages } from "@/lib/messages";
 import type { Locale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/site";
 
 export function generateStaticParams() {
   return TOPICS.map((t) => ({ topic: t.id }));
@@ -15,8 +16,15 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/[topic]">): Promise<Metadata> {
   const { lang, topic } = await params;
-  const t = getTopicBy(lang as Locale, topic);
-  return { title: t ? `${t.en} ${t.zh}` : undefined };
+  const locale = lang as Locale;
+  const t = getTopicBy(locale, topic);
+  if (!t) return {};
+  // intro 是一段完整的話，長度剛好適合搜尋結果的摘要；desc 太短，只在沒 intro 時退用。
+  return pageMeta(locale, `/${t.id}`, {
+    title: `${t.en} ${t.zh}`,
+    description: t.intro ?? t.desc,
+    siteName: getMessages(locale).site.name,
+  });
 }
 
 const GRID = "grid grid-cols-[24px_minmax(0,1fr)_92px] md:grid-cols-[30px_minmax(0,1fr)_150px_92px_96px] items-center gap-4";
