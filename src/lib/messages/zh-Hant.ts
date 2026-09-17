@@ -7,7 +7,7 @@
 export const zhHant = {
   site: {
     name: "演算法圖鑑",
-    tagline: "Algorithm Atlas",
+    tagline: "Begin Algo",
   },
   nav: {
     topics: "主題",

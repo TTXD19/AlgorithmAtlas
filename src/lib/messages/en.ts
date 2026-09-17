@@ -2,7 +2,7 @@ import type { Messages } from "./zh-Hant";
 
 export const en: Messages = {
   site: {
-    name: "Algorithm Atlas",
+    name: "Begin Algo",
     tagline: "演算法圖鑑",
   },
   nav: {
