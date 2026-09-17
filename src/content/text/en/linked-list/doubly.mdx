@@ -1,0 +1,5 @@
+In a **doubly linked list**, every node records one extra pointer, `prev`. That single pointer buys one crucial ability: **given a node, you can unlink it from the list in O(1)**. A singly linked list cannot, because it has no idea which node comes before, so it has to search again from the head — O(n).
+
+The price is that every insertion and deletion touches **four pointers** instead of two, and it is correspondingly easier to wire up wrongly. The standard remedy is **two sentinels**: `head` and `tail` always exist, never hold data, and every real node lives between them. That way every real node is guaranteed to have both a prev and a next, so inserting at the front and deleting the last element need no special cases.
+
+The classic use of a doubly linked list is **pairing it with a hash table to build an LRU cache**: the hash table handles "find the node for this key" in O(1), the list handles "keep the usage order", and each structure covers the other's weakness. This hash-table-plus-list combination shows up again in OrderedDict, in LFU caches, and in plenty of other places that need to find something fast and then reorder it fast.

@@ -1,0 +1,11 @@
+import { GrowthChart } from "@/components/lesson/demos/GrowthChart";
+
+Big-O answers one question: **as the input size n grows, how fast does the amount of work grow with it?** It is not a number of seconds but the shape of that growth. O(n) means the growth is a straight line, O(n²) is a parabola, and O(log n) is almost flat.
+
+<GrowthChart />
+
+Because only the shape matters, Big-O comes with two simplifying rules: **drop the constants** (3n and n are both O(n)) and **keep only the largest term** (n² + n is O(n²)). Together they let the same algorithm, written on different machines in different languages, be compared using one notation.
+
+**Space complexity** describes the extra memory used in exactly the same way. The classic trade is to spend space to buy time: add a hash table and an O(n²) comparison becomes O(n).
+
+The common complexities, fastest to slowest: O(1) → O(log n) → O(n) → O(n log n) → O(n²) → O(2ⁿ) → O(n!). The first four are fine with millions of items; the last three stop being usable very quickly, and the demo below lets you feel that for yourself.

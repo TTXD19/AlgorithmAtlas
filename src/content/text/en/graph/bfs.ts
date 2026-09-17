@@ -32,4 +32,10 @@ export const text: LessonText = {
   demoNote:
     'Starting from node A. Press "Next" to watch the queue advance one ring at a time; the number under each node is its distance from A.',
   codeNote: "Both versions let a single `dist` table do double duty: whether a node was discovered, and how far away it is.",
+  problems: [
+    { src: "LeetCode 1091", name: "Shortest Path in Binary Matrix", diff: "Medium" },
+    { src: "LeetCode 994", name: "Rotting Oranges", diff: "Medium" },
+    { src: "LeetCode 127", name: "Word Ladder", diff: "Medium" },
+    { src: "LeetCode 200", name: "Number of Islands", diff: "Medium" },
+  ],
 };

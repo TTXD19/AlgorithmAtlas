@@ -1,0 +1,7 @@
+The **fast and slow pointer** technique runs two pointers along the same list at different speeds, or from different starting points, and answers questions from the **distance relationship** between them. The slow pointer takes one step at a time and the fast one takes two, so fast always covers twice the distance slow does — which means that when fast reaches the end, slow is at the **middle**.
+
+**Cycle detection** works on the intuition of a chase. If there is a cycle, fast enters it and keeps going round; once slow enters too, fast closes the gap by 1 each round and catches up within at most one lap. If there is no cycle, fast hits None first. The whole thing uses two pointers, O(n) time and O(1) space.
+
+**Finding where the cycle starts** adds one more phase. Let a be the distance from head to the start of the cycle and c the cycle's length. At the meeting point slow has walked a + b and fast has walked 2(a + b), so the difference is a whole number of laps, which gives a ≡ −b (mod c). In other words, walking another a steps from the meeting point lands you exactly on the start of the cycle. So put one pointer back at head, leave the other where they met, move both one step at a time, and where they meet again is the start.
+
+The same family includes the **fixed gap** trick: send fast k steps ahead, then move both at the same speed, and when fast reaches the end slow sits on the kth node from the end. In every case, the point is to maintain a known relationship between the two pointers.

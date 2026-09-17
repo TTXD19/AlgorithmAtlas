@@ -1,0 +1,7 @@
+Combining two **sorted** lists into one sorted list takes a single observation: **the smallest node overall has to be the head of one of the two lists**. Take the smaller head away and what remains is still two sorted lists, so you repeat exactly the same thing. That is a merge. Every node is compared once and attached once, which makes it O(n + m).
+
+In code, a `dummy` node serves as the start of the result and `tail` points at the last node of the result so far. Each round attaches the smaller head to `tail.next`, advances tail, and advances the head of the list it came from. When one list runs out, the rest of the other is already linked together, so **just point tail.next at it** instead of attaching node by node. No new nodes are created, only pointers rewired, so the extra space is O(1).
+
+Merging **k lists** means picking the smallest of k heads every round. Keep those k heads in a **min-heap**: popping the smallest costs O(log k) and pushing its successor back costs O(log k), for O(N log k) in total. The alternative is to merge them in pairs, tournament style, which has the same complexity.
+
+Turn it around and, with the merge as a building block, you get **merge sort on a linked list**: fast and slow pointers find the midpoint and cut there, each half is sorted recursively, and the two are merged. This is the standard way to sort a linked list, and it ties together the previous three lessons — fast and slow pointers, recursion, and merging.

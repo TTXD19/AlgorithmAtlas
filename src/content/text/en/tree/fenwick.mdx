@@ -1,0 +1,7 @@
+A Fenwick tree keeps an array `tree` the same length as the original, where each cell is responsible for a stretch of the array whose length is set by the **lowest set bit of its index**: `lowbit(i) = i & −i`. tree[6] (110₂) covers 2 elements, a[5..6]; tree[8] (1000₂) covers 8 elements, a[1..8]; an odd index covers only itself. The elegance of this split is that any prefix [1, i] breaks into O(log n) of those stretches, and any single position is covered by only O(log n) cells.
+
+**Prefix sum**: start at i, add tree[i], then `i −= lowbit(i)`, which strips the lowest set bit and jumps to the previous stretch. Each jump removes one 1 bit, so there are at most log n of them. **Point update**: start at i, add delta to tree[i], then `i += lowbit(i)` to jump to the next cell that is also responsible for i, until you run past n. Again at most log n jumps.
+
+The two operations look almost identical; one subtracts the lowbit and the other adds it. Seeing why subtracting the lowbit lands exactly on the previous stretch takes a look at the binary, and the demo draws out the stretch each cell covers, so following a few jumps is enough to get the feel of it.
+
+Compared with a **segment tree**: a Fenwick tree can only answer prefix-shaped queries — sums, XOR, counts, anything you can subtract back out — and a range maximum is beyond it, because maximum has no inverse operation. But whenever the problem is a prefix sum, it is shorter, faster and lighter on memory. The relationship between the two is the one between a specialised tool and a general-purpose one.

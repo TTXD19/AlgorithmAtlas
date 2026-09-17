@@ -13,8 +13,6 @@ export interface LessonSkeleton {
   demo: ReactNode;
   /** 程式碼範例。註解一律留英文，不隨語言翻譯 */
   code: Partial<Record<Lang, string>>;
-  /** 練習題。LeetCode 題號與題名本來就是英文，不需要翻譯 */
-  problems: Problem[];
 }
 
 /**
@@ -33,4 +31,10 @@ export interface LessonText {
   demoNote: string;
   codeNote: string;
   problemsNote?: string;
+  /**
+   * 練習題。LeetCode 題號與題名本身是英文，但題名後面常掛著一句提示
+   * （「Rotate Array（三次反轉）」），那句必須隨語言走——放在共用的
+   * skeleton 會讓中文讀者看到英文提示。521 題裡有 371 題有這種提示。
+   */
+  problems: Problem[];
 }

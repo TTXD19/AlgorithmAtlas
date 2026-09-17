@@ -1,0 +1,5 @@
+Recursion is **a function calling itself**, but the part that actually matters is the way of thinking: take a problem of size n and build its answer out of the answer to a smaller version of the same problem. You are responsible for exactly two things — **how to answer the smallest problem directly** (the base case), and **how to assemble the big answer from the small one** (the recursive case).
+
+While the program runs, every call puts a frame on the **call stack**, remembering this level's arguments and where to return once it has an answer. After the descent reaches the base case, those frames pop one by one, passing the answer back up. That is why recursion costs at least O(depth) space, and why recursing too deep overflows the stack.
+
+What trips up beginners most is trying to trace what every level is doing. Don't. **Trust that the recursive call returns the right answer** and only check that your own level uses it correctly. This is the recursive leap of faith, and it is mathematical induction in code form.

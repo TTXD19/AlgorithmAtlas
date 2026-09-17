@@ -1,0 +1,5 @@
+A **prefix sum** is the array of running totals from the start up to each position: `P[i] = a[0] + a[1] + … + a[i-1]`, with one spare slot so that `P[0] = 0`. The sum of any range `a[l..r]` is then `P[r+1] − P[l]`: the total up to r, minus the total before l, leaving exactly the stretch in between.
+
+It is the simplest form of **trading preprocessing for query speed**: build the table once in O(n), and every query afterwards is O(1). The precondition is that **the data does not change**, because altering a single a[i] would force every later P to be updated. If the data is updated as often as it is queried, you need to step up to a Fenwick tree or a segment tree, which belong to the chapter on trees.
+
+That spare `P[0] = 0` slot matters more than it looks: it removes the need to special-case a range that starts at 0. The same idea extends in several directions — prefix maximums, prefix XOR, prefix products (Product of Array Except Self is a prefix product multiplied by a suffix product) — and all it takes is an operation that either has an inverse or only ever needs to accumulate one way.

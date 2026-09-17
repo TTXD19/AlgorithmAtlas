@@ -1,0 +1,5 @@
+DFS picks one path and **keeps going deeper until there is no road left, then backs up to the last fork**, where it takes another route it has not tried. That order — deep first, back up afterwards — is exactly the last-in-first-out behaviour of a **stack**, which is why recursion is the most natural way to write it: the call stack already is the stack you need.
+
+Compared with BFS, DFS **makes no promise about the shortest path**, but it does remember how it got to where it is, and that path information is what makes it the foundation for cycle detection, connected components, topological sorting and enumerating every path.
+
+Every node passes through three states: **undiscovered**, **in progress** (entered, but its neighbours are not all done, so it is still sitting on the stack) and **finished** (every neighbour handled, popped off the stack). A great deal of the advanced work rests on that distinction — running into a node that is still in progress, for example, means the graph contains a cycle.

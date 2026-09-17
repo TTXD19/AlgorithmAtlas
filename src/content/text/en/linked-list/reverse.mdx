@@ -1,0 +1,7 @@
+Reversing a list means **turning every node's next arrow around**: what pointed forwards now points backwards. There is only one hard part — the moment you overwrite `cur.next`, the way forward is gone. So every step has to **save the next node first** and change the pointer second.
+
+The iterative version uses three pointers. `prev` is the head of the part already reversed, starting as None; `cur` is the node being processed; `nxt` holds the way forward. Each round does four things: save nxt, turn the arrow, advance prev, advance cur. When the loop ends cur is None and prev is sitting on the original last node, which is the new head. O(n) time and O(1) extra space.
+
+The recursive version thinks about it differently: **trust** `reverse(head.next)` to reverse the rest and return its new head. Then there is only one thing left to do — the original next node is now the tail of that reversed part, so point its next back at yourself and set your own next to None. The code is shorter, but the call stack is O(n), so a long enough list overflows it.
+
+**Reversing a range** is the common variation. Use **head insertion**: keep cur fixed on the first node of the range and repeatedly lift the node after cur out and splice it in at the front of the range, right − left times. With a dummy node in front, left = 1 needs no special case.

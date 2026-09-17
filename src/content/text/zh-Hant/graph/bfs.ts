@@ -28,4 +28,10 @@ export const text: LessonText = {
   ],
   demoNote: "從節點 A 開始。按「下一步」看佇列如何一層一層推進，節點下方的數字是與 A 的距離。",
   codeNote: "兩個版本都用一個 `dist` 表同時扮演「是否已發現」與「距離多少」兩個角色。",
+  problems: [
+    { src: "LeetCode 1091", name: "Shortest Path in Binary Matrix", diff: "Medium" },
+    { src: "LeetCode 994", name: "Rotting Oranges", diff: "Medium" },
+    { src: "LeetCode 127", name: "Word Ladder", diff: "Medium" },
+    { src: "LeetCode 200", name: "Number of Islands", diff: "Medium" },
+  ],
 };

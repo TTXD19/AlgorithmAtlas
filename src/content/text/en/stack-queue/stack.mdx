@@ -1,0 +1,5 @@
+A **stack** has only three operations: `push` puts something on top, `pop` takes the top off, and `peek` looks at the top. It is **last in, first out** (LIFO): whatever went in most recently comes out first. All three are O(1). It is simple enough to build from the end of an array, where adding and removing are O(1) — which is exactly what a Python list and C++'s `std::stack` do.
+
+The value of a stack is not how fast its operations are, it is that **it remembers the order**. For any problem where the most recently opened thing must close first, or where you need to retrace your steps back out, the structure is already half the answer: matching brackets, nested tags, function calls, `..` in a path, undo/redo, and the iterative form of DFS.
+
+A common extension is to **store a little more on each level**. A Min Stack records "the minimum up to here" next to every element, so after a pop the minimum is simply whatever the level below recorded — no recomputation needed. The monotonic stack in the next lesson instead attaches a condition to when you should pop, which collapses an O(n²) problem down to O(n).

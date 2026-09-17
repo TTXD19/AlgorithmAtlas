@@ -40,10 +40,4 @@ std::vector<int> bfs(const std::vector<std::vector<int>>& adj, int start) {
 export const skeleton: LessonSkeleton = {
   demo: <GraphDemo algo="bfs" />,
   code: { python, cpp },
-  problems: [
-    { src: "LeetCode 1091", name: "Shortest Path in Binary Matrix", diff: "Medium" },
-    { src: "LeetCode 994", name: "Rotting Oranges", diff: "Medium" },
-    { src: "LeetCode 127", name: "Word Ladder", diff: "Medium" },
-    { src: "LeetCode 200", name: "Number of Islands", diff: "Medium" },
-  ],
 };

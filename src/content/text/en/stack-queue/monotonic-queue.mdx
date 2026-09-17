@@ -1,0 +1,7 @@
+A **monotonic queue** is a deque whose values **decrease** from front to back (when you want maximums), which means **the front is always the current window's maximum**. It uses both ends of the deque: the back maintains the monotonic order, and the front evicts elements that have left the window.
+
+The key observation: when a new element x arrives, everything at the back **smaller than x** can be thrown away outright. They are smaller than x, and they entered the window earlier so they will leave earlier — so as long as x is around, they can never be the maximum. Drop them, put x on the back, and the queue stays decreasing on its own.
+
+The front has to be checked for **having slid out of the window**. Since the deque stores indices, pop from the front whenever `dq[0] ≤ i − k`. Because each index is pushed once and popped at most once, n elements cost O(n) in total, beating both the brute-force O(nk) and the heap-based O(n log k).
+
+How it relates to the monotonic stack: both keep their order by popping the useless entries before a new element goes in. The difference is that a monotonic queue also has to evict expired entries from the **front**, which is why it needs a deque. Whenever you want an extremum over a range that slides, reach for this first.

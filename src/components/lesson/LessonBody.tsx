@@ -46,7 +46,7 @@ export function LessonBody({
 
       <Section id="problems">
         {text.problemsNote && <p>{inline(text.problemsNote)}</p>}
-        <Problems items={skeleton.problems} />
+        <Problems items={text.problems} />
       </Section>
     </>
   );

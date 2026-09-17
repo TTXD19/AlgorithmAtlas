@@ -1,0 +1,7 @@
+A **monotonic stack** is an ordinary stack with one extra rule: **its contents always stay increasing or always stay decreasing**. Before pushing a new element, pop everything that would break that order. The moment an element is popped is the moment it finds its answer, because the new element is the first one to its right that is larger (or smaller).
+
+Take "next greater element". The stack decreases from bottom to top and holds indices. A new element x arrives: every element on top that is smaller than x has x as its answer, so pop them one by one and record it, then push x. What remains on the stack is still waiting for something larger. Each index is pushed exactly once and popped at most once, so the whole sweep is **O(n)** — one factor of n cheaper than the brute-force O(n²).
+
+How direction maps to monotonicity: for the **first larger element on the right**, use a decreasing stack and sweep left to right; for the **first smaller element on the right**, use an increasing stack; and for the first larger or smaller element on the **left**, there is no need for a second sweep, because it is simply the new top at the moment of the pop. The largest-rectangle problem gets both boundaries at once precisely because of this.
+
+Equality is worth thinking through. For "strictly greater", pop with `<` and leave equal elements on the stack; for "greater than or equal", pop with `<=`. The histogram problem appends a sentinel bar of height 0 so that every remaining bar is popped and settled at the end.

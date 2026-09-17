@@ -1,0 +1,5 @@
+A hash table does exactly one thing: **O(1) storing and O(1) lookup**. Its power comes from one fixed move. A brute-force solution usually has an inner loop that is searching for something; replace that loop with a hash table lookup and O(n²) becomes O(n). You **trade O(n) of space for one factor of n**.
+
+Almost every problem of this kind is one of four patterns. **Pair lookup**: at x, ask whether target − x has been seen (Two Sum). **Counting**: the key is the element and the value is its count (Valid Anagram, Top K Frequent). **Grouping**: design a key that every member of a group computes to identically (Group Anagrams uses the sorted string). **Membership**: dump everything into a set up front, and any "is it there" is O(1) afterwards (Longest Consecutive Sequence).
+
+Designing the key is the core skill here. A key has to be **hashable** — immutable, so a number, a string or a tuple, never a list — and it has to be the same within a group and different between groups. The sorted string, a 26-letter count tuple, a coordinate divided by the cell size, and the value of a prefix sum are all common keys.
