@@ -93,6 +93,15 @@ export const zhHant = {
     allCorrect: "全對！可以放心標記為已學會。",
     someWrong: "有幾題錯了，回頭看看上面的說明再試一次。",
   },
+  code: {
+    copy: "複製",
+    copied: "✓ 已複製",
+  },
+  problems: {
+    markSolved: "標記為做過",
+    undo: "取消標記",
+    solved: "已做過",
+  },
   me: {
     title: "我的學習",
     description: "你的收藏、筆記、最近學會的課程，以及該複習的內容。",
@@ -110,6 +119,8 @@ export const zhHant = {
     daysAgo: "天前",
     today: "今天",
     learnedAt: "學會於",
+    statLearned: "篇已學會",
+    statSolved: "題做過",
   },
   home: {
     headline: "一次一個主題，把演算法真的學進去。",
@@ -159,6 +170,7 @@ export const zhHant = {
     invalid: "請輸入 2 到 12 個介於 −999 到 999 的整數",
     invalidTarget: "目標要是 −999 到 999 的整數",
     sortedNote: "會自動由小到大排序",
+    keys: "滑鼠停在示範上：← → 步進、R 重設",
   },
   lesson: {
     fullStop: "。",
@@ -174,6 +186,7 @@ export const zhHant = {
     untranslated: "這篇課程還沒有翻譯，以下是原文。",
     whyThis: "為什麼用它",
     cue: "看到這些關鍵字就想到它：",
+    keys: "快捷鍵：← → 上一篇／下一篇、D 標記已學會。滑鼠停在示範上時 ← → 改為步進、R 重設。",
   },
 } as const;
 

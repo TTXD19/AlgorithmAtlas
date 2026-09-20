@@ -18,22 +18,7 @@ export function Steps({ items }: { items: ReactNode[] }) {
   );
 }
 
-export type Problem = { src: string; name: string; diff: "Easy" | "Medium" | "Hard" };
-
-export function Problems({ items }: { items: Problem[] }) {
-  const color = { Easy: "text-green", Medium: "text-amber", Hard: "text-accent" };
-  return (
-    <ul className="m-0 max-w-[66ch] list-none overflow-hidden rounded-[10px] border border-line bg-surface p-0">
-      {items.map((p, i) => (
-        <li key={p.src} className={`flex items-center gap-3 px-3.5 py-2.5 text-[14px] ${i > 0 ? "border-t border-line" : ""}`}>
-          <span className="w-24 shrink-0 font-mono text-[12px] text-ink-3">{p.src}</span>
-          {p.name}
-          <span className={`ml-auto text-[12px] font-semibold ${color[p.diff]}`}>{p.diff}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
+export { Problems, type Problem } from "./Problems";
 
 export function Code({ children }: { children: ReactNode }) {
   return <code className="inl">{children}</code>;

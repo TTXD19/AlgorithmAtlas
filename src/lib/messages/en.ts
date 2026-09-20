@@ -89,6 +89,15 @@ export const en: Messages = {
     allCorrect: "All correct! Go ahead and mark it as learned.",
     someWrong: "A few were wrong. Re-read the sections above and try again.",
   },
+  code: {
+    copy: "Copy",
+    copied: "✓ Copied",
+  },
+  problems: {
+    markSolved: "Mark as solved",
+    undo: "Unmark",
+    solved: "solved",
+  },
   me: {
     title: "My learning",
     description: "Your bookmarks, notes, recently learned lessons, and what is due for review.",
@@ -106,6 +115,8 @@ export const en: Messages = {
     daysAgo: "days ago",
     today: "today",
     learnedAt: "Learned",
+    statLearned: "lessons learned",
+    statSolved: "problems solved",
   },
   home: {
     headline: "One topic at a time, until the algorithms actually stick.",
@@ -155,6 +166,7 @@ export const en: Messages = {
     invalid: "Enter 2 to 12 integers between −999 and 999",
     invalidTarget: "The target must be an integer between −999 and 999",
     sortedNote: "sorted ascending automatically",
+    keys: "Hover the demo: ← → to step, R to reset",
   },
   lesson: {
     fullStop: ".",
@@ -170,5 +182,6 @@ export const en: Messages = {
     untranslated: "This lesson has not been translated yet. The original is shown below.",
     whyThis: "Why this fits",
     cue: "Reach for it when you see:",
+    keys: "Shortcuts: ← → previous / next lesson, D mark as learned. With the mouse over a demo, ← → step through it and R resets.",
   },
 };

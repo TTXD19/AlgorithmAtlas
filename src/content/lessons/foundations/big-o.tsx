@@ -87,7 +87,52 @@ int binarySearch(const std::vector<int>& v, int target) {
     return -1;
 }`;
 
+const javascript = `// O(1): the same amount of work no matter how big n is
+function first(items) {
+  return items[0];
+}
+
+// O(n): the loop runs n times
+function total(items) {
+  let s = 0;
+  for (const x of items) s += x;
+  return s;
+}
+
+// O(n²): two nested loops, each running n times
+function hasDuplicateSlow(items) {
+  const n = items.length;
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      if (items[i] === items[j]) return true;
+    }
+  }
+  return false;
+}
+
+// O(n): a Set replaces the inner loop, taking space from O(1) to O(n)
+function hasDuplicate(items) {
+  const seen = new Set();
+  for (const x of items) {
+    if (seen.has(x)) return true;
+    seen.add(x);
+  }
+  return false;
+}
+
+// O(log n): every step halves the range
+function binarySearch(sortedItems, target) {
+  let lo = 0, hi = sortedItems.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (sortedItems[mid] === target) return mid;
+    if (sortedItems[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}`;
+
 export const skeleton: LessonSkeleton = {
   demo: <GrowthDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

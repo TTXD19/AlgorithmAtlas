@@ -18,12 +18,13 @@ export interface SyncedSetOptions {
   table: string;
   /** 表上的布林欄位名（progress 是 is_done，bookmarks 是 is_on） */
   flag: string;
+  /** 表上的 key 欄位名。預設 lesson_key；練習題用 problem_key */
+  keyColumn?: string;
 }
 
 interface Row {
-  lesson_key: string;
   updated_at: string;
-  [flag: string]: string | boolean;
+  [column: string]: string | boolean;
 }
 
 const EMPTY: FlagMap = {};
@@ -34,7 +35,7 @@ const EMPTY: FlagMap = {};
  * localStorage 永遠是同步的，所以消費端不需要處理 loading。登入後它退居本機
  * 快取，遠端同步在背景進行。合併與寫回的規則見下方各函式的註解。
  */
-export function createSyncedSet({ storageKey, table, flag }: SyncedSetOptions) {
+export function createSyncedSet({ storageKey, table, flag, keyColumn = "lesson_key" }: SyncedSetOptions) {
   const listeners = new Set<() => void>();
   let cache: FlagMap | null = null;
   let cacheRaw: string | null = null;
@@ -74,7 +75,7 @@ export function createSyncedSet({ storageKey, table, flag }: SyncedSetOptions) {
     try {
       await getSupabase()
         .from(table)
-        .upsert({ user_id: uid, lesson_key: lessonKey, [flag]: on }, { onConflict: "user_id,lesson_key" });
+        .upsert({ user_id: uid, [keyColumn]: lessonKey, [flag]: on }, { onConflict: `user_id,${keyColumn}` });
     } catch {
       // 寫入失敗不擋 UI。下次開頁面的 merge 會把本機獨有的項目補推上去。
     }
@@ -90,23 +91,23 @@ export function createSyncedSet({ storageKey, table, flag }: SyncedSetOptions) {
   async function merge(uid: string) {
     try {
       const sb = getSupabase();
-      const { data, error } = await sb.from(table).select(`lesson_key, ${flag}, updated_at`).eq("user_id", uid);
+      const { data, error } = await sb.from(table).select(`${keyColumn}, ${flag}, updated_at`).eq("user_id", uid);
       if (error || !data) return;
       const rows = data as unknown as Row[];
 
-      const remoteKeys = new Set(rows.map((r) => r.lesson_key));
+      const remoteKeys = new Set(rows.map((r) => r[keyColumn] as string));
       const local = read();
       const localOnly = Object.keys(local).filter((k) => !remoteKeys.has(k));
 
       if (localOnly.length) {
         await sb.from(table).upsert(
-          localOnly.map((k) => ({ user_id: uid, lesson_key: k, [flag]: true })),
-          { onConflict: "user_id,lesson_key", ignoreDuplicates: true },
+          localOnly.map((k) => ({ user_id: uid, [keyColumn]: k, [flag]: true })),
+          { onConflict: `user_id,${keyColumn}`, ignoreDuplicates: true },
         );
       }
 
       const merged: FlagMap = {};
-      for (const r of rows) if (r[flag]) merged[r.lesson_key] = Date.parse(r.updated_at) || 1;
+      for (const r of rows) if (r[flag]) merged[r[keyColumn] as string] = Date.parse(r.updated_at) || 1;
       for (const k of localOnly) merged[k] = local[k];
       write(merged);
     } catch {

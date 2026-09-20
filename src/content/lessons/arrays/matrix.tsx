@@ -118,7 +118,77 @@ void visitNeighbors(const Grid& g, int r, int c) {
     }
 }`;
 
+const javascript = `// Build an m × n matrix. Never write Array(m).fill(Array(n)): that makes every row the same array
+const grid = Array.from({ length: 3 }, () => new Array(4).fill(0));
+const m = grid.length, n = grid[0].length;   // number of rows, number of columns
+grid[r][c];                                  // row first, then column
+
+// Moving in four directions: use a direction array, not four separate if branches
+const DIRS = [[0, 1], [1, 0], [0, -1], [-1, 0]];   // right, down, left, up
+
+function* neighbors(r, c) {
+  for (const [dr, dc] of DIRS) {
+    const nr = r + dr, nc = c + dc;
+    if (nr >= 0 && nr < m && nc >= 0 && nc < n) yield [nr, nc];   // the bounds check lives in one place only
+  }
+}
+
+
+// Spiral traversal (LeetCode 54): four bounds shrinking inwards
+function spiralOrder(matrix) {
+  const out = [];
+  let top = 0, bottom = matrix.length - 1;
+  let left = 0, right = matrix[0].length - 1;
+  while (top <= bottom && left <= right) {
+    for (let c = left; c <= right; c++) out.push(matrix[top][c]);
+    top++;
+    for (let r = top; r <= bottom; r++) out.push(matrix[r][right]);
+    right--;
+    if (top <= bottom) {
+      for (let c = right; c >= left; c--) out.push(matrix[bottom][c]);
+      bottom--;
+    }
+    if (left <= right) {
+      for (let r = bottom; r >= top; r--) out.push(matrix[r][left]);
+      left++;
+    }
+  }
+  return out;
+}
+
+
+// Rotate 90° clockwise in place (LeetCode 48): transpose, then reverse each row
+function rotate(matrix) {
+  const n = matrix.length;
+  for (let r = 0; r < n; r++) {
+    for (let c = r + 1; c < n; c++) {          // only swap above the diagonal
+      [matrix[r][c], matrix[c][r]] = [matrix[c][r], matrix[r][c]];
+    }
+  }
+  for (const row of matrix) row.reverse();
+}
+
+
+// Use the first row and the first column as markers, O(1) extra space (LeetCode 73)
+function setZeroes(matrix) {
+  const m = matrix.length, n = matrix[0].length;
+  const firstRowZero = matrix[0].some((v) => v === 0);
+  const firstColZero = matrix.some((row) => row[0] === 0);
+  for (let r = 1; r < m; r++) {
+    for (let c = 1; c < n; c++) {
+      if (matrix[r][c] === 0) matrix[r][0] = matrix[0][c] = 0;   // record it on the edges
+    }
+  }
+  for (let r = 1; r < m; r++) {
+    for (let c = 1; c < n; c++) {
+      if (matrix[r][0] === 0 || matrix[0][c] === 0) matrix[r][c] = 0;
+    }
+  }
+  if (firstRowZero) for (let c = 0; c < n; c++) matrix[0][c] = 0;
+  if (firstColZero) for (let r = 0; r < m; r++) matrix[r][0] = 0;
+}`;
+
 export const skeleton: LessonSkeleton = {
   demo: <MatrixDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

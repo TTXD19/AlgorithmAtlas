@@ -89,7 +89,56 @@ long long rectSum(const std::vector<std::vector<long long>>& s, int r1, int c1, 
     return s[r2+1][c2+1] - s[r1][c2+1] - s[r2+1][c1] + s[r1][c1];
 }`;
 
+const javascript = `// Build in O(n): P[i] = a[0] + ... + a[i-1], with one spare slot so P[0] = 0
+function buildPrefix(a) {
+  const p = new Array(a.length + 1).fill(0);
+  for (let i = 0; i < a.length; i++) p[i + 1] = p[i] + a[i];
+  return p;
+}
+
+// Query in O(1): the sum of a[l..r]
+function rangeSum(p, l, r) {
+  return p[r + 1] - p[l];
+}
+
+const a = [3, 1, 4, 1, 5, 9, 2, 6];
+const p = buildPrefix(a);    // [0, 3, 4, 8, 9, 14, 23, 25, 31]
+rangeSum(p, 2, 5);           // 4+1+5+9 = 19 = p[6] - p[2]
+
+
+// Prefix sums + a hash map: how many subarrays sum to exactly k (LeetCode 560)
+// sum of the subarray (i, j] = P[j] - P[i] = k  ⇔  P[i] = P[j] - k
+// so on reaching j, ask how many earlier prefix sums equal P[j] - k
+function subarraySum(nums, k) {
+  let count = 0;
+  const seen = new Map([[0, 1]]);   // prefix sum 0 has already occurred once (the empty prefix)
+  let running = 0;
+  for (const x of nums) {
+    running += x;
+    count += seen.get(running - k) ?? 0;
+    seen.set(running, (seen.get(running) ?? 0) + 1);
+  }
+  return count;
+}
+
+
+// 2D prefix sums: S[r][c] is the total of the rectangle from the top-left corner to (r-1, c-1)
+function build2d(grid) {
+  const m = grid.length, n = grid[0].length;
+  const s = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let r = 0; r < m; r++) {
+    for (let c = 0; c < n; c++) {
+      s[r + 1][c + 1] = grid[r][c] + s[r][c + 1] + s[r + 1][c] - s[r][c];
+    }
+  }
+  return s;
+}
+
+function rectSum(s, r1, c1, r2, c2) {    // top-left (r1,c1) to bottom-right (r2,c2)
+  return s[r2 + 1][c2 + 1] - s[r1][c2 + 1] - s[r2 + 1][c1] + s[r1][c1];
+}`;
+
 export const skeleton: LessonSkeleton = {
   demo: <PrefixSumDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

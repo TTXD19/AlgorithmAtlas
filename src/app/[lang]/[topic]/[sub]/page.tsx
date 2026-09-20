@@ -116,7 +116,7 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
             <PagerLink href={next ? h(`/${t.id}/${next.id}`) : undefined} label={t18n.lesson.next} name={next?.name} right />
           </div>
         </div>
-        <Rail lessonId={key} sections={lessonSections(loaded.text)} />
+        <Rail lessonId={key} sections={lessonSections(loaded.text)} prevHref={prev ? h(`/${t.id}/${prev.id}`) : undefined} nextHref={next ? h(`/${t.id}/${next.id}`) : undefined} />
       </div>
     </>
   );

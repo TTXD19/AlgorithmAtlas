@@ -6,6 +6,7 @@ import { getSubtopicBy } from "@/lib/topics-text";
 import { useProgress } from "@/lib/progress";
 import { useBookmarks } from "@/lib/bookmarks";
 import { useNotes } from "@/lib/notes";
+import { useProblems } from "@/lib/problems";
 import { useReviewDue, useNow } from "@/lib/review";
 import { useUser } from "@/lib/auth";
 import { useHref, useLocale, useT } from "./LocaleProvider";
@@ -50,6 +51,7 @@ export function MyLearning() {
   const { done } = useProgress();
   const { bookmarks } = useBookmarks();
   const { notes } = useNotes();
+  const { solved } = useProblems();
   const due = useReviewDue();
   const now = useNow();
 
@@ -69,6 +71,19 @@ export function MyLearning() {
       {!loading && !user && (
         <p className="mb-5 max-w-[66ch] rounded-lg border border-line bg-surface-2 px-4 py-2.5 text-[13.5px] text-ink-2">{t.me.signInHint}</p>
       )}
+      <div className="mb-4 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line md:grid-cols-4">
+        {[
+          [Object.keys(done).length, t.me.statLearned],
+          [Object.keys(solved).length, t.me.statSolved],
+          [marked.length, t.me.bookmarks],
+          [noted.length, t.me.notes],
+        ].map(([n, label]) => (
+          <div key={label} className="bg-surface px-4 py-3">
+            <b className="block font-display text-[22px] leading-[1.1] font-bold tabular-nums">{n}</b>
+            <span className="text-[12.5px] text-ink-3">{label}</span>
+          </div>
+        ))}
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Block title={t.me.review} hint={t.me.reviewHint} empty={t.me.reviewEmpty}>
           {due.map((d) => <LessonRow key={d.key} lessonKey={d.key} aside={`${d.days} ${t.me.daysAgo}`} />)}

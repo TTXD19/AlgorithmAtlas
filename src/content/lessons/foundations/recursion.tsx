@@ -60,7 +60,34 @@ long long factorialIter(int n) {
     return r;
 }`;
 
+const javascript = `function factorial(n) {
+  if (n === 1) return 1;            // base case: the smallest problem, answered outright
+  return n * factorial(n - 1);      // recursive case: hand it to a smaller copy of yourself
+}
+
+function total(items) {
+  // Sum of an array: the first element + the sum of the rest
+  if (items.length === 0) return 0;
+  return items[0] + total(items.slice(1));
+}
+
+function folderSize(folder) {
+  // Folder size = every file in it + every subfolder in it
+  let size = folder.files.reduce((acc, f) => acc + f.size, 0);
+  for (const sub of folder.subfolders) {
+    size += folderSize(sub);        // a subfolder has exactly the same shape as this folder
+  }
+  return size;
+}
+
+function factorialIter(n) {
+  // The iterative version of the same thing: no call stack, O(1) space
+  let result = 1;
+  for (let k = 2; k <= n; k++) result *= k;
+  return result;
+}`;
+
 export const skeleton: LessonSkeleton = {
   demo: <CallStackDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

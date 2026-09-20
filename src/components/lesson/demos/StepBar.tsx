@@ -1,17 +1,49 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useT } from "../../LocaleProvider";
+
+/** 事件是不是發生在打字的地方；是的話所有快捷鍵都讓開 */
+export function isTyping(e: KeyboardEvent) {
+  const el = e.target as HTMLElement | null;
+  return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable);
+}
 
 export const BTN = "h-[30px] cursor-pointer whitespace-nowrap rounded-md border px-3 text-[13px] font-medium disabled:cursor-default disabled:opacity-45";
 export const BTN_PLAIN = `${BTN} border-line bg-surface hover:bg-surface-2`;
 export const BTN_PRIMARY = `${BTN} border-accent bg-accent text-accent-ink hover:brightness-110`;
 
-/** 示範元件共用的上方控制列：上一步／下一步／重設 + 右側說明 */
+/**
+ * 示範元件共用的上方控制列：上一步／下一步／重設 + 右側說明。
+ *
+ * 也負責鍵盤：滑鼠停在示範上、或焦點在示範裡時，← → 步進、R 重設。
+ * 用 capture 階段搶先處理並 preventDefault，課程頁的 ← →（上一篇／下一篇）
+ * 看到 defaultPrevented 就會讓開。示範的外框是各元件自己的 div，
+ * 這裡用 parentElement 拿到它，94 個示範不必各改一次。
+ */
 export function StepHeader({ k, total, setK, right, left }: { k: number; total: number; setK: (f: (x: number) => number) => void; right?: ReactNode; left?: ReactNode }) {
   const t = useT();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = ref.current?.parentElement;
+    if (!box) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || isTyping(e)) return;
+      const active = box.matches(":hover") || box.contains(document.activeElement);
+      if (!active) return;
+      if (e.key === "ArrowRight") setK((x) => Math.min(total - 1, x + 1));
+      else if (e.key === "ArrowLeft") setK((x) => Math.max(0, x - 1));
+      else if (e.key === "r" || e.key === "R") setK(() => 0);
+      else return;
+      e.preventDefault();
+    };
+    document.addEventListener("keydown", onKey, { capture: true });
+    return () => document.removeEventListener("keydown", onKey, { capture: true });
+  }, [setK, total]);
+
   return (
-    <div className="flex flex-wrap items-center gap-2.5 border-b border-line bg-surface-2 px-3.5 py-2.5 text-[13px] text-ink-2">
+    <div ref={ref} className="flex flex-wrap items-center gap-2.5 border-b border-line bg-surface-2 px-3.5 py-2.5 text-[13px] text-ink-2" title={t.demo.keys}>
       <div className="flex gap-1.5">
         <button type="button" className={BTN_PLAIN} onClick={() => setK((x) => Math.max(0, x - 1))} disabled={k === 0}>{t.demo.prev}</button>
         <button type="button" className={BTN_PRIMARY} onClick={() => setK((x) => Math.min(total - 1, x + 1))} disabled={k >= total - 1}>{t.demo.next}</button>

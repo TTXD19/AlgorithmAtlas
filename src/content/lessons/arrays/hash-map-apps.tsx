@@ -96,7 +96,69 @@ int longestConsecutive(const std::vector<int>& nums) {
     return best;
 }`;
 
+const javascript = `// Pattern 1: pair lookup. At x, ask "have I already seen the partner I need?"
+function twoSum(nums, target) {
+  const seen = new Map();             // value -> index
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need), i];
+    seen.set(nums[i], i);             // look up first, store after, or x pairs with itself
+  }
+}
+
+
+// Pattern 2: counting. How many times does a character or a number appear?
+function count(items) {
+  const freq = new Map();
+  for (const x of items) freq.set(x, (freq.get(x) ?? 0) + 1);
+  return freq;
+}
+
+function isAnagram(s, t) {
+  if (s.length !== t.length) return false;
+  const freq = count(s);
+  for (const ch of t) {
+    if (!freq.get(ch)) return false;
+    freq.set(ch, freq.get(ch) - 1);
+  }
+  return true;
+}
+
+function topKFrequent(nums, k) {
+  return [...count(nums).entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, k)
+    .map(([x]) => x);
+}
+
+
+// Pattern 3: grouping. Design a key that comes out the same for everything in a group
+function groupAnagrams(words) {
+  const groups = new Map();
+  for (const w of words) {
+    const key = [...w].sort().join("");   // "eat", "tea" and "ate" all become "aet"
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(w);
+  }
+  return [...groups.values()];
+}
+
+
+// Pattern 4: O(1) membership with a Set, turning O(n²) into O(n)
+function longestConsecutive(nums) {
+  const s = new Set(nums);
+  let best = 0;
+  for (const x of s) {
+    if (!s.has(x - 1)) {                  // only count up when x starts a run
+      let length = 1;
+      while (s.has(x + length)) length++;
+      best = Math.max(best, length);
+    }
+  }
+  return best;                            // each number is visited at most twice -> O(n)
+}`;
+
 export const skeleton: LessonSkeleton = {
   demo: <TwoSumDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

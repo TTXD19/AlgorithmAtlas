@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { SECTIONS, type SectionId } from "./parts";
 import { MarkDone } from "../ProgressBits";
 import { BookmarkButton } from "../BookmarkButton";
+import { LessonKeys } from "./LessonKeys";
 import { useT } from "../LocaleProvider";
 
-export function Rail({ lessonId, sections = SECTIONS }: { lessonId: string; sections?: readonly SectionId[] }) {
+export function Rail({ lessonId, sections = SECTIONS, prevHref, nextHref }: { lessonId: string; sections?: readonly SectionId[]; prevHref?: string; nextHref?: string }) {
   const [on, setOn] = useState<string>(sections[0]);
   const t = useT();
 
@@ -35,6 +36,7 @@ export function Rail({ lessonId, sections = SECTIONS }: { lessonId: string; sect
       ))}
       <MarkDone lessonId={lessonId} full />
       <BookmarkButton lessonId={lessonId} full />
+      <LessonKeys lessonId={lessonId} prevHref={prevHref} nextHref={nextHref} />
     </aside>
   );
 }

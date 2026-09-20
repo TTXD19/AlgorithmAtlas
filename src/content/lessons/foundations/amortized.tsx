@@ -54,7 +54,40 @@ int main() {
     w.reserve(1000);
 }`;
 
+const javascript = `// A hand-written dynamic array, so you can watch when the growth happens.
+// (A JavaScript Array already does this for you under the hood.)
+class DynamicArray {
+  constructor() {
+    this.capacity = 1;
+    this.size = 0;
+    this.data = new Array(this.capacity);
+    this.copies = 0;                 // total number of elements moved
+  }
+
+  push(x) {
+    if (this.size === this.capacity) this.grow();   // occasionally expensive: O(n)
+    this.data[this.size] = x;                       // usually cheap: O(1)
+    this.size++;
+  }
+
+  grow() {
+    const newCapacity = this.capacity * 2;          // the key: double it, do not add a fixed amount
+    const newData = new Array(newCapacity);
+    for (let i = 0; i < this.size; i++) {
+      newData[i] = this.data[i];
+      this.copies++;
+    }
+    this.data = newData;
+    this.capacity = newCapacity;
+  }
+}
+
+const arr = new DynamicArray();
+for (let i = 0; i < 1_000_000; i++) arr.push(i);
+console.log(arr.copies);   // about 1,000,000, nowhere near n²
+// Total cost ≈ n insertions + fewer than n moves < 3n, so under 3 per push → O(1) amortised`;
+
 export const skeleton: LessonSkeleton = {
   demo: <DynamicArrayDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

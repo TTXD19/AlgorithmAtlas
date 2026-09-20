@@ -114,7 +114,76 @@ int main() {
     m.erase("alice");
 }`;
 
+const javascript = `// Separate chaining: each bucket is an array of [key, value] pairs.
+class HashMap {
+  static MAX_LOAD = 0.75;
+
+  constructor(capacity = 4) {
+    this.capacity = capacity;
+    this.size = 0;
+    this.buckets = Array.from({ length: capacity }, () => []);
+  }
+
+  // A toy string hash (djb2); real engines use much better ones
+  hash(key) {
+    let h = 5381;
+    for (const ch of String(key)) h = (h * 33 + ch.charCodeAt(0)) >>> 0;
+    return h;
+  }
+
+  index(key) {
+    return this.hash(key) % this.capacity;       // hash function -> bucket number
+  }
+
+  get(key, fallback = undefined) {
+    for (const [k, v] of this.buckets[this.index(key)]) {   // only this one bucket
+      if (k === key) return v;
+    }
+    return fallback;
+  }
+
+  put(key, value) {
+    const bucket = this.buckets[this.index(key)];
+    for (const pair of bucket) {
+      if (pair[0] === key) {                     // already present: overwrite
+        pair[1] = value;
+        return;
+      }
+    }
+    bucket.push([key, value]);                   // new key: append to the end of the chain
+    this.size++;
+    if (this.size / this.capacity > HashMap.MAX_LOAD) this.rehash();
+  }
+
+  remove(key) {
+    const bucket = this.buckets[this.index(key)];
+    const i = bucket.findIndex(([k]) => k === key);
+    if (i === -1) return false;
+    bucket.splice(i, 1);
+    this.size--;
+    return true;
+  }
+
+  rehash() {
+    // Double the capacity and re-bucket every key. O(n), but amortised each put is still O(1)
+    const old = this.buckets;
+    this.capacity *= 2;
+    this.buckets = Array.from({ length: this.capacity }, () => []);
+    for (const bucket of old) {
+      for (const [k, v] of bucket) this.buckets[this.index(k)].push([k, v]);
+    }
+  }
+}
+
+
+// In real code, reach for the built-in Map / Set: they are hash tables
+const m = new Map();
+m.set("alice", 30);      // O(1) average
+m.get("bob") ?? 0;       // O(1) average
+m.has("alice");          // O(1) average
+m.delete("alice");       // O(1) average`;
+
 export const skeleton: LessonSkeleton = {
   demo: <HashTableDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };

@@ -76,7 +76,50 @@ void rotate(std::vector<int>& nums, int k) {
     std::reverse(nums.begin() + k, nums.end());
 }`;
 
+const javascript = `// A JavaScript Array is a dynamic array
+const nums = [12, 7, 3, 9, 15, 4];
+
+nums[3];               // O(1): address = base + 3 × element size, so it jumps straight there
+nums[3] = 10;          // O(1)
+nums.push(8);          // amortised O(1): if there is room at the end, it just goes there
+nums.pop();            // O(1): decrement size
+
+nums.unshift(99);      // O(n): every element shifts one slot right
+nums.shift();          // O(n): every element shifts one slot left
+nums.includes(99);     // O(n): unsorted, so there is nothing to do but check one by one
+nums.splice(2, 1);     // O(n): everything after it closes the gap
+
+
+// Remove every element equal to val, in place (LeetCode 27):
+// a write pointer moves the keepers forward, with no new array
+function removeElement(nums, val) {
+  let write = 0;
+  for (let read = 0; read < nums.length; read++) {
+    if (nums[read] !== val) {
+      nums[write] = nums[read];
+      write++;
+    }
+  }
+  return write;          // the first write elements are the result
+}
+
+
+// Rotate by k in place (LeetCode 189): three reversals, O(n) time and O(1) space
+function rotate(nums, k) {
+  const reverse = (i, j) => {
+    while (i < j) {
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+      i++; j--;
+    }
+  };
+  const n = nums.length;
+  k %= n;
+  reverse(0, n - 1);     // reverse the whole array
+  reverse(0, k - 1);     // reverse the first k back
+  reverse(k, n - 1);     // reverse the last n-k back
+}`;
+
 export const skeleton: LessonSkeleton = {
   demo: <ArrayOpsDemo />,
-  code: { python, cpp },
+  code: { python, cpp, javascript },
 };
