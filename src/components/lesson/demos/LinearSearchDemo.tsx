@@ -3,12 +3,12 @@
 import { useMemo, useState } from "react";
 import { useLocale } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
-import { StepHeader, StepFooter, CELL, BTN } from "./StepBar";
+import { StepHeader, StepFooter, CELL } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 
 /** 無序的訂單編號尾碼，目標：找出某一筆在哪。 */
-const DATA = [17, 4, 29, 8, 51, 23, 12, 46, 3, 35];
-const TARGETS = { hit: 46, miss: 40 } as const;
-type Mode = keyof typeof TARGETS;
+const DEFAULT_DATA = [17, 4, 29, 8, 51, 23, 12, 46, 3, 35];
+const DEFAULT_TARGET = 46;
 
 const TEXT = demoText(
   {
@@ -59,17 +59,17 @@ type T = (typeof TEXT)["zh-Hant"];
 
 interface Step { desc: string; i: number; cmp: number; found: number | null; done: boolean }
 
-function buildSteps(t: T, target: number): Step[] {
+function buildSteps(t: T, data: number[], target: number): Step[] {
   const steps: Step[] = [{ desc: t.intro(target), i: -1, cmp: 0, found: null, done: false }];
-  for (let i = 0; i < DATA.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     const cmp = i + 1;
-    if (DATA[i] === target) {
-      steps.push({ desc: t.hit(cmp, i, DATA[i], target), i, cmp, found: i, done: true });
+    if (data[i] === target) {
+      steps.push({ desc: t.hit(cmp, i, data[i], target), i, cmp, found: i, done: true });
       return steps;
     }
-    steps.push({ desc: t.miss(cmp, i, DATA[i], target, i === DATA.length - 1), i, cmp, found: null, done: false });
+    steps.push({ desc: t.miss(cmp, i, data[i], target, i === data.length - 1), i, cmp, found: null, done: false });
   }
-  steps.push({ desc: t.notFound(target, DATA.length), i: DATA.length, cmp: DATA.length, found: null, done: true });
+  steps.push({ desc: t.notFound(target, data.length), i: data.length, cmp: data.length, found: null, done: true });
   return steps;
 }
 
@@ -79,11 +79,10 @@ const ROWS = [10, 1000, 1_000_000, 1_000_000_000];
 export function LinearSearchDemo() {
   const locale = useLocale();
   const t = TEXT[locale];
-  const hit = useMemo(() => buildSteps(TEXT[locale], TARGETS.hit), [locale]);
-  const miss = useMemo(() => buildSteps(TEXT[locale], TARGETS.miss), [locale]);
-  const [mode, setMode] = useState<Mode>("hit");
+  const [data, setData] = useState(DEFAULT_DATA);
+  const [target, setTarget] = useState(DEFAULT_TARGET);
+  const steps = useMemo(() => buildSteps(TEXT[locale], data, target), [locale, data, target]);
   const [k, setK] = useState(0);
-  const steps = mode === "hit" ? hit : miss;
   const s = steps[k];
 
   return (
@@ -92,22 +91,20 @@ export function LinearSearchDemo() {
         k={k}
         total={steps.length}
         setK={setK}
-        left={
-          <div className="flex gap-1">
-            {(["hit", "miss"] as Mode[]).map((m) => (
-              <button key={m} type="button" className={`${BTN} ${mode === m ? "border-accent bg-accent text-accent-ink" : "border-line bg-surface hover:bg-surface-2"}`} onClick={() => { setMode(m); setK(0); }}>
-                {t.findLabel(TARGETS[m], m === "miss")}
-              </button>
-            ))}
-          </div>
-        }
-        right={t.unsorted(DATA.length)}
+        left={<span className="font-mono text-[12.5px] text-ink">{t.findLabel(target, !data.includes(target))}</span>}
+        right={t.unsorted(data.length)}
+      />
+      <DemoInput
+        value={data}
+        defaults={DEFAULT_DATA}
+        onChange={(a) => { setData(a); setK(0); }}
+        target={{ value: target, defaults: DEFAULT_TARGET, onChange: (v) => { setTarget(v); setK(0); } }}
       />
 
       <div className="p-3.5">
         <div className="eyebrow mb-2">{t.arrayTitle}</div>
         <div className="flex flex-wrap gap-1">
-          {DATA.map((v, i) => {
+          {data.map((v, i) => {
             const tone = s.found === i ? CELL.green : i === s.i ? CELL.accent : i < s.i ? CELL.dim : "border-line-strong bg-surface";
             return (
               <div key={i} className="flex w-10 flex-col items-center gap-1">
@@ -118,7 +115,7 @@ export function LinearSearchDemo() {
           })}
         </div>
         <div className="mt-2.5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[12.5px] tabular-nums">
-          <span>{t.target} <span className="text-ink">{TARGETS[mode]}</span></span>
+          <span>{t.target} <span className="text-ink">{target}</span></span>
           <span>{t.comparisons} <span className="text-ink">{s.cmp}</span></span>
           <span>{t.result} <span className="text-ink">{s.done ? (s.found === null ? "−1" : t.atIndex(s.found)) : "…"}</span></span>
         </div>
@@ -137,7 +134,7 @@ export function LinearSearchDemo() {
             </thead>
             <tbody>
               {ROWS.map((n) => (
-                <tr key={n} className={`border-t border-line ${n === DATA.length ? "text-ink" : "text-ink-2"}`}>
+                <tr key={n} className={`border-t border-line ${n === data.length ? "text-ink" : "text-ink-2"}`}>
                   <td className="py-1 pr-3">{n.toLocaleString("en-US")}</td>
                   <td className="py-1 pr-3 text-right">{n.toLocaleString("en-US")}</td>
                   <td className="py-1 text-right text-green">{log2(n)}</td>

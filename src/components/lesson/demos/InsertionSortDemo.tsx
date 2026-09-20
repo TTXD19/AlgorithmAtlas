@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { StepHeader, StepFooter, CELL } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 import { useLocale, useT } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
 
-const ARR = [5, 2, 9, 1, 7, 3, 8, 4];
+const DEFAULT = [5, 2, 9, 1, 7, 3, 8, 4];
 
 const TEXT = demoText(
   {
@@ -73,8 +74,8 @@ interface Step {
   shifts: number;
 }
 
-function buildSteps(t: T): Step[] {
-  const a: (number | null)[] = [...ARR];
+function buildSteps(t: T, arr: number[]): Step[] {
+  const a: (number | null)[] = [...arr];
   const n = a.length;
   const steps: Step[] = [];
   let compares = 0;
@@ -115,7 +116,8 @@ export function InsertionSortDemo() {
   const locale = useLocale();
   const t = TEXT[locale];
   const ui = useT();
-  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
+  const [arr, setArr] = useState(DEFAULT);
+  const steps = useMemo(() => buildSteps(TEXT[locale], arr), [locale, arr]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const tone = (i: number, v: number | null) => {
@@ -127,7 +129,8 @@ export function InsertionSortDemo() {
   };
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`[${ARR.join(", ")}] · ${t.ascending}`} />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`[${arr.join(", ")}] · ${t.ascending}`} />
+      <DemoInput value={arr} defaults={DEFAULT} onChange={(a) => { setArr(a); setK(0); }} />
       <div className="grid grid-cols-1 gap-3.5 p-3.5 md:grid-cols-[minmax(0,1fr)_120px]">
         <div>
           <div className="eyebrow mb-2">{t.arrayTitle}</div>

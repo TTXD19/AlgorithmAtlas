@@ -36,4 +36,30 @@ export const text: LessonText = {
     { src: "LeetCode 70", name: "Climbing Stairs（先寫遞迴，體會為什麼慢）", diff: "Easy" },
     { src: "LeetCode 779", name: "K-th Symbol in Grammar", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "一個遞迴函式沒有 base case，執行時會發生什麼？",
+      choices: ["回傳 0", "立刻回傳正確答案", "無限遞迴直到 stack overflow", "編譯錯誤"],
+      answer: 2,
+      why: "沒有可以直接回答的最小情況，每次呼叫都再呼叫自己，呼叫堆疊不斷長高直到溢位。",
+    },
+    {
+      q: "`factorial(n)` 的遞迴深度是 n。它的空間複雜度至少是？",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      answer: 2,
+      why: "每一層呼叫都在呼叫堆疊上佔一筆紀錄，深度 n 就是 O(n) 的空間，即使函式本身沒有開任何陣列。",
+    },
+    {
+      q: "寫 recursive case 時，「遞迴信仰」要你怎麼做？",
+      choices: ["一層一層追蹤每次呼叫的值", "相信遞迴呼叫會回傳正確答案，只檢查這一層有沒有正確使用它", "先把遞迴改成迴圈再想", "每次呼叫都印出參數確認"],
+      answer: 1,
+      why: "這是數學歸納法的程式版：假設小問題已經解對，只負責把小答案拼成大答案。",
+    },
+    {
+      q: "下列哪一個遞迴呼叫**沒有**朝 base case 前進？",
+      choices: ["`sum(arr[1:])` 處理更短的串列", "`fib(n - 1) + fib(n - 2)`", "`dfs(node.left)` 往子樹走", "`solve(n)` 在 `solve(n)` 裡再呼叫 `solve(n)`"],
+      answer: 3,
+      why: "參數完全沒變，問題沒有變小，永遠到不了 base case。前三個分別是串列變短、數字變小、樹往下走。",
+    },
+  ],
 };

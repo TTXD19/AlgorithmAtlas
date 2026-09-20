@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import { WRITTEN_COUNT } from "@/content/registry";
 import { TopicGlyph } from "@/components/TopicGlyph";
 import { TopicProgress, DoneTotal } from "@/components/ProgressBits";
+import { ReviewDue } from "@/components/ReviewDue";
 import type { Metadata } from "next";
 import { pageMeta, localizedUrl } from "@/lib/site";
 import { JsonLd } from "@/components/JsonLd";
@@ -62,6 +63,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <Stat n={<DoneTotal />} label={t18n.home.statDone} />
         </div>
       </div>
+
+      <ReviewDue />
 
       {(["ds", "algo"] as TopicKind[]).map((kind) => {
         const list = topics.filter((t) => t.kind === kind);

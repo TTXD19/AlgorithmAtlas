@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { StepHeader, StepFooter, Cells, CELL } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 import { useLocale } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
 
-const ARR = [5, 2, 9, 1, 7, 3, 8, 4];
+const DEFAULT = [5, 2, 9, 1, 7, 3, 8, 4];
 
 const TEXT = demoText(
   {
@@ -70,8 +71,8 @@ interface Step {
   swaps: number;
 }
 
-function buildSteps(t: T): Step[] {
-  const a = [...ARR];
+function buildSteps(t: T, arr: number[]): Step[] {
+  const a = [...arr];
   const n = a.length;
   const steps: Step[] = [];
   let compares = 0;
@@ -109,7 +110,8 @@ function buildSteps(t: T): Step[] {
 export function SelectionSortDemo() {
   const locale = useLocale();
   const t = TEXT[locale];
-  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
+  const [arr, setArr] = useState(DEFAULT);
+  const steps = useMemo(() => buildSteps(TEXT[locale], arr), [locale, arr]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const tone = (i: number) => {
@@ -121,7 +123,8 @@ export function SelectionSortDemo() {
   };
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`[${ARR.join(", ")}] · ${t.ascending}`} />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`[${arr.join(", ")}] · ${t.ascending}`} />
+      <DemoInput value={arr} defaults={DEFAULT} onChange={(a) => { setArr(a); setK(0); }} />
       <div className="p-3.5">
         <div className="eyebrow mb-2">{t.arrayTitle}</div>
         <Cells items={s.arr} tone={tone} />
@@ -130,7 +133,7 @@ export function SelectionSortDemo() {
       <div className="grid grid-cols-2 gap-3 border-t border-line px-3.5 py-3 text-[13px] md:grid-cols-3">
         <div><div className="eyebrow mb-1">{t.compares}</div><span className="font-mono text-[15px] tabular-nums">{s.compares}</span></div>
         <div><div className="eyebrow mb-1">{t.swaps}</div><span className="font-mono text-[15px] tabular-nums">{s.swaps}</span></div>
-        <div><div className="eyebrow mb-1">{t.sorted}</div><span className="font-mono text-[15px] tabular-nums">{Math.min(s.i, ARR.length)} / {ARR.length}</span></div>
+        <div><div className="eyebrow mb-1">{t.sorted}</div><span className="font-mono text-[15px] tabular-nums">{Math.min(s.i, arr.length)} / {arr.length}</span></div>
       </div>
       <StepFooter k={k} total={steps.length}>{s.desc}</StepFooter>
     </div>

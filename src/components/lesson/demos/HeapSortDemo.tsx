@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import { BinaryTreeSVG, type BNode } from "./tree-utils";
 import { StepHeader, StepFooter, Cells, CELL } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 import { useLocale } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
 
-const ARR = [5, 2, 9, 1, 7, 3, 8, 4];
+const DEFAULT = [5, 2, 9, 1, 7, 3, 8, 4];
 
 const TEXT = demoText(
   {
@@ -77,8 +78,8 @@ interface Step {
   swap?: [number, number];
 }
 
-function buildSteps(t: T): Step[] {
-  const a = [...ARR];
+function buildSteps(t: T, arr: number[]): Step[] {
+  const a = [...arr];
   const n = a.length;
   const steps: Step[] = [];
   let heapSize = n;
@@ -139,7 +140,8 @@ function indexOf(arr: number[], v: number | string) {
 
 export function HeapSortDemo() {
   const t = TEXT[useLocale()];
-  const steps = useMemo(() => buildSteps(t), [t]);
+  const [arr, setArr] = useState(DEFAULT);
+  const steps = useMemo(() => buildSteps(t, arr), [t, arr]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const tree = toTree(s.arr, s.heapSize);
@@ -151,7 +153,8 @@ export function HeapSortDemo() {
   };
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={t.right(ARR.join(", "))} />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={t.right(arr.join(", "))} />
+      <DemoInput value={arr} defaults={DEFAULT} onChange={(a) => { setArr(a); setK(0); }} />
       <BinaryTreeSVG
         root={tree}
         height={26 + 4 * 56}

@@ -36,4 +36,30 @@ export const text: LessonText = {
     { src: "LeetCode 304", name: "Range Sum Query 2D - Immutable", diff: "Medium" },
     { src: "LeetCode 974", name: "Subarray Sums Divisible by K", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "前綴和陣列 `P` 多留了 `P[0] = 0` 這一格，主要是為了？",
+      choices: ["讓陣列長度是偶數", "讓「從索引 0 開始的區間」不用特判", "省一次加法", "對齊記憶體"],
+      answer: 1,
+      why: "有了 P[0] = 0，`a[0..r]` 的和就是 `P[r+1] − P[0]`，跟其他區間走同一條公式。",
+    },
+    {
+      q: "已知 `P[i] = a[0] + … + a[i-1]`，區間 `a[l..r]`（含兩端）的和是？",
+      choices: ["`P[r] − P[l]`", "`P[r+1] − P[l]`", "`P[r] − P[l-1]`", "`P[r+1] − P[l+1]`"],
+      answer: 1,
+      why: "P 的定義「不含」該位置，所以到 r 為止要用 P[r+1]，再扣掉 l 之前的 P[l]。",
+    },
+    {
+      q: "前綴和最適合哪種情境？",
+      choices: ["資料常改、常查區間和", "資料不改、常查區間和", "只查一次區間和", "需要區間最大值"],
+      answer: 1,
+      why: "建表 O(n) 一次、之後每次查詢 O(1)；但改一個 a[i] 會讓後面所有 P 都要更新，常改就該換 Fenwick 樹。",
+    },
+    {
+      q: "數「和等於 k 的子陣列」時，走到 j 要查雜湊表裡什麼？",
+      choices: ["`P[j] + k` 出現幾次", "`P[j] − k` 出現幾次", "`k` 出現幾次", "`P[j]` 出現幾次"],
+      answer: 1,
+      why: "`P[j] − P[i] = k` 改寫成 `P[i] = P[j] − k`，之前出現過幾次這個前綴和，就有幾個以 j 結尾的答案。記得先放 `{0: 1}`。",
+    },
+  ],
 };

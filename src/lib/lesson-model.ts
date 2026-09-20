@@ -3,6 +3,18 @@ import type { Lang } from "./highlight";
 import type { Problem, Scenario } from "@/components/lesson/parts";
 
 /**
+ * 小測驗的一題：單選。answer 是 choices 的索引；why 在對答案後顯示，
+ * 不管答對答錯都顯示，讓答對的人也確認自己是對在正確的理由上。
+ * q、choices、why 都支援 steps 那兩種行內標記。
+ */
+export interface QuizItem {
+  q: string;
+  choices: string[];
+  answer: number;
+  why: string;
+}
+
+/**
  * 一篇課程的「結構」，與語言無關，全站只有一份。
  *
  * 93 篇的段落順序完全一致（why → concept → steps → demo → code → problems，
@@ -37,4 +49,9 @@ export interface LessonText {
    * skeleton 會讓中文讀者看到英文提示。521 題裡有 371 題有這種提示。
    */
   problems: Problem[];
+  /**
+   * 課後小測驗，3 到 5 題。沒有的課程不顯示這一段，Rail 也不列。
+   * 逐篇補，從路線圖前面的節點開始。
+   */
+  quiz?: QuizItem[];
 }

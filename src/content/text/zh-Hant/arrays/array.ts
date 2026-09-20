@@ -37,4 +37,30 @@ export const text: LessonText = {
     { src: "LeetCode 189", name: "Rotate Array（三次反轉）", diff: "Medium" },
     { src: "LeetCode 238", name: "Product of Array Except Self", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "陣列第 i 格的位址可以直接算出來（`base + i × size`），這帶來的直接好處是？",
+      choices: ["任何位置插入都是 O(1)", "依索引存取是 O(1)", "查一個值在不在是 O(1)", "記憶體用量最少"],
+      answer: 1,
+      why: "連續記憶體讓存取變成一次乘加；但插入、刪除中間元素與「值在不在」仍然是 O(n)。",
+    },
+    {
+      q: "在長度 n 的陣列**開頭**插入一個元素，時間複雜度是？",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      answer: 2,
+      why: "為了維持連續，後面 n 個元素全部要往後挪一格。只有尾端增刪是 O(1)。",
+    },
+    {
+      q: "動態陣列滿了會怎麼做？",
+      choices: ["拒絕插入", "配一塊兩倍大的新記憶體，把舊元素全搬過去", "把最舊的元素丟掉", "改用鏈結串列存新元素"],
+      answer: 1,
+      why: "搬家那一次是 O(n)，但發生得夠少，攤銷後每次 push 仍是 O(1)。",
+    },
+    {
+      q: "迴圈裡看到 `pop(0)` 或 `insert(0, x)`，該警覺什麼？",
+      choices: ["會造成記憶體洩漏", "整體可能變成 O(n²)，考慮換 deque", "索引會超出範圍", "這是 O(1)，沒問題"],
+      answer: 1,
+      why: "每次前端操作都要搬 n 個元素，迴圈 n 次就是 n²。deque 兩端增刪都是 O(1)。",
+    },
+  ],
 };

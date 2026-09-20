@@ -36,4 +36,30 @@ export const text: LessonText = {
     { src: "LeetCode 704", name: "Binary Search（O(n) → O(log n)）", diff: "Easy" },
     { src: "LeetCode 189", name: "Rotate Array（O(n) 時間、O(1) 空間）", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "一段程式碼的執行次數是 `3n² + 50n + 1000`，它的 Big-O 是？",
+      choices: ["O(n)", "O(n²)", "O(3n²)", "O(n² + n)"],
+      answer: 1,
+      why: "丟掉常數、只留最大的項：3n² 的常數 3 去掉，50n 與 1000 相對 n² 可以忽略。",
+    },
+    {
+      q: "一個迴圈每次把搜尋範圍砍一半，直到剩一個元素。它的時間複雜度是？",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      answer: 1,
+      why: "每次砍半，n 需要 log₂ n 次才會變成 1。二分搜尋就是這個形狀。",
+    },
+    {
+      q: "在一個跑 n 次的迴圈裡，每次呼叫一個 O(n) 的函式。整體是？",
+      choices: ["O(n)", "O(2n)", "O(n²)", "O(n log n)"],
+      answer: 2,
+      why: "外層 n 次，每次做 n 的工作，相乘是 n²。O(2n) 不是合法的簡化寫法，常數要丟掉。",
+    },
+    {
+      q: "沒有特別說明時，Big-O 預設描述的是哪一種情況？",
+      choices: ["最好情況", "平均情況", "最壞情況", "測試資料的情況"],
+      answer: 2,
+      why: "預設報最壞情況，題目強調平均或攤銷時才另外說明。",
+    },
+  ],
 };

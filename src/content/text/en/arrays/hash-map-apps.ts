@@ -41,4 +41,30 @@ export const text: LessonText = {
     { src: "LeetCode 347", name: "Top K Frequent Elements (counting plus buckets or a heap)", diff: "Medium" },
     { src: "LeetCode 128", name: "Longest Consecutive Sequence (membership)", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "The standard move that turns a brute-force O(n²) into O(n) is?",
+      choices: ["Rewrite the outer loop as recursion", "Replace the inner 'searching' loop with a hash lookup", "Sort and then binary search", "Convert the array to a string"],
+      answer: 1,
+      why: "Spend O(n) space to remove one factor of n: whatever the inner loop searches for becomes the hash key.",
+    },
+    {
+      q: "In the one-pass Two Sum, what must happen first for each element?",
+      choices: ["Store it, then look for its partner", "Look up `target − x` in the map, then store x", "Sort first", "Skip duplicates first"],
+      answer: 1,
+      why: "In the other order x could pair with itself (target = 6, x = 3). Look up before you store.",
+    },
+    {
+      q: "Group Anagrams needs one key shared by every string in a group. Which works?",
+      choices: ["The string's length", "The string itself", "The sorted string", "The first character"],
+      answer: 2,
+      why: "Same group, same key; different group, different key. Anagrams sort to the same string. A 26-letter count tuple also works.",
+    },
+    {
+      q: "Which of these **cannot** be a Python dict key?",
+      choices: ["`(1, 2)`", "`\"abc\"`", "`[1, 2]`", "`42`"],
+      answer: 2,
+      why: "Keys must be hashable, i.e. immutable. A list can be mutated, so it is rejected; a tuple is fine.",
+    },
+  ],
 };

@@ -38,4 +38,30 @@ export const text: LessonText = {
     { src: "LeetCode 347", name: "Top K Frequent Elements（計數 + 桶或堆積）", diff: "Medium" },
     { src: "LeetCode 128", name: "Longest Consecutive Sequence（存在性）", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "把暴力解從 O(n²) 變成 O(n) 的固定套路是？",
+      choices: ["把外層迴圈改成遞迴", "把「在找東西」的內迴圈換成雜湊表查詢", "先排序再二分搜尋", "把陣列轉成字串"],
+      answer: 1,
+      why: "用 O(n) 的空間換掉一個 n：內迴圈找的東西就是雜湊表的 key。",
+    },
+    {
+      q: "Two Sum 一趟掃過陣列時，每個元素要先做哪一步？",
+      choices: ["先把自己存進表，再查搭檔", "先查 `target − x` 在不在表裡，再把自己存進去", "先排序", "先跳過重複的值"],
+      answer: 1,
+      why: "順序反過來，x 會跟自己配對（例如 target = 6、x = 3）。先查再存才安全。",
+    },
+    {
+      q: "Group Anagrams 要把同一組的字串算出同一個 key，下列哪個 key 可行？",
+      choices: ["字串的長度", "字串本身", "排序後的字串", "第一個字元"],
+      answer: 2,
+      why: "同組相同、不同組不同：anagram 排序後一定一樣。26 個字母的計數 tuple 也可以。",
+    },
+    {
+      q: "下列哪一個**不能**當 Python dict 的 key？",
+      choices: ["`(1, 2)`", "`\"abc\"`", "`[1, 2]`", "`42`"],
+      answer: 2,
+      why: "key 必須可雜湊、不可變。list 可以被修改所以不行，換成 tuple 就可以。",
+    },
+  ],
 };

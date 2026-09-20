@@ -4,11 +4,11 @@ import { useMemo, useState } from "react";
 import { useLocale } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
 import { StepHeader, StepFooter, BTN } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 
 /** 有序、有重複的陣列。目標 8 出現在索引 2、3、4。 */
-const DATA = [2, 5, 8, 8, 8, 13, 21, 34, 55, 89];
-const TARGET = 8;
-const N = DATA.length;
+const DEFAULT_DATA = [2, 5, 8, 8, 8, 13, 21, 34, 55, 89];
+const DEFAULT_TARGET = 8;
 
 type Mode = "find" | "lower" | "upper";
 
@@ -80,45 +80,47 @@ type T = (typeof TEXT)["zh-Hant"];
 interface Step { desc: string; lo: number; hi: number; mid: number | null; ans: number | null; cond?: string }
 
 /** 閉區間 [lo, hi]，找到就回傳，找到的是「任一個」8。 */
-function buildFind(t: T): Step[] {
-  const steps: Step[] = [{ desc: t.findIntro(N - 1), lo: 0, hi: N - 1, mid: null, ans: null }];
-  let lo = 0, hi = N - 1;
+function buildFind(t: T, data: number[], target: number): Step[] {
+  const n = data.length;
+  const steps: Step[] = [{ desc: t.findIntro(n - 1), lo: 0, hi: n - 1, mid: null, ans: null }];
+  let lo = 0, hi = n - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
-    if (DATA[mid] === TARGET) {
-      steps.push({ desc: t.findHit(lo, hi, mid, DATA[mid], TARGET), lo, hi, mid, ans: mid, cond: `a[${mid}] == ${TARGET}` });
+    if (data[mid] === target) {
+      steps.push({ desc: t.findHit(lo, hi, mid, data[mid], target), lo, hi, mid, ans: mid, cond: `a[${mid}] == ${target}` });
       return steps;
     }
-    if (DATA[mid] < TARGET) {
-      steps.push({ desc: t.findRight(mid, DATA[mid], TARGET), lo, hi, mid, ans: null, cond: `a[${mid}] < ${TARGET}` });
+    if (data[mid] < target) {
+      steps.push({ desc: t.findRight(mid, data[mid], target), lo, hi, mid, ans: null, cond: `a[${mid}] < ${target}` });
       lo = mid + 1;
     } else {
-      steps.push({ desc: t.findLeft(mid, DATA[mid], TARGET), lo, hi, mid, ans: null, cond: `a[${mid}] > ${TARGET}` });
+      steps.push({ desc: t.findLeft(mid, data[mid], target), lo, hi, mid, ans: null, cond: `a[${mid}] > ${target}` });
       hi = mid - 1;
     }
   }
-  steps.push({ desc: t.findMiss(TARGET), lo, hi, mid: null, ans: null });
+  steps.push({ desc: t.findMiss(target), lo, hi, mid: null, ans: null });
   return steps;
 }
 
 /** 半開區間 [lo, hi)，找「第一個滿足 a[i] >= x（lower）或 a[i] > x（upper）的位置」。 */
-function buildBound(t: T, kind: "lower" | "upper"): Step[] {
-  const ok = (v: number) => (kind === "lower" ? v >= TARGET : v > TARGET);
+function buildBound(t: T, data: number[], target: number, kind: "lower" | "upper"): Step[] {
+  const n = data.length;
+  const ok = (v: number) => (kind === "lower" ? v >= target : v > target);
   const sym = kind === "lower" ? "≥" : ">";
-  const steps: Step[] = [{ desc: t.boundIntro(N, sym, TARGET), lo: 0, hi: N, mid: null, ans: null }];
-  let lo = 0, hi = N;
+  const steps: Step[] = [{ desc: t.boundIntro(n, sym, target), lo: 0, hi: n, mid: null, ans: null }];
+  let lo = 0, hi = n;
   while (lo < hi) {
     const mid = (lo + hi) >> 1;
-    if (ok(DATA[mid])) {
-      steps.push({ desc: t.boundOk(mid, DATA[mid], sym, TARGET), lo, hi, mid, ans: null, cond: `a[${mid}] ${sym} ${TARGET}` });
+    if (ok(data[mid])) {
+      steps.push({ desc: t.boundOk(mid, data[mid], sym, target), lo, hi, mid, ans: null, cond: `a[${mid}] ${sym} ${target}` });
       hi = mid;
     } else {
-      steps.push({ desc: t.boundNo(mid, DATA[mid], sym, TARGET), lo, hi, mid, ans: null, cond: `a[${mid}] ${sym} ${TARGET} ✗` });
+      steps.push({ desc: t.boundNo(mid, data[mid], sym, target), lo, hi, mid, ans: null, cond: `a[${mid}] ${sym} ${target} ✗` });
       lo = mid + 1;
     }
   }
-  const lowerAns = DATA.filter((v) => v < TARGET).length;
-  const tail = kind === "lower" ? t.lowerTail(lo, TARGET) : t.upperTail(lo, lowerAns, TARGET);
+  const lowerAns = data.filter((v) => v < target).length;
+  const tail = kind === "lower" ? t.lowerTail(lo, target) : t.upperTail(lo, lowerAns, target);
   steps.push({ desc: tail, lo, hi, mid: null, ans: lo });
   return steps;
 }
@@ -126,16 +128,19 @@ function buildBound(t: T, kind: "lower" | "upper"): Step[] {
 export function BinarySearchDemo() {
   const locale = useLocale();
   const t = TEXT[locale];
-  const find = useMemo(() => buildFind(TEXT[locale]), [locale]);
-  const lower = useMemo(() => buildBound(TEXT[locale], "lower"), [locale]);
-  const upper = useMemo(() => buildBound(TEXT[locale], "upper"), [locale]);
+  const [data, setData] = useState(DEFAULT_DATA);
+  const [target, setTarget] = useState(DEFAULT_TARGET);
+  const n = data.length;
+  const find = useMemo(() => buildFind(TEXT[locale], data, target), [locale, data, target]);
+  const lower = useMemo(() => buildBound(TEXT[locale], data, target, "lower"), [locale, data, target]);
+  const upper = useMemo(() => buildBound(TEXT[locale], data, target, "upper"), [locale, data, target]);
   const [mode, setMode] = useState<Mode>("find");
   const [k, setK] = useState(0);
   const steps = mode === "find" ? find : mode === "lower" ? lower : upper;
   const s = steps[k];
   const halfOpen = mode !== "find";
   const inRange = (i: number) => (halfOpen ? i >= s.lo && i < s.hi : i >= s.lo && i <= s.hi);
-  const cells = halfOpen ? [...DATA.map(String), "n"] : DATA.map(String);
+  const cells = halfOpen ? [...data.map(String), "n"] : data.map(String);
   const LABEL: Record<Mode, string> = { find: t.findAny, lower: "lower_bound", upper: "upper_bound" };
 
   return (
@@ -153,14 +158,21 @@ export function BinarySearchDemo() {
             ))}
           </div>
         }
-        right={`${t.targetLabel(TARGET)} · ${halfOpen ? t.halfOpenLabel : t.closedLabel}`}
+        right={`${t.targetLabel(target)} · ${halfOpen ? t.halfOpenLabel : t.closedLabel}`}
+      />
+      <DemoInput
+        value={data}
+        defaults={DEFAULT_DATA}
+        sorted
+        onChange={(a) => { setData(a); setK(0); }}
+        target={{ value: target, defaults: DEFAULT_TARGET, onChange: (v) => { setTarget(v); setK(0); } }}
       />
 
       <div className="overflow-x-auto p-3.5">
         <div className="eyebrow mb-2">{t.sortedArray}</div>
         <div className="flex gap-1">
           {cells.map((v, i) => {
-            const isN = halfOpen && i === N;
+            const isN = halfOpen && i === n;
             const tone = s.ans === i
               ? "border-green bg-green-soft text-green"
               : s.mid === i

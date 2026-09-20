@@ -42,4 +42,30 @@ export const text: LessonText = {
     { src: "LeetCode 74", name: "Search a 2D Matrix (treat the grid as one flat array and binary search it)", diff: "Medium" },
     { src: "LeetCode 200", name: "Number of Islands (try a direction array plus DFS first)", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "By convention, what do r and c mean in `grid[r][c]`?",
+      choices: ["r is the column (horizontal), c the row (vertical)", "r is the row (vertical), c the column (horizontal)", "r is the x coordinate, c the y coordinate", "There is no convention"],
+      answer: 1,
+      why: "Pick row r first, then slot c inside that row. Swapping the two is the most common bug in matrix problems.",
+    },
+    {
+      q: "Flatten an m × n matrix to 1-D. Index k maps to which (r, c)?",
+      choices: ["`(k mod n, k ÷ n)`", "`(k ÷ n, k mod n)`", "`(k ÷ m, k mod m)`", "`(k mod m, k ÷ m)`"],
+      answer: 1,
+      why: "Row-major stores rows back to back, n slots each: k ÷ n is the row, k mod n is the position inside it.",
+    },
+    {
+      q: "A clockwise 90° rotation splits into which two steps?",
+      choices: ["Transpose, then reverse each row", "Reverse each row, then transpose", "Flip vertically, then flip horizontally", "Transpose twice"],
+      answer: 0,
+      why: "Transposing moves (r, c) to (c, r); reversing each row then gives clockwise. For counter-clockwise, reverse each column instead.",
+    },
+    {
+      q: "In the spiral traversal, why re-check the bounds before the 'left' and 'up' legs?",
+      choices: ["To finish early and save time", "With a single remaining row or column the bounds have already crossed, and skipping the check walks it twice", "Because left and up use different direction vectors", "No check is needed"],
+      answer: 1,
+      why: "After the right and down legs, top and bottom may have crossed; the leftover left and up legs would revisit the same row.",
+    },
+  ],
 };

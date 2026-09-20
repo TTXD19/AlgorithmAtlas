@@ -39,4 +39,30 @@ export const text: LessonText = {
     { src: "LeetCode 74", name: "Search a 2D Matrix（二維當一維二分）", diff: "Medium" },
     { src: "LeetCode 200", name: "Number of Islands（先用方向陣列 + DFS 試試）", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "慣例上 `grid[r][c]` 的 r 和 c 分別代表？",
+      choices: ["r 是行（水平）、c 是列（垂直）", "r 是列（垂直方向）、c 是行（水平方向）", "r 是 x 座標、c 是 y 座標", "沒有慣例，看題目"],
+      answer: 1,
+      why: "先選第 r 列，再選那一列裡的第 c 格。把兩者弄反是這類題最常見的 bug。",
+    },
+    {
+      q: "m × n 的矩陣攤平成一維後，一維索引 k 對應的 (r, c) 是？",
+      choices: ["`(k mod n, k ÷ n)`", "`(k ÷ n, k mod n)`", "`(k ÷ m, k mod m)`", "`(k mod m, k ÷ m)`"],
+      answer: 1,
+      why: "row-major 一列接一列，每列 n 格：k ÷ n 是第幾列，k mod n 是列內第幾格。",
+    },
+    {
+      q: "順時針旋轉 90° 可以拆成哪兩步？",
+      choices: ["轉置，再把每一列反轉", "每一列反轉，再轉置", "上下反轉，再左右反轉", "轉置兩次"],
+      answer: 0,
+      why: "轉置把 (r, c) 換到 (c, r)，再把每一列左右反轉就是順時針；逆時針則改成每一行上下反轉。",
+    },
+    {
+      q: "螺旋走訪用四條邊界往內縮，為什麼走「左」與「上」之前要再檢查邊界？",
+      choices: ["為了提早結束省時間", "單列或單行時邊界已經交叉，不檢查會重複走", "因為左和上的方向陣列不同", "不需要檢查"],
+      answer: 1,
+      why: "走完右、下之後 top 和 bottom 可能已經交錯，剩下的「左」「上」會把同一列再走一次。",
+    },
+  ],
 };

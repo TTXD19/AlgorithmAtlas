@@ -38,4 +38,30 @@ export const text: LessonText = {
     { src: "LeetCode 70", name: "Climbing Stairs (write the recursion first, and feel why it is slow)", diff: "Easy" },
     { src: "LeetCode 779", name: "K-th Symbol in Grammar", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "A recursive function has no base case. What happens when it runs?",
+      choices: ["It returns 0", "It returns the right answer immediately", "It recurses forever until the stack overflows", "It fails to compile"],
+      answer: 2,
+      why: "With no smallest case that can be answered directly, every call makes another call, and the call stack grows until it overflows.",
+    },
+    {
+      q: "`factorial(n)` recurses to depth n. Its space complexity is at least?",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      answer: 2,
+      why: "Every level holds a record on the call stack, so depth n means O(n) space even though the function allocates no arrays.",
+    },
+    {
+      q: "When writing the recursive case, what does the 'recursive leap of faith' ask you to do?",
+      choices: ["Trace the value of every call level by level", "Trust that the recursive call returns the right answer and only check that this level uses it correctly", "Convert the recursion to a loop first", "Print the arguments on every call"],
+      answer: 1,
+      why: "It is induction in code: assume the smaller problem is solved and only assemble the bigger answer from it.",
+    },
+    {
+      q: "Which recursive call does **not** move toward the base case?",
+      choices: ["`sum(arr[1:])` on a shorter list", "`fib(n - 1) + fib(n - 2)`", "`dfs(node.left)` down a subtree", "`solve(n)` calling `solve(n)` with the same n"],
+      answer: 3,
+      why: "The argument never changes, so the problem never shrinks and the base case is never reached. The other three shrink a list, a number and a tree.",
+    },
+  ],
 };

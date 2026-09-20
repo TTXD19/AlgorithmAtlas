@@ -40,4 +40,30 @@ export const text: LessonText = {
     { src: "LeetCode 705", name: "Design HashSet (think about when to grow)", diff: "Easy" },
     { src: "LeetCode 146", name: "LRU Cache", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "With capacity doubling, roughly what is the total cost of n pushes to a dynamic array?",
+      choices: ["O(n)", "O(n log n)", "O(n²)", "O(2ⁿ)"],
+      answer: 0,
+      why: "Moves happen at push 1, 2, 4, … and their sizes sum to less than n. Add the n inserts and the total is under 3n.",
+    },
+    {
+      q: "If growth is changed to 'add 100 slots each time', the amortised cost per push becomes?",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      answer: 2,
+      why: "Total moves become about n²/200; divided by n that is O(n) per push. Doubling is what halves the frequency of the expensive operation as n grows.",
+    },
+    {
+      q: "What does 'amortised O(1)' actually claim?",
+      choices: ["Every single operation is O(1)", "On a lucky run the average is O(1)", "Any sequence of n operations costs at most c·n in total", "The slowest single operation is O(1)"],
+      answer: 2,
+      why: "Amortised bounds are guarantees, not probabilities: one operation may be slow, but the whole sequence has a hard ceiling.",
+    },
+    {
+      q: "In the accounting method a dynamic array charges 3 coins per push. Where do they go?",
+      choices: ["Three inserts", "1 to insert itself, 1 saved for its own future move, 1 to move an older element from the first half", "1 to insert, 2 to the system", "All saved for the next resize"],
+      answer: 1,
+      why: "That way every element that needs moving at resize time has already been paid for, and the account never goes negative.",
+    },
+  ],
 };

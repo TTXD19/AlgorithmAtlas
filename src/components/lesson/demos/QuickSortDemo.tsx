@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { StepHeader, StepFooter, Cells, CELL } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 import { useLocale, useT } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
 
-const ARR = [5, 2, 9, 1, 7, 3, 8, 4];
+const DEFAULT = [5, 2, 9, 1, 7, 3, 8, 4];
 
 const TEXT = demoText(
   {
@@ -90,8 +91,8 @@ interface Step {
   fixed: number[];
 }
 
-function buildSteps(t: T): Step[] {
-  const a = [...ARR];
+function buildSteps(t: T, arr: number[]): Step[] {
+  const a = [...arr];
   const steps: Step[] = [];
   const fixed: number[] = [];
   const snap = (desc: string, op: string, extra: Partial<Step> = {}) =>
@@ -144,7 +145,8 @@ export function QuickSortDemo() {
   const locale = useLocale();
   const t = TEXT[locale];
   const ui = useT();
-  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
+  const [arr, setArr] = useState(DEFAULT);
+  const steps = useMemo(() => buildSteps(TEXT[locale], arr), [locale, arr]);
   const [k, setK] = useState(0);
   const s = steps[k];
   const tone = (idx: number) => {
@@ -154,7 +156,7 @@ export function QuickSortDemo() {
     if (s.range && (idx < s.range[0] || idx > s.range[1])) return CELL.dim;
     return "";
   };
-  const marks = ARR.map((_, idx) => {
+  const marks = arr.map((_, idx) => {
     const m: string[] = [];
     if (s.range && idx === s.i) m.push("i");
     if (s.range && idx === s.j) m.push("j");
@@ -163,7 +165,8 @@ export function QuickSortDemo() {
   });
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`[${ARR.join(", ")}] · ${t.lomuto}`} />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={`[${arr.join(", ")}] · ${t.lomuto}`} />
+      <DemoInput value={arr} defaults={DEFAULT} onChange={(a) => { setArr(a); setK(0); }} />
       <div className="p-3.5">
         <div className="eyebrow mb-2">{t.arrayTitle}</div>
         <Cells items={s.arr} tone={tone} />

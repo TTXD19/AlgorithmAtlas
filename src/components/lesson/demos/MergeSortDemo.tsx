@@ -4,9 +4,24 @@ import { useMemo, useState } from "react";
 import { useLocale } from "../../LocaleProvider";
 import { demoText } from "@/lib/demo-i18n";
 import { StepHeader, StepFooter, CELL } from "./StepBar";
+import { DemoInput } from "./DemoInput";
 
-const ARR = [5, 2, 9, 1, 7, 3, 8, 4];
-const DEPTHS = 4; // 8 → 4 → 2 → 1
+const DEFAULT = [5, 2, 9, 1, 7, 3, 8, 4];
+/** 遞迴層數：8 → 4 → 2 → 1 是 4 層；一般是 ⌈log₂ n⌉ + 1 */
+const depthsOf = (n: number) => Math.ceil(Math.log2(n)) + 1;
+
+/** 第 depth 層各區段的起點索引，跟 sort() 的切法一致，用來在區段之間留空隙。 */
+function segStarts(n: number, depth: number): Set<number> {
+  const starts = new Set<number>();
+  const go = (lo: number, hi: number, d: number) => {
+    if (d === 0 || hi - lo <= 1) { starts.add(lo); return; }
+    const mid = lo + ((hi - lo) >> 1);
+    go(lo, mid, d - 1);
+    go(mid, hi, d - 1);
+  };
+  go(0, n, depth);
+  return starts;
+}
 
 const TEXT = demoText(
   {
@@ -71,9 +86,9 @@ interface Step {
   done: { depth: number; lo: number; hi: number }[];
 }
 
-function buildSteps(t: T): Step[] {
-  const n = ARR.length;
-  const rows: Row[] = Array.from({ length: DEPTHS }, (_, d) => (d === 0 ? [...ARR] : new Array<number | null>(n).fill(null)));
+function buildSteps(t: T, arr: number[]): Step[] {
+  const n = arr.length;
+  const rows: Row[] = Array.from({ length: depthsOf(n) }, (_, d) => (d === 0 ? [...arr] : new Array<number | null>(n).fill(null)));
   const done: Step["done"] = [];
   const steps: Step[] = [];
   const snap = (desc: string, op: string, extra: Partial<Step> = {}) =>
@@ -134,10 +149,11 @@ function buildSteps(t: T): Step[] {
 export function MergeSortDemo() {
   const locale = useLocale();
   const t = TEXT[locale];
-  const steps = useMemo(() => buildSteps(TEXT[locale]), [locale]);
+  const [arr, setArr] = useState(DEFAULT);
+  const steps = useMemo(() => buildSteps(TEXT[locale], arr), [locale, arr]);
   const [k, setK] = useState(0);
   const s = steps[k];
-  const n = ARR.length;
+  const n = arr.length;
 
   const tone = (depth: number, idx: number, v: number | null) => {
     if (v === null) return "border-dashed border-line bg-surface-2 text-ink-3";
@@ -149,12 +165,13 @@ export function MergeSortDemo() {
 
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
-      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={t.caption(ARR.join(", "))} />
+      <StepHeader k={k} total={steps.length} setK={setK} left={<span className="font-mono text-[12.5px] text-ink">{s.op}</span>} right={t.caption(arr.join(", "))} />
+      <DemoInput value={arr} defaults={DEFAULT} onChange={(a) => { setArr(a); setK(0); }} />
       <div className="p-3.5">
         <div className="eyebrow mb-2">{t.levelsTitle}</div>
         <div className="flex flex-col gap-1.5">
           {s.rows.map((row, depth) => {
-            const seg = n >> depth;
+            const starts = segStarts(n, depth);
             return (
               <div key={depth} className="flex items-center gap-2">
                 <span className="w-10 shrink-0 font-mono text-[11px] text-ink-3">{t.level(depth)}</span>
@@ -163,7 +180,7 @@ export function MergeSortDemo() {
                     <span
                       key={idx}
                       className={`grid h-8 w-9 place-items-center rounded-md border font-mono text-[13px] tabular-nums ${tone(depth, idx, v)}`}
-                      style={{ marginLeft: idx > 0 && idx % seg === 0 ? 10 : 0 }}
+                      style={{ marginLeft: idx > 0 && starts.has(idx) ? 10 : 0 }}
                     >
                       {v ?? "·"}
                     </span>

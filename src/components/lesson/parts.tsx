@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { getMessages } from "@/lib/messages";
 
-export { Section, SECTIONS, type SectionId } from "./Section";
+export { Section } from "./Section";
+export { SECTIONS, type SectionId } from "./sections";
 
 export function Steps({ items }: { items: ReactNode[] }) {
   return (

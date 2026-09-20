@@ -40,4 +40,30 @@ export const text: LessonText = {
     { src: "LeetCode 380", name: "Insert Delete GetRandom O(1) (a hash table plus an array)", diff: "Medium" },
     { src: "LeetCode 146", name: "LRU Cache (a hash table plus a doubly linked list)", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "Two different keys hash to the same bucket. This is called?",
+      choices: ["A rehash", "A collision", "The load", "An overflow"],
+      answer: 1,
+      why: "Collisions cannot be avoided, only handled: chaining links them in a list, open addressing probes for the next free slot.",
+    },
+    {
+      q: "What is the load factor?",
+      choices: ["Buckets ÷ elements", "Elements ÷ buckets", "Collisions ÷ elements", "The longest chain"],
+      answer: 1,
+      why: "It is also the average chain length under chaining. Past the threshold (usually 0.75) the table rehashes.",
+    },
+    {
+      q: "Why is a hash table 'O(1) on average' rather than 'always O(1)'?",
+      choices: ["Because the hash function is slow", "Because in the worst case every key lands in one bucket and lookup degrades to O(n)", "Because a rehash happens on every insert", "Because keys must be integers"],
+      answer: 1,
+      why: "A good hash function makes the worst case practically impossible, but it exists in theory, so the guarantee is an average.",
+    },
+    {
+      q: "Which of these can a hash table **not** do?",
+      choices: ["Check whether a key exists in O(1)", "Overwrite a key's value in O(1)", "Iterate keys in sorted order", "Delete a key"],
+      answer: 2,
+      why: "Hash tables have no order. For 'smallest key greater than k' or in-order traversal, use a balanced tree.",
+    },
+  ],
 };

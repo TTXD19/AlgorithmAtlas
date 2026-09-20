@@ -41,4 +41,30 @@ export const text: LessonText = {
     { src: "LeetCode 304", name: "Range Sum Query 2D - Immutable", diff: "Medium" },
     { src: "LeetCode 974", name: "Subarray Sums Divisible by K", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "The prefix array keeps an extra slot `P[0] = 0`. Mainly why?",
+      choices: ["To make the length even", "So ranges starting at index 0 need no special case", "To save one addition", "For memory alignment"],
+      answer: 1,
+      why: "With P[0] = 0, the sum of `a[0..r]` is `P[r+1] − P[0]`, the same formula as every other range.",
+    },
+    {
+      q: "Given `P[i] = a[0] + … + a[i-1]`, the sum of `a[l..r]` (both inclusive) is?",
+      choices: ["`P[r] − P[l]`", "`P[r+1] − P[l]`", "`P[r] − P[l-1]`", "`P[r+1] − P[l+1]`"],
+      answer: 1,
+      why: "P excludes its own index, so 'up to r' is P[r+1]; then subtract everything before l, which is P[l].",
+    },
+    {
+      q: "Prefix sums fit best when?",
+      choices: ["The data changes often and range sums are queried often", "The data never changes and range sums are queried often", "You query one range sum once", "You need range maximums"],
+      answer: 1,
+      why: "Build once in O(n), answer each query in O(1). Changing one a[i] invalidates every P after it, so frequent updates call for a Fenwick tree.",
+    },
+    {
+      q: "Counting subarrays whose sum equals k, at index j what do you look up in the hash map?",
+      choices: ["How often `P[j] + k` appeared", "How often `P[j] − k` appeared", "How often `k` appeared", "How often `P[j]` appeared"],
+      answer: 1,
+      why: "Rewrite `P[j] − P[i] = k` as `P[i] = P[j] − k`: each earlier occurrence of that prefix sum is one subarray ending at j. Seed the map with `{0: 1}`.",
+    },
+  ],
 };

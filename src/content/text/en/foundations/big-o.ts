@@ -42,4 +42,30 @@ export const text: LessonText = {
     { src: "LeetCode 704", name: "Binary Search (O(n) → O(log n))", diff: "Easy" },
     { src: "LeetCode 189", name: "Rotate Array (O(n) time, O(1) space)", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "A piece of code runs `3n² + 50n + 1000` operations. Its Big-O is?",
+      choices: ["O(n)", "O(n²)", "O(3n²)", "O(n² + n)"],
+      answer: 1,
+      why: "Drop constants and keep only the largest term: the 3 goes, and 50n and 1000 are negligible next to n².",
+    },
+    {
+      q: "A loop halves the search range each iteration until one element remains. Its time complexity is?",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      answer: 1,
+      why: "Halving each time means n needs log₂ n steps to reach 1. Binary search has exactly this shape.",
+    },
+    {
+      q: "Inside a loop that runs n times you call a function that costs O(n). The total is?",
+      choices: ["O(n)", "O(2n)", "O(n²)", "O(n log n)"],
+      answer: 2,
+      why: "n iterations, each doing n work, multiply to n². O(2n) is not a valid simplification; constants are dropped.",
+    },
+    {
+      q: "When nothing else is said, which case does Big-O describe?",
+      choices: ["Best case", "Average case", "Worst case", "Whatever the test data does"],
+      answer: 2,
+      why: "Report the worst case by default, and only mention average or amortised cost when the problem stresses it.",
+    },
+  ],
 };

@@ -4,13 +4,15 @@ import type { Metadata } from "next";
 import { TOPICS, lessonKey } from "@/lib/topics";
 import { getSubtopicBy, getLevelLabel } from "@/lib/topics-text";
 import { loadLesson } from "@/lib/lesson-loader";
-import { LessonBody } from "@/components/lesson/LessonBody";
+import { LessonBody, lessonSections } from "@/components/lesson/LessonBody";
 import { Level } from "@/components/Level";
 import { Crumbs } from "@/components/Crumbs";
 import { getMessages } from "@/lib/messages";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { Rail } from "@/components/lesson/Rail";
 import { MarkDone } from "@/components/ProgressBits";
+import { BookmarkButton } from "@/components/BookmarkButton";
+import { LessonNotes } from "@/components/lesson/LessonNotes";
 import { pageMeta, localizedUrl } from "@/lib/site";
 import { JsonLd } from "@/components/JsonLd";
 
@@ -99,10 +101,14 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
             text={loaded.text}
             Concept={loaded.Concept}
             locale={loaded.translated ? locale : DEFAULT_LOCALE}
+            lessonId={key}
           />
 
-          <div className="mt-3 border-t border-line pt-[22px] lg:hidden">
+          <LessonNotes lessonId={key} />
+
+          <div className="mt-5 flex flex-wrap gap-2.5 border-t border-line pt-[22px] lg:hidden">
             <MarkDone lessonId={key} />
+            <BookmarkButton lessonId={key} />
           </div>
 
           <div className="mt-5 flex justify-between gap-3">
@@ -110,7 +116,7 @@ export default async function LessonPage({ params }: PageProps<"/[lang]/[topic]/
             <PagerLink href={next ? h(`/${t.id}/${next.id}`) : undefined} label={t18n.lesson.next} name={next?.name} right />
           </div>
         </div>
-        <Rail lessonId={key} />
+        <Rail lessonId={key} sections={lessonSections(loaded.text)} />
       </div>
     </>
   );

@@ -41,4 +41,30 @@ export const text: LessonText = {
     { src: "LeetCode 189", name: "Rotate Array (three reversals)", diff: "Medium" },
     { src: "LeetCode 238", name: "Product of Array Except Self", diff: "Medium" },
   ],
+  quiz: [
+    {
+      q: "The address of slot i is computed directly as `base + i × size`. What does that buy you?",
+      choices: ["O(1) insertion anywhere", "O(1) access by index", "O(1) membership test", "Minimal memory use"],
+      answer: 1,
+      why: "Contiguous memory turns access into one multiply-add. Inserting or deleting in the middle, and asking 'is x in here', still cost O(n).",
+    },
+    {
+      q: "Inserting one element at the **front** of an array of length n costs?",
+      choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      answer: 2,
+      why: "To stay contiguous, all n elements after it shift one slot right. Only the tail is O(1).",
+    },
+    {
+      q: "What does a dynamic array do when it is full?",
+      choices: ["Refuses the insert", "Allocates a block twice as big and moves every element over", "Drops the oldest element", "Stores new elements in a linked list"],
+      answer: 1,
+      why: "That move is O(n), but it happens rarely enough that a push is still amortised O(1).",
+    },
+    {
+      q: "You see `pop(0)` or `insert(0, x)` inside a loop. What should you suspect?",
+      choices: ["A memory leak", "The whole thing may be O(n²); consider a deque", "An index out of range", "It is O(1), nothing to worry about"],
+      answer: 1,
+      why: "Every front operation shifts n elements, and n iterations make n². A deque gives O(1) at both ends.",
+    },
+  ],
 };
