@@ -9,6 +9,7 @@ import { Crumbs } from "@/components/Crumbs";
 import { getMessages } from "@/lib/messages";
 import type { Locale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/site";
+import { COMPARISONS } from "@/content/compare";
 
 export function generateStaticParams() {
   return TOPICS.map((t) => ({ topic: t.id }));
@@ -46,6 +47,11 @@ export default async function TopicPage({ params }: PageProps<"/[lang]/[topic]">
           <small className="mt-1.5 block font-sans text-[15px] font-medium tracking-normal text-ink-3">{t.zh}</small>
         </h1>
         <p className="mb-3.5 max-w-[62ch] text-[16px] text-ink-2">{t.intro ?? t.desc}</p>
+        {COMPARISONS[t.id] && (
+          <Link href={h(`/${t.id}/compare`)} className="mb-3.5 inline-flex h-9 items-center rounded-[7px] border border-line bg-surface px-4 text-[14px] font-semibold hover:bg-surface-2">
+            {t18n.compare.link}
+          </Link>
+        )}
         {t.prereq && (
           <div className="flex flex-wrap items-center gap-2 text-[13px] text-ink-3">
             {t18n.lesson.prereq}

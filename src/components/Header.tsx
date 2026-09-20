@@ -25,6 +25,7 @@ export function Header({ locale }: { locale: Locale }) {
       <nav className="flex shrink-0 items-center gap-1">
         <Link href={home} className="rounded-md px-2 py-1.5 text-[13.5px] font-medium whitespace-nowrap text-ink-2 hover:bg-surface-2 hover:text-ink md:px-2.5">{t.nav.topics}</Link>
         <Link href={`${home}/roadmap`} className="rounded-md px-2 py-1.5 text-[13.5px] font-medium whitespace-nowrap text-ink-2 hover:bg-surface-2 hover:text-ink md:px-2.5">{t.nav.roadmap}</Link>
+        <Link href={`${home}/lists`} className="hidden rounded-md px-2 py-1.5 text-[13.5px] font-medium whitespace-nowrap text-ink-2 hover:bg-surface-2 hover:text-ink sm:block md:px-2.5">{t.nav.lists}</Link>
         <Link href={`${home}/me`} className="rounded-md px-2 py-1.5 text-[13.5px] font-medium whitespace-nowrap text-ink-2 hover:bg-surface-2 hover:text-ink md:px-2.5">{t.nav.me}</Link>
         <LocaleSwitcher />
         <ThemeToggle />

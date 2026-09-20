@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { TOPICS } from "@/lib/topics";
 import { LOCALES } from "@/lib/i18n";
+import { COMPARISONS } from "@/content/compare";
 import { localizedUrl, languageAlternates } from "@/lib/site";
 
 /**
@@ -19,7 +20,9 @@ function paths(): string[] {
   return [
     "",
     "/roadmap",
+    "/lists",
     ...TOPICS.flatMap((t) => [`/${t.id}`, ...t.subs.map((s) => `/${t.id}/${s.id}`)]),
+    ...Object.keys(COMPARISONS).map((id) => `/${id}/compare`),
   ];
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ROADMAP_NODES, ROADMAP_EDGES, NODE_W, NODE_H, CANVAS_W, CANVAS_H,
   getRoadmapNodes, resolveLessons, roadmapOrder, type RoadmapNode, type RoadmapLesson,
@@ -41,6 +41,14 @@ export function RoadmapView() {
     setSelected(id);
     cardRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  // 題單頁用 #node-<id> 連進來：選取並捲到那張卡片。只在掛載時看一次 hash。
+  useEffect(() => {
+    const id = window.location.hash.replace("#node-", "");
+    if (id && cardRefs.current[id]) {
+      setSelected(id);
+      cardRefs.current[id]?.scrollIntoView({ block: "start" });
+    }
+  }, []);
 
   return (
     <>
@@ -184,6 +192,7 @@ function NodeCard({
   return (
     <div
       ref={cardRef}
+      id={`node-${node.id}`}
       className={`flex scroll-mt-20 flex-col rounded-xl border bg-surface p-4 transition ${
         selected ? "border-accent ring-2 ring-accent/40" : state === "done" ? "border-green" : "border-line"
       }`}
